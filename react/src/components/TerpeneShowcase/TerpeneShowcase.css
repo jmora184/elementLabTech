@@ -96,6 +96,8 @@
 }
 .ts-cardRight {
   position: relative;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
 }
 .ts-profileDropdownOptionRow {
   display: flex;
@@ -442,6 +444,8 @@
 .ts-cardRight {
   position: relative;
   overflow: visible !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
 }
   gap: 14px;
 }
@@ -450,7 +454,7 @@
   margin: 0;
   color: rgba(0,0,0,.68);
   max-width: 70ch;
-  margin-left: 0;
+  margin-left: 280px;
   font-weight: bold;
 }
 
@@ -461,7 +465,9 @@
   min-height: 180px;
   flex-grow: 1;
   overflow: visible;
-  padding-right: 8px;
+  padding-right: 0;
+  padding-left: 0;
+  margin-left: 0;
   align-items: flex-start;
   justify-content: flex-start;
 }

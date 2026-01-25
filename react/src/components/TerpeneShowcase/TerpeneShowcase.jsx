@@ -102,7 +102,7 @@ export default function TerpeneShowcase() {
             <div className="ts-kicker">{heroCopy.eyebrow}</div>
             <h2 className="ts-title">Terpenes By Element Labs</h2>
 
-            <div className="ts-controls">
+            <div className="ts-controls" style={{ marginLeft: "10%" }}>
             <div className="ts-jump">
               <label className="ts-jumpLabel" htmlFor="collectionJump">
                 Shop Terpene Collections
@@ -121,7 +121,7 @@ export default function TerpeneShowcase() {
               </select>
             </div>
 
-            <div className="ts-nav">
+            <div className="ts-nav" style={{ marginRight: "15%" }}>
               <div className="ts-dots" aria-label="carousel page indicators">
                 {Array.from({ length: snapCount }).map((_, i) => (
                   <button

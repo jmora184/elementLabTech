@@ -1,3 +1,52 @@
+.ts-profileBtn-green {
+  background: linear-gradient(135deg, #e6f9e6 0%, #d1f7c4 100%) !important;
+  color: #225c2a !important;
+}
+.ts-profileBtn-yellow {
+  background: linear-gradient(135deg, #fffbe6 0%, #fff7c4 100%) !important;
+  color: #8a6d00 !important;
+}
+.ts-profileBtn-light {
+  background: linear-gradient(135deg, #f7f7fa 0%, #e9f7fa 100%) !important;
+  color: #2a4b5c !important;
+}
+.ts-card-green {
+  background: linear-gradient(135deg, #b7f8b7 0%, #6ee7b7 60%, #d1f7c4 100%) !important;
+  box-shadow: 0 4px 32px rgba(46, 204, 113, 0.10);
+}
+.ts-card-yellow {
+  background: linear-gradient(135deg, #fffbe6 0%, #ffe066 60%, #fff7c4 100%) !important;
+  box-shadow: 0 4px 32px rgba(255, 224, 102, 0.10);
+}
+.ts-card-blue {
+  background: linear-gradient(135deg, #e0f7fa 0%, #90cdf4 60%, #bee3f8 100%) !important;
+  box-shadow: 0 4px 32px rgba(64, 153, 255, 0.10);
+}
+.ts-card-orange {
+  background: linear-gradient(135deg, #fff5e6 0%, #ffd699 60%, #ffe0b2 100%) !important;
+  box-shadow: 0 4px 32px rgba(255, 183, 77, 0.10);
+}
+@media (max-width: 600px) {
+  .ts-mobileCardStack {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    margin: 0 auto;
+    align-items: stretch;
+  }
+}
+@media (max-width: 600px) {
+  .ts-cardRight-mobile {
+    margin-top: 0 !important;
+    padding-top: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
 @media (max-width: 600px) {
   .ts-cardImgWrapper {
     padding-top: 0 !important;

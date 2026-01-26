@@ -184,6 +184,8 @@ export default function TerpeneShowcase() {
                         addToCart={addToCart}
                         removeFromCart={removeFromCart}
                         setCartQuantity={setCartQuantity}
+                        isMobile={isMobile}
+                        mobileMarginTop={undefined}
                       />
                     </div>
                   ))}
@@ -291,7 +293,7 @@ export default function TerpeneShowcase() {
                 </div>
               </div>
 
-              <div className="ts-carousel" ref={emblaRef}>
+              <div className="ts-carousel" ref={emblaRef} style={{marginTop:'-10%'}}>
                 <div className="ts-track">
                   {terpeneCollections.map((c) => (
                     <div className="ts-slide" key={c.id}>
@@ -301,7 +303,8 @@ export default function TerpeneShowcase() {
                         addToCart={addToCart}
                         removeFromCart={removeFromCart}
                         setCartQuantity={setCartQuantity}
-                        isMobile={isMobile}
+                        isMobile={true}
+                        mobileMarginTop={{ marginTop: '-63%' }}
                       />
                     </div>
                   ))}
@@ -367,10 +370,9 @@ export default function TerpeneShowcase() {
   );
 }
 
-function CollectionCard({ collection, cart, addToCart, removeFromCart, setCartQuantity, isMobile }) {
+function CollectionCard({ collection, cart, addToCart, removeFromCart, setCartQuantity, isMobile, mobileMarginTop }) {
   const [dropdownOpen, setDropdownOpen] = useState(null); // profile name or null
   const [qtyState, setQtyState] = useState({}); // { [profile-size]: quantity }
-  const [showProfilePopup, setShowProfilePopup] = useState(false); // for mobile popup
 
   const handleProfileClick = (profile) => {
     setDropdownOpen(dropdownOpen === profile ? null : profile);
@@ -397,6 +399,8 @@ function CollectionCard({ collection, cart, addToCart, removeFromCart, setCartQu
     { size: "10g", price: 20 },
   ];
 
+  // No popup, always show inline
+
   return (
     <article className="ts-card">
       <div className="ts-cardLeft">
@@ -406,8 +410,7 @@ function CollectionCard({ collection, cart, addToCart, removeFromCart, setCartQu
             className="ts-cardImg"
             src={bottleImg}
             alt={collection.name + " bottle"}
-            onClick={isMobile ? () => setShowProfilePopup(true) : undefined}
-            style={isMobile ? { cursor: 'pointer' } : {}}
+            style={{ cursor: 'pointer' }}
           />
           {/* Name and tagline overlays at top of image */}
           <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 3 }}>
@@ -441,18 +444,39 @@ function CollectionCard({ collection, cart, addToCart, removeFromCart, setCartQu
           </div>
         </div>
       </div>
-      <div className="ts-cardRight">
-        <br></br>
-        <br></br>
-        <div className="ts-kicker">{heroCopy.eyebrow}</div>
-        <div className="ts-profileHeader">{collection.name} Flavor Profiles</div>
-        <br></br>
-        {/* Only show profile grid inline on desktop, on mobile use popup */}
+      <div
+        className="ts-cardRight"
+        style={isMobile && mobileMarginTop ? mobileMarginTop : undefined}
+      >
+
         {!isMobile && (
-          <div className="ts-profileGrid" role="list">
-            {collection.profiles.map((p) => (
+          <>
+          <br></br><br></br>
+            <div className="ts-kicker">{heroCopy.eyebrow}</div>
+            <div className="ts-profileHeader">{collection.name} Flavor Profiles</div>
+          </>
+        )}
+          {isMobile && (
+          <>
+            <div className="ts-kicker ts-kicker-mobile" style={{marginRight:'90px'}}>{heroCopy.eyebrow}</div>
+            <br></br>
+            <div className="ts-profileHeader">{collection.name} Flavor Profiles</div>
+          </>
+        )}
+        <br></br>
+        {/* Always show profile grid inline on all devices */}
+        <div className="ts-profileGrid" role="list">
+          {collection.profiles.map((p) => {
+            const isLong = p.length > 16;
+            return (
               <div key={p} style={{ position: "relative" }}>
-                <button className="ts-profileBtn" type="button" onClick={() => handleProfileClick(p)} role="listitem">
+                <button
+                  className={`ts-profileBtn${isLong ? ' long-name' : ''}`}
+                  type="button"
+                  onClick={() => handleProfileClick(p)}
+                  role="listitem"
+                  title={p}
+                >
                   {p}
                 </button>
                 {dropdownOpen === p && (
@@ -481,91 +505,9 @@ function CollectionCard({ collection, cart, addToCart, removeFromCart, setCartQu
                   </div>
                 )}
               </div>
-            ))}
-          </div>
-        )}
-        {/* Mobile popup for flavor profiles */}
-        {isMobile && showProfilePopup && (
-          <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            background: 'rgba(0,0,0,0.55)',
-            zIndex: 9999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-            onClick={() => setShowProfilePopup(false)}
-          >
-            <div style={{
-              background: '#fff',
-              borderRadius: 16,
-              padding: 24,
-              minWidth: 260,
-              maxWidth: 340,
-              width: '90vw',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
-              position: 'relative',
-            }}
-              onClick={e => e.stopPropagation()}
-            >
-              <button
-                style={{
-                  position: 'absolute',
-                  top: 8,
-                  right: 12,
-                  background: 'none',
-                  border: 'none',
-                  fontSize: 24,
-                  cursor: 'pointer',
-                  color: '#888',
-                }}
-                aria-label="Close"
-                onClick={() => setShowProfilePopup(false)}
-              >
-                ×
-              </button>
-              <div className="ts-profileHeader" style={{ marginBottom: 12 }}>{collection.name} Flavor Profiles</div>
-              <div className="ts-profileGrid" role="list">
-                {collection.profiles.map((p) => (
-                  <div key={p} style={{ position: "relative" }}>
-                    <button className="ts-profileBtn" type="button" onClick={() => handleProfileClick(p)} role="listitem">
-                      {p}
-                    </button>
-                    {dropdownOpen === p && (
-                      <div className="ts-profileDropdown">
-                        {options.map((opt) => {
-                          const key = p + " - " + opt.size;
-                          const qty = qtyState[key] || 1;
-                          return (
-                            <div key={opt.size} className="ts-profileDropdownOptionRow">
-                              <span className="ts-profileDropdownLabel">
-                                {opt.size} — ${opt.price}
-                              </span>
-                              <button className="ts-qtyBtn" onClick={() => handleQtyChange(p, opt.size, -1)} type="button">
-                                -
-                              </button>
-                              <span className="ts-qtyNum">{qty}</span>
-                              <button className="ts-qtyBtn" onClick={() => handleQtyChange(p, opt.size, 1)} type="button">
-                                +
-                              </button>
-                              <button className="ts-profileDropdownAddBtn" onClick={() => handleOptionAdd(p, opt.size)} type="button">
-                                Add
-                              </button>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
+            );
+          })}
+        </div>
       </div>
     </article>
   );

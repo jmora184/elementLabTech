@@ -297,21 +297,39 @@ function CollectionCard({ collection, cart, addToCart, removeFromCart, setCartQu
   };
 
   // Button style logic
-  const getBtnStyle = () =>
-    isMobile
-      ? {
-          fontSize: 12,
-          padding: '2px 6px',
-          borderRadius: 7,
-          minWidth: 0,
-          maxWidth: '38vw',
-          height: 'auto',
-          margin: '1px 0 1px 0',
-          transform: 'scale(0.85)',
-          wordBreak: 'break-word',
-          whiteSpace: 'normal',
-        }
-      : undefined;
+  const getBtnStyle = () => {
+    if (isMobile) {
+      return {
+        fontSize: 12,
+        padding: '2px 6px',
+        borderRadius: 7,
+        minWidth: 0,
+        maxWidth: '38vw',
+        height: 'auto',
+        margin: '1px 0 1px 0',
+        transform: 'scale(0.85)',
+        wordBreak: 'break-word',
+        whiteSpace: 'normal',
+      };
+    } else {
+      return {
+        padding: 0, // Remove padding inside button
+        fontSize: 15,
+        borderRadius: 12,
+        minWidth: 0,
+        maxWidth: '100%',
+        height: '44px',
+        margin: '8px 8px',
+        fontWeight: 800,
+        wordBreak: 'break-word',
+        whiteSpace: 'nowrap',
+        boxSizing: 'border-box',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      };
+    }
+  };
 
   return (
                     <article
@@ -500,7 +518,7 @@ function CollectionCard({ collection, cart, addToCart, removeFromCart, setCartQu
                             display: 'flex',
                             flexWrap: 'wrap',
                             justifyContent: 'center',
-                            gap: '0px',
+                            gap: isMobile ? '0px' : '16px', // Add gap for desktop only
                             width: '97%',
                             boxSizing: 'border-box',
                           }}

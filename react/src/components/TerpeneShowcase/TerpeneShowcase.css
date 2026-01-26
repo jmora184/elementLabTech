@@ -1,3 +1,37 @@
+/* Cart icon button in header */
+.ts-cartIconBtn {
+  background: none;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+}
+.ts-cartIconBtn img {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+.ts-cartIconBtn span {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ec4899;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  padding: 0 4px;
+  border: 2px solid #fff;
+  z-index: 2;
+}
 .ts-profileBtn-green {
   background: linear-gradient(135deg, #e6f9e6 0%, #d1f7c4 100%) !important;
   color: #225c2a !important;
@@ -388,7 +422,8 @@
 .ts-siteHeader{
   width: 100%;
   background: #000;
-  z-index: 100;
+  z-index: 9999;
+  position: relative;
 }
 
 .ts-siteNav{
@@ -470,6 +505,7 @@
     background: #000;
     border-top: 1px solid rgba(255,255,255,0.10);
     border-bottom: 1px solid rgba(255,255,255,0.10);
+    z-index: 9999;
   }
 
   .ts-navLinks.isOpen{ display: flex; }
@@ -712,7 +748,7 @@
 
 .ts-cardTagline{
   font-weight: 700;
-  color: rgba(0,0,0,.66);
+  color: #e272bd;
 }
 
 .ts-cardImg{

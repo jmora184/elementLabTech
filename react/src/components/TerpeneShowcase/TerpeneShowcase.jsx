@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { heroCopy, terpeneCollections } from "./terpenesData";
 import "./TerpeneShowcase.css";
 import bottleImg from "../../assets/bottle.png";
 import elementLabsLogo from "../../assets/ElementLabsLogos.png";
+import cartIcon from "../../assets/cart.svg";
 import { useIsMobile } from "./useIsMobile";
 
 export default function TerpeneShowcase() {
@@ -10,6 +11,8 @@ export default function TerpeneShowcase() {
   const [jumpToId, setJumpToId] = useState(terpeneCollections[0]?.id ?? "");
   const [menuOpen, setMenuOpen] = useState(false);
   const [cart, setCart] = useState({});
+  // Refs for each collection card
+  const cardRefs = useRef({});
 
   const addToCart = (profile) => {
     setCart((prev) => ({ ...prev, [profile]: (prev[profile] || 0) + 1 }));
@@ -34,7 +37,15 @@ export default function TerpeneShowcase() {
     });
   };
   const onJumpChange = (e) => {
-    setJumpToId(e.target.value);
+    const id = e.target.value;
+    setJumpToId(id);
+    // Scroll to the card with the selected id
+    setTimeout(() => {
+      const ref = cardRefs.current[id];
+      if (ref && ref.scrollIntoView) {
+        ref.scrollIntoView({ behavior: "smooth", block: isMobile ? "start" : "center" });
+      }
+    }, 50);
   };
   const closeMenu = () => setMenuOpen(false);
 
@@ -44,24 +55,35 @@ export default function TerpeneShowcase() {
       {!isMobile && (
         <>
           <header className="ts-siteHeader">
-            <nav className="ts-siteNav" aria-label="Primary">
+            <nav className="ts-siteNav" aria-label="Primary" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
               <a href="#" className="ts-logoLink" aria-label="Element Labs Home" onClick={(e) => e.preventDefault()}>
                 <img src={elementLabsLogo} alt="Element Labs Logo" className="ts-siteLogo" />
               </a>
-              <button
-                className="ts-menuBtn"
-                type="button"
-                aria-label={menuOpen ? "Close menu" : "Open menu"}
-                aria-expanded={menuOpen}
-                onClick={() => setMenuOpen((v) => !v)}
-              >
-                ☰
-              </button>
-              <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}>
+              <div style={{display: 'flex', alignItems: 'center', gap: 18}}>
+                <button
+                  className="ts-menuBtn"
+                  type="button"
+                  aria-label={menuOpen ? "Close menu" : "Open menu"}
+                  aria-expanded={menuOpen}
+                  onClick={() => setMenuOpen((v) => !v)}
+                  style={{marginRight: 8}}
+                >
+                  ☰
+                </button>
+              </div>
+              <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`} style={{display: 'flex', alignItems: 'center', gap: 0}}>
                 <a href="#contact" className="ts-siteNavLink" onClick={closeMenu}>Contact</a>
                 <a href="#network" className="ts-siteNavLink" onClick={closeMenu}>Network</a>
                 <a href="#about" className="ts-siteNavLink" onClick={closeMenu}>About Us</a>
                 <a href="#supply-chain" className="ts-siteNavLink" onClick={closeMenu}>Supply Chain</a>
+                <button className="ts-cartIconBtn" type="button" aria-label="View cart" style={{background: 'none', border: 'none', position: 'relative', cursor: 'pointer', padding: 0, marginLeft: 16}}>
+                  <img src={cartIcon} alt="Cart" style={{width: 28, height: 28, display: 'block'}} />
+                  {Object.keys(cart).length > 0 && (
+                    <span style={{position: 'absolute', top: -4, right: -4, background: '#ec4899', color: '#fff', borderRadius: '50%', fontSize: 12, minWidth: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, padding: '0 4px', border: '2px solid #fff'}}>
+                      {Object.values(cart).reduce((a, b) => a + b, 0)}
+                    </span>
+                  )}
+                </button>
               </div>
             </nav>
           </header>
@@ -89,16 +111,21 @@ export default function TerpeneShowcase() {
                   else if (i === 3) cardClass = 'ts-card-blue';
                   else if (i === 4) cardClass = 'ts-card-orange';
                   return (
-                    <CollectionCard
+                    <div
                       key={c.id}
-                      collection={c}
-                      cart={cart}
-                      addToCart={addToCart}
-                      removeFromCart={removeFromCart}
-                      setCartQuantity={setCartQuantity}
-                      isMobile={false}
-                      cardClass={cardClass}
-                    />
+                      ref={el => { cardRefs.current[c.id] = el; }}
+                      id={`card-${c.id}`}
+                    >
+                      <CollectionCard
+                        collection={c}
+                        cart={cart}
+                        addToCart={addToCart}
+                        removeFromCart={removeFromCart}
+                        setCartQuantity={setCartQuantity}
+                        isMobile={false}
+                        cardClass={cardClass}
+                      />
+                    </div>
                   );
                 })}
               </div>
@@ -158,20 +185,31 @@ export default function TerpeneShowcase() {
       {isMobile && (
         <section className="ts-mobileSection ts-mobileMessage">
           <header className="ts-siteHeader">
-            <nav className="ts-siteNav" aria-label="Primary">
+            <nav className="ts-siteNav" aria-label="Primary" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
               <a href="#" className="ts-logoLink" aria-label="Element Labs Home" onClick={(e) => e.preventDefault()}>
                 <img src={elementLabsLogo} alt="Element Labs Logo" className="ts-siteLogo" />
               </a>
-              <button
-                className="ts-menuBtn"
-                type="button"
-                aria-label={menuOpen ? "Close menu" : "Open menu"}
-                aria-expanded={menuOpen}
-                onClick={() => setMenuOpen((v) => !v)}
-              >
-                ☰
-              </button>
-              <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}>
+              <div style={{display: 'flex', alignItems: 'center', gap: 18}}>
+                <button
+                  className="ts-menuBtn"
+                  type="button"
+                  aria-label={menuOpen ? "Close menu" : "Open menu"}
+                  aria-expanded={menuOpen}
+                  onClick={() => setMenuOpen((v) => !v)}
+                  style={{marginRight: 8}}
+                >
+                  ☰
+                </button>
+                <button className="ts-cartIconBtn" type="button" aria-label="View cart" style={{background: 'none', border: 'none', position: 'relative', cursor: 'pointer', padding: 0, marginRight: 8}}>
+                  <img src={cartIcon} alt="Cart" style={{width: 28, height: 28, display: 'block'}} />
+                  {Object.keys(cart).length > 0 && (
+                    <span style={{position: 'absolute', top: -4, right: -4, background: '#ec4899', color: '#fff', borderRadius: '50%', fontSize: 12, minWidth: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, padding: '0 4px', border: '2px solid #fff'}}>
+                      {Object.values(cart).reduce((a, b) => a + b, 0)}
+                    </span>
+                  )}
+                </button>
+              </div>
+              <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}> 
                 <a href="#contact" className="ts-siteNavLink" onClick={closeMenu}>Contact</a>
                 <a href="#network" className="ts-siteNavLink" onClick={closeMenu}>Network</a>
                 <a href="#about" className="ts-siteNavLink" onClick={closeMenu}>About Us</a>
@@ -202,16 +240,21 @@ export default function TerpeneShowcase() {
                 else if (i === 3) cardClass = 'ts-card-blue';
                 else if (i === 4) cardClass = 'ts-card-orange';
                 return (
-                  <CollectionCard
+                  <div
                     key={c.id}
-                    collection={c}
-                    cart={cart}
-                    addToCart={addToCart}
-                    removeFromCart={removeFromCart}
-                    setCartQuantity={setCartQuantity}
-                    isMobile={true}
-                    cardClass={cardClass}
-                  />
+                    ref={el => { cardRefs.current[c.id] = el; }}
+                    id={`card-${c.id}`}
+                  >
+                    <CollectionCard
+                      collection={c}
+                      cart={cart}
+                      addToCart={addToCart}
+                      removeFromCart={removeFromCart}
+                      setCartQuantity={setCartQuantity}
+                      isMobile={true}
+                      cardClass={cardClass}
+                    />
+                  </div>
                 );
               })}
             </div>
@@ -393,7 +436,7 @@ function CollectionCard({ collection, cart, addToCart, removeFromCart, setCartQu
                                     : cardClass === 'ts-card-orange'
                                     ? 'linear-gradient(90deg, #fff5e6 0%, #ffd699 100%)'
                                     : 'rgba(40,0,80,0.68)',
-                                color: '#ffe066',
+                                  color: '#e272bd',
                                 fontWeight: 600,
                                 fontSize: 15,
                                 padding: '2px 12px 6px 12px',
@@ -580,14 +623,21 @@ function CollectionCard({ collection, cart, addToCart, removeFromCart, setCartQu
                                           const key = p + ' - ' + opt.size;
                                           const qty = qtyState[key] || 1;
                                           return (
-                                            <div key={opt.size} className="ts-profileDropdownOptionRow" style={{ justifyContent: 'center', width: '100%' }}>
-                                              <span className="ts-profileDropdownLabel">
-                                                {opt.size} — ${opt.price}
-                                              </span>
-                                              <button className="ts-qtyBtn" onClick={() => handleQtyChange(p, opt.size, -1)} type="button">-</button>
-                                              <span className="ts-qtyNum">{qty}</span>
-                                              <button className="ts-qtyBtn" onClick={() => handleQtyChange(p, opt.size, 1)} type="button">+</button>
-                                              <button className="ts-profileDropdownAddBtn" onClick={() => handleOptionAdd(p, opt.size)} type="button">Add</button>
+                                            <div key={opt.size} className="ts-profileDropdownOptionRow" style={{ display: 'flex', alignItems: 'center', width: '100%', gap: 6 }}>
+                                              <span className="ts-profileDropdownLabel" style={{ minWidth: 70 }}>{opt.size} — ${opt.price}</span>
+                                              <div style={{ display: 'flex', alignItems: 'center', gap: 2, marginLeft: 8 }}>
+                                                <button className="ts-qtyBtn" onClick={() => handleQtyChange(p, opt.size, -1)} type="button">-</button>
+                                                <span className="ts-qtyNum">{qty}</span>
+                                                <button className="ts-qtyBtn" onClick={() => handleQtyChange(p, opt.size, 1)} type="button">+</button>
+                                              </div>
+                                              <button
+                                                className="ts-profileDropdownAddBtn"
+                                                onClick={() => handleOptionAdd(p, opt.size)}
+                                                type="button"
+                                                style={{ fontSize: 11, padding: '2px 4px', minWidth: 0, width: 70, height: 22, lineHeight: '16px', marginLeft: 'auto', display: 'block' }}
+                                              >
+                                                Add
+                                              </button>
                                             </div>
                                           );
                                         })}

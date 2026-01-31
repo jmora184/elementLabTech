@@ -43,8 +43,10 @@ export default function ProductPage() {
   // Variant-ish selections
   const profiles = collection?.profiles ?? [];
   const [profile, setProfile] = useState(profiles[0] ?? "");
+  const [expandedProfile, setExpandedProfile] = useState("");
   useEffect(() => {
     setProfile(profiles[0] ?? "");
+    setExpandedProfile("");
   }, [id]); // reset on route change
 
   const [size, setSize] = useState("15ml");
@@ -56,8 +58,12 @@ export default function ProductPage() {
   }, [size, qty]);
 
   // Tabs (middle column)
-  const tabs = ["Details", "Specs", "Documents", "Reviews", "Shipping"];
+  const tabs = ["Details", "Specs", "Documents", "Reviews", "Shipping", "Isolates", "Terpenes"];
   const [tab, setTab] = useState("Details");
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [jumpToId, setJumpToId] = useState(terpeneCollections[0]?.id ?? "");
+  const [cartCount, setCartCount] = useState(0);
 
   // Lightweight local reviews for now (so page feels real)
   const reviewKey = `el_reviews_${id || "unknown"}`;
@@ -114,33 +120,243 @@ export default function ProductPage() {
       const current = raw ? JSON.parse(raw) : [];
       const next = [item, ...current];
       localStorage.setItem(cartKey, JSON.stringify(next));
+      const count = Array.isArray(next)
+        ? next.reduce((acc, it) => acc + (Number(it.qty) || 1), 0)
+        : 0;
+      setCartCount(count);
       alert("Added to cart (saved locally).");
     } catch {
       alert("Could not save cart.");
     }
   };
 
+  useEffect(() => {
+    const readCartCount = () => {
+      try {
+        const raw = localStorage.getItem("el_cart");
+        const items = raw ? JSON.parse(raw) : [];
+        const count = Array.isArray(items)
+          ? items.reduce((acc, it) => acc + (Number(it.qty) || 1), 0)
+          : 0;
+        setCartCount(count);
+      } catch {
+        setCartCount(0);
+      }
+    };
+    readCartCount();
+    const onStorage = (e) => {
+      if (e.key === "el_cart") readCartCount();
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  const onJumpChange = (e) => {
+    const nextId = e.target.value;
+    setJumpToId(nextId);
+    navigate("/");
+    setTimeout(() => {
+      const el = document.getElementById(`card-${nextId}`);
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 150);
+  };
+
+  const goToSection = (sectionId) => {
+    navigate("/");
+    setTimeout(() => {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 150);
+    setMenuOpen(false);
+  };
+
+  const renderHeader = () => (
+    <>
+      <header className="ts-siteHeader">
+        <nav
+          className="ts-siteNav"
+          aria-label="Primary"
+          style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}
+        >
+          <a
+            href="/"
+            className="ts-logoLink"
+            aria-label="Element Labs Home"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/");
+            }}
+          >
+            <img src={elementLabsLogo} alt="Element Labs Logo" className="ts-siteLogo" />
+          </a>
+          <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+            <div className="ts-jump" style={{ minWidth: 220 }}>
+              <select id="collectionJump" className="ts-select" value={jumpToId} onChange={onJumpChange}>
+                {terpeneCollections.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.badge} — {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              className="ts-menuBtn"
+              type="button"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((v) => !v)}
+              style={{ marginRight: 8 }}
+            >
+              ☰
+            </button>
+          </div>
+          <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`} style={{ display: "flex", alignItems: "center", gap: 0 }}>
+            <a
+              href="/#contact"
+              className="ts-siteNavLink"
+              onClick={(e) => {
+                e.preventDefault();
+                goToSection("contact");
+              }}
+            >
+              Contact
+            </a>
+            <a
+              href="/#network"
+              className="ts-siteNavLink"
+              onClick={(e) => {
+                e.preventDefault();
+                goToSection("network");
+              }}
+            >
+              Network
+            </a>
+            <a
+              href="/#about"
+              className="ts-siteNavLink"
+              onClick={(e) => {
+                e.preventDefault();
+                goToSection("about");
+              }}
+            >
+              About Us
+            </a>
+            <a
+              href="/#supply-chain"
+              className="ts-siteNavLink"
+              onClick={(e) => {
+                e.preventDefault();
+                goToSection("supply-chain");
+              }}
+            >
+              Supply Chain
+            </a>
+            <button
+              className="ts-cartIconBtn"
+              type="button"
+              aria-label="View cart"
+              style={{ background: "none", border: "none", position: "relative", cursor: "pointer", padding: 0, marginLeft: 16 }}
+            >
+              <img src={cartIcon} alt="Cart" style={{ width: 28, height: 28, display: "block" }} />
+              {cartCount > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: -4,
+                    right: -4,
+                    background: "#ec4899",
+                    color: "#fff",
+                    borderRadius: "50%",
+                    fontSize: 12,
+                    minWidth: 18,
+                    height: 18,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: 700,
+                    padding: "0 4px",
+                    border: "2px solid #fff",
+                  }}
+                >
+                  {cartCount}
+                </span>
+              )}
+            </button>
+          </div>
+        </nav>
+      </header>
+      <div
+        style={{
+          width: "100%",
+          background: "linear-gradient(90deg, #ede9fe 0%, #a78bfa 100%)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "8px 0",
+          gap: 32,
+          fontWeight: 700,
+          fontSize: 16,
+          letterSpacing: ".04em",
+          borderBottom: "1px solid #e9d5ff",
+        }}
+      >
+        <a
+          href="/#terpenes"
+          style={{ color: "#7c3aed", textDecoration: "none", padding: "6px 18px", borderRadius: "8px", transition: "background 0.15s" }}
+          onMouseOver={(e) => (e.currentTarget.style.background = "#f3e8ff")}
+          onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
+          onClick={(e) => {
+            e.preventDefault();
+            goToSection("terpenes");
+          }}
+        >
+          Terpenes
+        </a>
+        <a
+          href="/#blends"
+          style={{ color: "#7c3aed", textDecoration: "none", padding: "6px 18px", borderRadius: "8px", transition: "background 0.15s" }}
+          onMouseOver={(e) => (e.currentTarget.style.background = "#f3e8ff")}
+          onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
+          onClick={(e) => {
+            e.preventDefault();
+            goToSection("blends");
+          }}
+        >
+          Blends
+        </a>
+        <a
+          href="/#isolates"
+          style={{ color: "#7c3aed", textDecoration: "none", padding: "6px 18px", borderRadius: "8px", transition: "background 0.15s" }}
+          onMouseOver={(e) => (e.currentTarget.style.background = "#f3e8ff")}
+          onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
+          onClick={(e) => {
+            e.preventDefault();
+            goToSection("isolates");
+          }}
+        >
+          Isolates
+        </a>
+        <a
+          href="/#lines"
+          style={{ color: "#7c3aed", textDecoration: "none", padding: "6px 18px", borderRadius: "8px", transition: "background 0.15s" }}
+          onMouseOver={(e) => (e.currentTarget.style.background = "#f3e8ff")}
+          onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
+          onClick={(e) => {
+            e.preventDefault();
+            goToSection("lines");
+          }}
+        >
+          Lines
+        </a>
+      </div>
+    </>
+  );
+
+  const getIngredients = () => ["Watermelon", "Pineapple", "Acid"];
+
   if (!collection) {
     return (
       <div className="pp-page">
-        <header className="ts-siteHeader">
-          <nav className="ts-siteNav" aria-label="Primary">
-            <a
-              href="/"
-              className="ts-logoLink"
-              aria-label="Element Labs Home"
-              onClick={(e) => {
-                e.preventDefault();
-                navigate("/");
-              }}
-            >
-              <img src={elementLabsLogo} alt="Element Labs Logo" className="ts-siteLogo" />
-            </a>
-            <div className="pp-headerRight">
-              <button className="pp-headerBtn" onClick={() => navigate("/")}>Home</button>
-            </div>
-          </nav>
-        </header>
+        {renderHeader()}
 
         <main className="pp-container">
           <div className="pp-card">
@@ -157,32 +373,7 @@ export default function ProductPage() {
 
   return (
     <div className="pp-page">
-      {/* Keep same header look as homepage */}
-      <header className="ts-siteHeader">
-        <nav className="ts-siteNav" aria-label="Primary" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <a
-            href="/"
-            className="ts-logoLink"
-            aria-label="Element Labs Home"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate("/");
-            }}
-          >
-            <img src={elementLabsLogo} alt="Element Labs Logo" className="ts-siteLogo" />
-          </a>
-
-          <div className="pp-headerRight">
-            <button className="pp-headerBtn" onClick={() => navigate("/")}>Home</button>
-            <a className="pp-headerBtn" href="/#contact" onClick={(e) => { e.preventDefault(); navigate("/"); setTimeout(() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }), 120); }}>
-              Contact
-            </a>
-            <button className="ts-cartIconBtn" type="button" aria-label="Cart">
-              <img src={cartIcon} alt="" />
-            </button>
-          </div>
-        </nav>
-      </header>
+      {renderHeader()}
 
       <main className="pp-container">
         <div className="pp-topGrid">
@@ -242,23 +433,39 @@ export default function ProductPage() {
 
                   <h3 className="pp-h3">Profiles included</h3>
                   <div className="pp-chipGrid">
-                    {profiles.slice(0, 24).map((p) => (
+                    {profiles.slice(0, 12).map((p) => (
                       <button
                         key={p}
                         type="button"
                         className={`pp-chip ${p === profile ? "isActive" : ""}`}
-                        onClick={() => setProfile(p)}
+                        onClick={() => {
+                          setProfile(p);
+                          setExpandedProfile((prev) => (prev === p ? "" : p));
+                        }}
                         aria-label={`Select profile ${p}`}
                       >
                         {p}
                       </button>
                     ))}
-                    {profiles.length > 24 && (
+                    {profiles.length > 12 && (
                       <div className="pp-muted" style={{ marginTop: 10 }}>
-                        + {profiles.length - 24} more…
+                        + {profiles.length - 12} more…
                       </div>
                     )}
                   </div>
+
+                  {expandedProfile && (
+                    <div className="pp-ingredients" aria-live="polite">
+                      <div className="pp-ingredientsHeader">
+                        Ingredients for <strong>{expandedProfile}</strong>
+                      </div>
+                      <ul className="pp-ingredientsList">
+                        {getIngredients(expandedProfile).map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </>
               )}
 

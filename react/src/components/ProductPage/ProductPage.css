@@ -6,7 +6,8 @@
 }
 
 .pp-container{
-  max-width: 1240px;
+  max-width: 98%;
+  width: 98%;
   margin: 0 auto;
   padding: 22px 16px 60px;
 }
@@ -164,19 +165,47 @@
 }
 
 .pp-chip{
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, #f3e8ff 0%, #ede9fe 55%, #fdf4ff 100%);
+  border: 1px solid #e9d5ff;
   border-radius: 14px;
   padding: 10px 12px;
   cursor: pointer;
   text-align: left;
   font-weight: 700;
   color: #0f172a;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .pp-chip.isActive{
-  border-color: #0f172a;
-  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.10);
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.25);
+}
+
+.pp-chip:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(124, 58, 237, 0.15);
+}
+
+.pp-ingredients{
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid #e9d5ff;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f5f3ff 0%, #ffffff 100%);
+}
+
+.pp-ingredientsHeader{
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: #5b21b6;
+}
+
+.pp-ingredientsList{
+  margin: 0;
+  padding-left: 18px;
+  color: #1f2937;
+  display: grid;
+  gap: 6px;
 }
 
 .pp-specTable{

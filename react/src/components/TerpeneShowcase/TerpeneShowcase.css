@@ -1,3 +1,12 @@
+/* Two-column grid for desktop cards */
+.ts-desktopCardStack {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  width: 100%;
+  margin: 0 auto;
+  align-items: stretch;
+}
 /* Cart icon button in header */
 .ts-cartIconBtn {
   background: none;
@@ -62,9 +71,9 @@
 }
 @media (max-width: 600px) {
   .ts-mobileCardStack {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
     width: 100%;
     margin: 0 auto;
     align-items: stretch;
@@ -172,9 +181,7 @@
   }
 }
 /* Make all profile buttons the same size and shrink font for long names */
-.ts-profileGrid {
-  /* Ensure grid children stretch equally */
-}
+
 .ts-profileBtn {
   width: 100%;
   min-width: 0;
@@ -369,10 +376,17 @@
 }
 /* Overlay for description on image */
 .ts-cardImgWrapper {
-  position: relative;
-  width: 90%;
-  max-width: 90%;
-  margin: 10px 0 6px 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  z-index: 1;
 }
 
 .ts-cardDescOverlay {
@@ -708,17 +722,23 @@
 }
 
 /* ---------- Card ---------- */
-.ts-card{
+/* Make cards look like vertical panels (sheet of paper) */
+.ts-cardImg {
   width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1.6fr;
-  gap: 18px;
-  background: #fff;
+  height: 100%;
+  object-fit: cover;
+  margin: 0;
+  display: block;
   border-radius: var(--ts-radius);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.ts-card {
   box-shadow: var(--ts-shadow);
   border: 1px solid rgba(0,0,0,.06);
-  padding: 18px;
+  padding: 24px 22px;
   overflow: visible;
+  margin: 0 auto;
 }
 
 @media (max-width: 900px){

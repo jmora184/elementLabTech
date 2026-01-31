@@ -1,1 +1,2 @@
-export { default } from './ProductPage.jsx';
+import ProductPage from "./ProductPage";
+export default ProductPage;

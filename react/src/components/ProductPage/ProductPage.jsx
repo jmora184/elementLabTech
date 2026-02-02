@@ -246,6 +246,10 @@ export default function ProductPage() {
                   
 {expandedProfile && (
   <div className="pp-ingredients pp-flavorInfo" aria-live="polite">
+    <div className="pp-flavorTitle">
+      {flavorInfo.flavorType}
+      {flavorInfo.flavorCategory ? ` (${flavorInfo.flavorCategory})` : ""}
+    </div>
     <img
       src={dt2}
       alt={flavorInfo.name}

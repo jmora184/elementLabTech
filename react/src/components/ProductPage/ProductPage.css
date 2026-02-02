@@ -215,12 +215,20 @@
 
 /* Flavor info table (Details tab) */
 .pp-flavorInfo{
-  padding: 12px;
+  padding: 0;
+}
+
+.pp-flavorTitle{
+  font-weight: 900;
+  font-size: 30px;
+  color: var(--text);
+  margin-bottom: 12px;
+  text-align: left;
 }
 
 .pp-flavorHero{
   width: 100%;
-  height: 340px;
+  height: 170px;
   object-fit: cover;
   border-radius: 12px;
   border: 1px solid var(--border);
@@ -250,11 +258,12 @@
 
 .pp-flavorTable th,
 .pp-flavorTable td{
-  padding: 12px 12px;
+  padding: 24px 12px;
   text-align: left;
   vertical-align: top;
   font-size: 13px;
   line-height: 1.5;
+  font-weight: 700;
   border-bottom: 1px solid var(--border);
 }
 
@@ -286,6 +295,7 @@
   font-weight: 900;
   color: var(--text);
   white-space: nowrap;
+  font-size: 56px;
 }
 
 .pp-tdDesc{

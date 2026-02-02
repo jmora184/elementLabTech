@@ -6,9 +6,9 @@ import "./ProductPage.css";
 
 import bottleImg from "../../assets/bottle.png";
 import elementLabsLogo from "../../assets/ElementLabsLogos.png";
-import cartIcon from "../../assets/cart.svg";
 import dt2 from "../../assets/dominant-terpenes-2.png";
 import dt3 from "../../assets/dominant-terpenes-3.png";
+import picture1 from "../../assets/picture1.png";
 
 const money = (n) => (Number.isFinite(n) ? `$${n.toFixed(2)}` : "$0.00");
 
@@ -46,7 +46,7 @@ export default function ProductPage() {
   const [expandedProfile, setExpandedProfile] = useState("");
   useEffect(() => {
     setProfile(profiles[0] ?? "");
-    setExpandedProfile("");
+    setExpandedProfile(profiles[0] ?? "");
   }, [id]); // reset on route change
 
   const [size, setSize] = useState("15ml");
@@ -62,8 +62,46 @@ export default function ProductPage() {
   const [tab, setTab] = useState("Details");
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [jumpToId, setJumpToId] = useState(terpeneCollections[0]?.id ?? "");
+  const [jumpToId, setJumpToId] = useState("");
   const [cartCount, setCartCount] = useState(0);
+  const [miniMenuOpen, setMiniMenuOpen] = useState(false);
+
+  const flavorInfo = {
+    intro:
+      "Matrix offers bold, trendy flavors. Beyond classic fruit notes, each profile delivers vivid bursts of flavor and aroma, crafted to elevate the palate and turn every experience into something extraordinary.",
+    flavorType: "Green Jelly Rancher",
+    name: "Green Jelly Rancher",
+    description:
+      "Green Jelly Rancher explodes with a tangy, sour-sweet symphony. Zesty green apple and juicy melon mingle with candy-like notes, finishing with a bright, puckering sour kick that makes every sip lively and unforgettable.",
+    dominantTerpenes: ["Ethyl Maltol", "Geraniol", "Linalool", "Beta-Caryophyllene"],
+    flavorAroma: ["candy", "sweet", "sour", "green apple"],
+    mood: "Uplift Inspired",
+  };
+
+  const miniMenuLeft = [
+    "Savory",
+    "Desserts",
+    "Fruits",
+    "Botanicals",
+    "Treats",
+    "Mixers",
+    "Sips & Bites",
+    "Fresh Picks",
+    "Zest",
+    "Essentials",
+  ];
+  const miniMenuRight = [
+    "Wildcard",
+    "Flavor Experiments",
+    "Curiosities",
+    "Twist & Shout",
+    "Rebel Flavors",
+    "Bizarre & Brilliant",
+    "Taste Adventures",
+    "Quirk & Perk",
+    "Off the Map",
+    "WTF Flavors",
+  ];
 
   // Lightweight local reviews for now (so page feels real)
   const reviewKey = `el_reviews_${id || "unknown"}`;
@@ -114,7 +152,6 @@ export default function ProductPage() {
       img: bottleImg,
       addedAt: Date.now(),
     };
-
     try {
       const raw = localStorage.getItem(cartKey);
       const current = raw ? JSON.parse(raw) : [];
@@ -189,14 +226,16 @@ export default function ProductPage() {
             <img src={elementLabsLogo} alt="Element Labs Logo" className="ts-siteLogo" />
           </a>
           <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-            <div className="ts-jump" style={{ minWidth: 220 }}>
-              <select id="collectionJump" className="ts-select" value={jumpToId} onChange={onJumpChange}>
-                {terpeneCollections.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.badge} — {c.name}
-                  </option>
-                ))}
-              </select>
+            <div className="ts-jump" style={{ minWidth: 360, maxWidth: 420 }}>
+              <input
+                id="collectionJump"
+                className="ts-select ts-selectSearch"
+                type="text"
+                value={jumpToId}
+                onChange={onJumpChange}
+                placeholder="Search collections"
+                aria-label="Search collections"
+              />
             </div>
             <button
               className="ts-menuBtn"
@@ -250,108 +289,52 @@ export default function ProductPage() {
             >
               Supply Chain
             </a>
-            <button
-              className="ts-cartIconBtn"
-              type="button"
-              aria-label="View cart"
-              style={{ background: "none", border: "none", position: "relative", cursor: "pointer", padding: 0, marginLeft: 16 }}
-            >
-              <img src={cartIcon} alt="Cart" style={{ width: 28, height: 28, display: "block" }} />
-              {cartCount > 0 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: -4,
-                    right: -4,
-                    background: "#ec4899",
-                    color: "#fff",
-                    borderRadius: "50%",
-                    fontSize: 12,
-                    minWidth: 18,
-                    height: 18,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: 700,
-                    padding: "0 4px",
-                    border: "2px solid #fff",
-                  }}
-                >
-                  {cartCount}
-                </span>
-              )}
-            </button>
           </div>
         </nav>
       </header>
-      <div
-        style={{
-          width: "100%",
-          background: "linear-gradient(90deg, #ede9fe 0%, #a78bfa 100%)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "8px 0",
-          gap: 32,
-          fontWeight: 700,
-          fontSize: 16,
-          letterSpacing: ".04em",
-          borderBottom: "1px solid #e9d5ff",
-        }}
-      >
-        <a
-          href="/#terpenes"
-          style={{ color: "#7c3aed", textDecoration: "none", padding: "6px 18px", borderRadius: "8px", transition: "background 0.15s" }}
-          onMouseOver={(e) => (e.currentTarget.style.background = "#f3e8ff")}
-          onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
-          onClick={(e) => {
-            e.preventDefault();
-            goToSection("terpenes");
-          }}
-        >
-          Terpenes
-        </a>
-        <a
-          href="/#blends"
-          style={{ color: "#7c3aed", textDecoration: "none", padding: "6px 18px", borderRadius: "8px", transition: "background 0.15s" }}
-          onMouseOver={(e) => (e.currentTarget.style.background = "#f3e8ff")}
-          onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
-          onClick={(e) => {
-            e.preventDefault();
-            goToSection("blends");
-          }}
-        >
-          Blends
-        </a>
-        <a
-          href="/#isolates"
-          style={{ color: "#7c3aed", textDecoration: "none", padding: "6px 18px", borderRadius: "8px", transition: "background 0.15s" }}
-          onMouseOver={(e) => (e.currentTarget.style.background = "#f3e8ff")}
-          onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
-          onClick={(e) => {
-            e.preventDefault();
-            goToSection("isolates");
-          }}
-        >
-          Isolates
-        </a>
-        <a
-          href="/#lines"
-          style={{ color: "#7c3aed", textDecoration: "none", padding: "6px 18px", borderRadius: "8px", transition: "background 0.15s" }}
-          onMouseOver={(e) => (e.currentTarget.style.background = "#f3e8ff")}
-          onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
-          onClick={(e) => {
-            e.preventDefault();
-            goToSection("lines");
-          }}
-        >
-          Lines
-        </a>
+      <div className="ts-miniHeader">
+        <div className="ts-miniHeaderInner">
+          <div className="ts-miniMenu">
+            <button
+              className="ts-miniMenuBtn"
+              type="button"
+              aria-expanded={miniMenuOpen}
+              aria-controls="mini-menu-panel"
+              onClick={() => setMiniMenuOpen((v) => !v)}
+            >
+              ☰ All
+            </button>
+            {miniMenuOpen && (
+              <div id="mini-menu-panel" className="ts-miniMenuPanel">
+                <div className="ts-miniMenuGrid">
+                  <div className="ts-miniMenuCol">
+                    {miniMenuLeft.map((label) => (
+                      <button key={label} type="button" className="ts-miniMenuItem">
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="ts-miniMenuCol">
+                    {miniMenuRight.map((label) => (
+                      <button key={label} type="button" className="ts-miniMenuItem">
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="ts-miniLinks">
+            <a href="/#terpenes" className="ts-miniLink" onClick={(e) => { e.preventDefault(); goToSection("terpenes"); }}>Terpenes</a>
+            <a href="/#blends" className="ts-miniLink" onClick={(e) => { e.preventDefault(); goToSection("blends"); }}>Blends</a>
+            <a href="/#isolates" className="ts-miniLink" onClick={(e) => { e.preventDefault(); goToSection("isolates"); }}>Isolates</a>
+            <a href="/#lines" className="ts-miniLink" onClick={(e) => { e.preventDefault(); goToSection("lines"); }}>Lines</a>
+          </div>
+        </div>
       </div>
     </>
   );
-
-  const getIngredients = () => ["Watermelon", "Pineapple", "Acid"];
 
   if (!collection) {
     return (
@@ -382,7 +365,6 @@ export default function ProductPage() {
             <div className="pp-galleryMain">
               <img
                 src={galleryImages[activeImg]}
-                alt={`${collection.name} image ${activeImg + 1}`}
                 className="pp-mainImg"
               />
             </div>
@@ -402,10 +384,21 @@ export default function ProductPage() {
             </div>
 
             <div className="pp-galleryMeta">
-              <div className="pp-badge">{collection.badge}</div>
               <div className="pp-collectionName">{collection.name}</div>
+              <div className="pp-body">
+                Matrix offers bold, trendy flavors. Beyond classic fruit notes, each profile delivers vivid bursts of flavor and aroma, crafted to elevate the palate and turn every experience into something extraordinary.
+              </div>
+              <br></br>
               <div className="pp-muted">{collection.tagline}</div>
+                          <div className="pp-galleryMeta">
+              <h2 className="pp-h2">About this collection</h2>
+              <p className="pp-body">{collection.description}</p>
             </div>
+            </div>
+
+
+
+
           </section>
 
           {/* MIDDLE: Details / Docs / Info (tabs) */}
@@ -428,12 +421,79 @@ export default function ProductPage() {
             <div className="pp-tabPanel" role="tabpanel">
               {tab === "Details" && (
                 <>
-                  <h2 className="pp-h2">About this collection</h2>
-                  <p className="pp-body">{collection.description}</p>
+                  <h3 className="pp-h3">Flavor Profiles</h3>
+                  
+{expandedProfile && (
+  <div className="pp-ingredients pp-flavorInfo" aria-live="polite">
+    <img
+      src={picture1}
+      alt={flavorInfo.name}
+      className="pp-flavorHero"
+    />
 
-                  <h3 className="pp-h3">Profiles included</h3>
-                  <div className="pp-chipGrid">
-                    {profiles.slice(0, 12).map((p) => (
+    <div className="pp-flavorTableWrap" aria-label="Flavor info table">
+      <div className="pp-tableScroll">
+        <table className="pp-flavorTable">
+          <thead>
+            <tr>
+              <th>
+                <span className="pp-thWithIcon">
+                  <span className="pp-thIcon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="16" height="16" focusable="false" aria-hidden="true">
+                      <path
+                        fill="currentColor"
+                        d="M7.3 6.2c1.1-1.7 3-2.9 4.7-2.9s3.6 1.2 4.7 2.9c.6 1 1.2 1.7 2.6 2.3c.5.2.8.7.7 1.2c-.3 1.6-1.3 2.5-2.1 3.1c-.4.3-.7.6-.9.9c-.4.6-.5 1.3-.4 2.3c.1 1-.1 2-.9 2.8c-.9.9-2.3 1.2-4 1.2s-3.1-.3-4-1.2c-.8-.8-1-1.8-.9-2.8c.1-1-.1-1.7-.4-2.3c-.2-.3-.5-.6-.9-.9c-.8-.6-1.8-1.5-2.1-3.1c-.1-.5.2-1 .7-1.2c1.4-.6 2-.3 2.6-2.3Z"
+                        opacity="0.25"
+                      />
+                      <path
+                        fill="currentColor"
+                        d="M9.2 6.8c.8-1.2 2-2 2.8-2s2 .8 2.8 2c.5.8 1 1.3 2 1.8c.2.1.3.3.3.5c-.2 1-.8 1.6-1.4 2c-.5.4-1 .8-1.3 1.4c-.6 1.1-.5 2.2-.4 3.1c.1.8 0 1.2-.3 1.6c-.5.5-1.6.8-3.1.8s-2.6-.3-3.1-.8c-.3-.4-.4-.8-.3-1.6c.1-.9.2-2-.4-3.1c-.3-.6-.8-1-1.3-1.4c-.6-.4-1.2-1-1.4-2c0-.2.1-.4.3-.5c1-.5 1.5-1 2-1.8Z"
+                      />
+                    </svg>
+                  </span>
+                  Natural flavor (candy)
+                </span>
+              </th>
+              <th>Description under Flavor Name</th>
+              <th>Dominant terpenes</th>
+              <th>Flavor and aroma</th>
+              <th>Mood</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="pp-tdStrong">{flavorInfo.flavorType}</td>
+              <td className="pp-tdDesc">{flavorInfo.description}</td>
+              <td>
+                <div className="pp-cellList">
+                  {flavorInfo.dominantTerpenes.map((t) => (
+                    <span key={t} className="pp-cellPill">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </td>
+              <td>
+                <div className="pp-cellList">
+                  {flavorInfo.flavorAroma.map((note) => (
+                    <span key={note} className="pp-cellPill">
+                      {note}
+                    </span>
+                  ))}
+                </div>
+              </td>
+              <td>
+                 <span style={{ color: "#eab308", fontWeight: 700 }}>{flavorInfo.mood}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+)}
+<div className="pp-chipGrid">
+                    {profiles.map((p) => (
                       <button
                         key={p}
                         type="button"
@@ -447,25 +507,8 @@ export default function ProductPage() {
                         {p}
                       </button>
                     ))}
-                    {profiles.length > 12 && (
-                      <div className="pp-muted" style={{ marginTop: 10 }}>
-                        + {profiles.length - 12} more…
-                      </div>
-                    )}
                   </div>
 
-                  {expandedProfile && (
-                    <div className="pp-ingredients" aria-live="polite">
-                      <div className="pp-ingredientsHeader">
-                        Ingredients for <strong>{expandedProfile}</strong>
-                      </div>
-                      <ul className="pp-ingredientsList">
-                        {getIngredients(expandedProfile).map((item) => (
-                          <li key={item}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
                 </>
               )}
 

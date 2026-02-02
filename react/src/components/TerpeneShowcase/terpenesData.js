@@ -2,9 +2,9 @@
 export const terpeneCollections = [
   {
     id: "fruity-fusion-forward",
-    badge: "🌿 Botanical Collection",
-    name: "Fruity Fusion Forward",
-    tagline: "Bold fruit character",
+    badge: "🌿 Botanical Profiles",
+    name: "Amplify Collection",
+    tagline: "Bold Fruit Formulations",
     description:
       "A bright, expressive lineup of botanical blends designed to deliver bold fruit character and aromatic complexity. Ideal for brands seeking vibrant, crowd-pleasing flavor profiles with consistent performance.",
     profiles: [
@@ -29,9 +29,9 @@ export const terpeneCollections = [
   },
   {
     id: "inspired-profile-collection",
-    badge: "🌱 Botanical Collection",
-    name: "Inspired Profile Collection",
-    tagline: "Benchmark-inspired aromas",
+    badge: "🌱 Botanical Profiles",
+    name: "Benchmark Collection",
+    tagline: "Classic Terpene Formulations",
     description:
       "Our profile-inspired terpene blends are carefully composed to reflect well-known aroma and flavor benchmarks. Using botanical terpene isolates, each blend recreates the sensory characteristics associated with classic profiles—focusing on balance, depth, and consistency—while remaining entirely botanical in origin.",
     profiles: [
@@ -84,9 +84,9 @@ export const terpeneCollections = [
   },
   {
     id: "signature-blends",
-    badge: "🌿 Botanical Collection",
-    name: "Signature Blends",
-    tagline: "Everything in-between",
+    badge: "🌿 Botanical Profiles",
+    name: "Signature Blends Matrix",
+    tagline: "I cant leave this empty • must fill",
     description:
       "This category cleanly captures everything that is neither purely fruity nor clearly inspired, without overlap or confusion. It also scales very well as your catalog grows.",
     profiles: [
@@ -122,7 +122,7 @@ export const terpeneCollections = [
   {
     id: "emerald-line",
     badge: "💎 Emerald Line — Capturing Authenticity",
-    name: "Emerald Line",
+    name: "Emerald I Cut",
     tagline: "Depth • balance • authenticity",
     description:
       "Our most refined terpene expressions. The Emerald Line focuses on depth, balance, and authenticity—crafted to deliver nuanced aroma and flavor true to original profile intent.",

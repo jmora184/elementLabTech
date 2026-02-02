@@ -21,10 +21,10 @@
 
 /* Cards */
 .pp-card{
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   border-radius: 18px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  box-shadow: var(--shadow);
 }
 
 .pp-galleryCard{ padding: 14px; }
@@ -39,9 +39,9 @@
 }
 
 .pp-headerBtn{
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.18);
-  color: #fff;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--border);
+  color: var(--text);
   border-radius: 12px;
   padding: 10px 12px;
   cursor: pointer;
@@ -53,9 +53,9 @@
 /* Gallery */
 .pp-galleryMain{
   border-radius: 14px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   overflow: hidden;
-  background: #ffffff;
+  background: var(--surface);
 }
 
 .pp-mainImg{
@@ -74,9 +74,9 @@
 }
 
 .pp-thumb{
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface-2);
   padding: 0;
   width: 70px;
   height: 70px;
@@ -93,8 +93,8 @@
 }
 
 .pp-thumb.isActive{
-  border-color: #0f172a;
-  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.12);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(252, 61, 33, 0.35);
 }
 
 .pp-galleryMeta{
@@ -105,26 +105,31 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  background: var(--chip-bg);
+  border: 1px solid var(--chip-border);
   border-radius: 999px;
   padding: 8px 10px;
   font-size: 13px;
   font-weight: 700;
+  color: var(--text);
 }
 
 .pp-collectionName{
   margin-top: 10px;
   font-weight: 800;
   font-size: 18px;
+  background: linear-gradient(90deg, #2563eb 0%, #7c3aed 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .pp-muted{
-  color: #64748b;
+  color: var(--muted);
 }
 
 .pp-body{
-  color: #0f172a;
+  color: var(--text);
   line-height: 1.6;
 }
 
@@ -133,15 +138,15 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   padding-bottom: 10px;
   margin-bottom: 12px;
 }
 
 .pp-tabBtn{
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  color: #0f172a;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
   border-radius: 999px;
   padding: 9px 12px;
   cursor: pointer;
@@ -150,8 +155,8 @@
 }
 
 .pp-tabBtn.isActive{
-  border-color: #0f172a;
-  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.10);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(252, 61, 33, 0.22);
 }
 
 .pp-tabPanel{
@@ -165,48 +170,160 @@
 }
 
 .pp-chip{
-  background: linear-gradient(135deg, #f3e8ff 0%, #ede9fe 55%, #fdf4ff 100%);
-  border: 1px solid #e9d5ff;
+  background: linear-gradient(135deg, rgba(11, 61, 145, 0.35) 0%, rgba(15, 23, 42, 0.9) 60%, rgba(11, 13, 23, 1) 100%);
+  border: 1px solid var(--chip-border);
   border-radius: 14px;
   padding: 10px 12px;
   cursor: pointer;
   text-align: left;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text);
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .pp-chip.isActive{
-  border-color: #7c3aed;
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.25);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(252, 61, 33, 0.25);
 }
 
 .pp-chip:hover{
   transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(124, 58, 237, 0.15);
+  box-shadow: 0 6px 14px rgba(11, 61, 145, 0.25);
 }
 
 .pp-ingredients{
   margin-top: 14px;
   padding: 12px;
-  border: 1px solid #e9d5ff;
+  border: 1px solid var(--border);
   border-radius: 14px;
-  background: linear-gradient(135deg, #f5f3ff 0%, #ffffff 100%);
+  background: var(--surface);
 }
 
 .pp-ingredientsHeader{
   font-weight: 800;
   margin-bottom: 8px;
-  color: #5b21b6;
+  color: #9cc2ff;
 }
 
 .pp-ingredientsList{
   margin: 0;
   padding-left: 18px;
-  color: #1f2937;
+  color: var(--text);
   display: grid;
   gap: 6px;
 }
+
+/* Flavor info table (Details tab) */
+.pp-flavorInfo{
+  padding: 12px;
+}
+
+.pp-flavorHero{
+  width: 100%;
+  height: 340px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  display: block;
+  margin-bottom: 12px;
+}
+
+.pp-flavorTableWrap{
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.pp-tableScroll{
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pp-flavorTable{
+  width: 100%;
+  min-width: 860px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.pp-flavorTable th,
+.pp-flavorTable td{
+  padding: 12px 12px;
+  text-align: left;
+  vertical-align: top;
+  font-size: 13px;
+  line-height: 1.5;
+  border-bottom: 1px solid var(--border);
+}
+
+.pp-flavorTable thead th{
+  background: var(--surface-2);
+  color: var(--muted);
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.pp-flavorTable tbody tr:last-child td{
+  border-bottom: none;
+}
+
+.pp-thWithIcon{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pp-thIcon{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+
+.pp-tdStrong{
+  font-weight: 900;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.pp-tdDesc{
+  min-width: 320px;
+  color: var(--text);
+}
+
+.pp-cellList{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pp-cellPill{
+  display: inline-flex;
+  align-items: center;
+  background: var(--chip-bg);
+  border: 1px solid var(--chip-border);
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.pp-moodPill{
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 900;
+  color: #ffffff;
+  background: var(--accent);
+  white-space: nowrap;
+}
+
 
 .pp-specTable{
   width: 100%;
@@ -216,7 +333,7 @@
 
 .pp-specTable th,
 .pp-specTable td{
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   padding: 10px 8px;
   text-align: left;
   vertical-align: top;
@@ -225,7 +342,7 @@
 
 .pp-specTable th{
   width: 38%;
-  color: #334155;
+  color: var(--muted);
   font-weight: 800;
 }
 
@@ -242,11 +359,11 @@
   justify-content: space-between;
   gap: 10px;
   text-decoration: none;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px 12px;
-  color: #0f172a;
+  color: var(--text);
   font-weight: 800;
 }
 
@@ -261,9 +378,9 @@
 .pp-reviewForm{
   margin-top: 14px;
   padding: 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 14px;
-  background: #ffffff;
+  background: var(--surface-2);
 }
 
 .pp-formRow{
@@ -278,16 +395,18 @@
   gap: 8px;
   font-weight: 800;
   font-size: 13px;
-  color: #0f172a;
+  color: var(--text);
   margin-top: 12px;
 }
 
 .pp-input{
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 10px 12px;
   font-size: 14px;
   outline: none;
+  background: var(--surface);
+  color: var(--text);
 }
 
 .pp-textarea{
@@ -303,10 +422,10 @@
 }
 
 .pp-reviewItem{
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px;
-  background: #ffffff;
+  background: var(--surface-2);
 }
 
 .pp-reviewTop{
@@ -345,14 +464,14 @@
 
 .pp-divider{
   height: 1px;
-  background: #e5e7eb;
+  background: var(--border);
   margin: 14px 0;
 }
 
 .pp-primaryBtn{
-  background: #0f172a;
-  color: #fff;
-  border: 1px solid #0f172a;
+  background: var(--accent);
+  color: #ffffff;
+  border: 1px solid var(--accent);
   border-radius: 14px;
   padding: 12px 14px;
   font-weight: 900;
@@ -361,9 +480,9 @@
 }
 
 .pp-secondaryBtn{
-  background: #ffffff;
-  color: #0f172a;
-  border: 1px solid #0f172a;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
   border-radius: 14px;
   padding: 12px 14px;
   font-weight: 900;
@@ -378,6 +497,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  color: var(--muted);
 }
 
 .pp-h1{ font-size: 28px; margin: 0 0 10px; }

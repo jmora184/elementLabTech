@@ -1,5 +1,6 @@
 .wrap{
   padding: clamp(18px, 3vw, 40px);
+  background: #ffffff;
 }
 
 .hero{
@@ -74,8 +75,12 @@
 
 .title{
   margin: 16px 0 10px;
-  font-size: clamp(34px, 5.2vw, 64px);
+  font-size: clamp(28px, 4.4vw, 56px);
   line-height: 1.02;
+}
+
+.titleBreak{
+  display: inline;
 }
 
 .body{
@@ -140,4 +145,10 @@
 @media (prefers-reduced-motion: reduce){
   .aurora{ animation: none; }
   .hero{ background-position: center; }
+}
+
+@media (max-width: 640px){
+  .titleBreak{
+    display: block;
+  }
 }

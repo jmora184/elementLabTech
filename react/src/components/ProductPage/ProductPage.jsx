@@ -47,6 +47,7 @@ export default function ProductPage() {
   useEffect(() => {
     setProfile(profiles[0] ?? "");
     setExpandedProfile(profiles[0] ?? "");
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [id]); // reset on route change
 
   const [size, setSize] = useState("15ml");
@@ -248,7 +249,7 @@ export default function ProductPage() {
               ☰
             </button>
           </div>
-          <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`} style={{ display: "flex", alignItems: "center", gap: 0 }}>
+          <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}>
             <a
               href="/#contact"
               className="ts-siteNavLink"

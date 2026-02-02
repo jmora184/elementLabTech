@@ -8,7 +8,6 @@ import bottleImg from "../../assets/bottle.png";
 import elementLabsLogo from "../../assets/ElementLabsLogos.png";
 import dt2 from "../../assets/dominant-terpenes-2.png";
 import dt3 from "../../assets/dominant-terpenes-3.png";
-import picture1 from "../../assets/picture1.png";
 
 const money = (n) => (Number.isFinite(n) ? `$${n.toFixed(2)}` : "$0.00");
 
@@ -427,7 +426,7 @@ export default function ProductPage() {
 {expandedProfile && (
   <div className="pp-ingredients pp-flavorInfo" aria-live="polite">
     <img
-      src={picture1}
+      src={dt2}
       alt={flavorInfo.name}
       className="pp-flavorHero"
     />

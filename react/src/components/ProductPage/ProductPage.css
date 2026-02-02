@@ -324,6 +324,56 @@
   white-space: nowrap;
 }
 
+/* Flavor table: switch to a vertical (label/value) layout on mobile so nothing is cut off */
+@media (max-width: 720px){
+  .pp-tableScroll{ overflow-x: visible; }
+
+  .pp-flavorTable{
+    min-width: 0;
+    width: 100%;
+  }
+
+  .pp-flavorTable thead{ display: none; }
+
+  .pp-flavorTable,
+  .pp-flavorTable tbody,
+  .pp-flavorTable tr,
+  .pp-flavorTable td{
+    display: block;
+    width: 100%;
+  }
+
+  .pp-flavorTable tr{
+    border-bottom: 1px solid var(--border);
+  }
+  .pp-flavorTable tbody tr:last-child{ border-bottom: none; }
+
+  .pp-flavorTable td{
+    border-bottom: none;
+    padding: 12px 12px;
+  }
+
+  /* divider between fields */
+  .pp-flavorTable td + td{
+    border-top: 1px solid var(--border);
+  }
+
+  .pp-flavorTable td::before{
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .pp-tdStrong{ white-space: normal; }
+  .pp-tdDesc{ min-width: 0; }
+  .pp-cellPill{ white-space: normal; }
+}
+
 
 .pp-specTable{
   width: 100%;

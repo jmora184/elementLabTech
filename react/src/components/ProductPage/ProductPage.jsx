@@ -70,6 +70,7 @@ export default function ProductPage() {
     intro:
       "Matrix offers bold, trendy flavors. Beyond classic fruit notes, each profile delivers vivid bursts of flavor and aroma, crafted to elevate the palate and turn every experience into something extraordinary.",
     flavorType: "Green Jelly Rancher",
+    flavorCategory: "Candy",
     name: "Green Jelly Rancher",
     description:
       "Green Jelly Rancher explodes with a tangy, sour-sweet symphony. Zesty green apple and juicy melon mingle with candy-like notes, finishing with a bright, puckering sour kick that makes every sip lively and unforgettable.",
@@ -451,7 +452,7 @@ export default function ProductPage() {
                       />
                     </svg>
                   </span>
-                  Natural flavor (candy)
+                  Natural flavor
                 </span>
               </th>
               <th>Description under Flavor Name</th>
@@ -462,9 +463,12 @@ export default function ProductPage() {
           </thead>
           <tbody>
             <tr>
-              <td className="pp-tdStrong">{flavorInfo.flavorType}</td>
-              <td className="pp-tdDesc">{flavorInfo.description}</td>
-              <td>
+              <td className="pp-tdStrong" data-label="Natural flavor">
+                {flavorInfo.flavorType}
+                {flavorInfo.flavorCategory ? ` (${flavorInfo.flavorCategory})` : ""}
+              </td>
+              <td className="pp-tdDesc" data-label="Description under Flavor Name">{flavorInfo.description}</td>
+              <td data-label="Dominant terpenes">
                 <div className="pp-cellList">
                   {flavorInfo.dominantTerpenes.map((t) => (
                     <span key={t} className="pp-cellPill">
@@ -473,7 +477,7 @@ export default function ProductPage() {
                   ))}
                 </div>
               </td>
-              <td>
+              <td data-label="Flavor and aroma">
                 <div className="pp-cellList">
                   {flavorInfo.flavorAroma.map((note) => (
                     <span key={note} className="pp-cellPill">
@@ -482,7 +486,7 @@ export default function ProductPage() {
                   ))}
                 </div>
               </td>
-              <td>
+              <td data-label="Mood">
                  <span style={{ color: "#eab308", fontWeight: 700 }}>{flavorInfo.mood}</span>
               </td>
             </tr>

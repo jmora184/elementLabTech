@@ -636,6 +636,8 @@
 /* Mobile nav */
 @media (max-width: 768px){
   .ts-menuBtn{ display: inline-flex; }
+  /* Hide the logo entirely on mobile to keep the header clean */
+  .ts-logoLink{ display: none; }
   /* Make the header wrap cleanly on mobile:
      Row 1: logo + hamburger
      Row 2: search (full width)

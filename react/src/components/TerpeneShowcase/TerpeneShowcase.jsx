@@ -4,6 +4,7 @@ import "./TerpeneShowcase.css";
 import bottleImg from "../../assets/bottle.png";
 import { useIsMobile } from "./useIsMobile";
 import { useNavigate } from "react-router-dom";
+import TerpeneSimulator from "../TerpeneSimulator/TerpeneSimulator";
 // Header is provided globally by SiteLayout.
 
 export default function TerpeneShowcase({ HeroBanner }) {
@@ -11,7 +12,7 @@ export default function TerpeneShowcase({ HeroBanner }) {
   
 
   const addToCart = () => {};
-  const displayedCollections = [...terpeneCollections, ...terpeneCollections.slice(0, 4)];
+  const displayedCollections = terpeneCollections;
 
   return (
     <>
@@ -50,20 +51,8 @@ export default function TerpeneShowcase({ HeroBanner }) {
                   );
                 })}
               </div>
-              <div className="ts-ctaRow">
-                {heroCopy.ctas.map((t) => (
-                  <a
-                    key={t}
-                    className="ts-cta"
-                    href={t === "Contact Us Today" ? "#contact" : "#"}
-                    onClick={(e) => {
-                      if (t !== "Contact Us Today") e.preventDefault();
-                    }}
-                  >
-                    {t}
-                  </a>
-                ))}
-              </div>
+              {/* Terpene Simulator section (desktop) */}
+              <TerpeneSimulator />
             </div>
           </section>
         </>
@@ -103,20 +92,8 @@ export default function TerpeneShowcase({ HeroBanner }) {
                 );
               })}
             </div>
-            <div className="ts-ctaRow">
-              {heroCopy.ctas.map((t) => (
-                <a
-                  key={t}
-                  className="ts-cta"
-                  href={t === "Contact Us Today" ? "#contact" : "#"}
-                  onClick={(e) => {
-                    if (t !== "Contact Us Today") e.preventDefault();
-                  }}
-                >
-                  {t}
-                </a>
-              ))}
-            </div>
+            {/* Terpene Simulator section (mobile) */}
+            <TerpeneSimulator />
           </div>
         </section>
       )}

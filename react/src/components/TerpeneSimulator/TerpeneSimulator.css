@@ -1,0 +1,346 @@
+.sim-section {
+  width: 100%;
+  margin-top: 56px;
+  padding: 56px 0 44px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  background:
+    radial-gradient(1200px 600px at 10% 10%, rgba(34, 197, 94, 0.22), transparent 55%),
+    radial-gradient(900px 500px at 90% 20%, rgba(56, 189, 248, 0.22), transparent 55%),
+    radial-gradient(1000px 520px at 70% 90%, rgba(167, 139, 250, 0.22), transparent 55%),
+    radial-gradient(900px 520px at 20% 90%, rgba(251, 113, 133, 0.18), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 1) 45%, rgba(255, 255, 255, 1) 100%);
+}
+
+.sim-inner {
+  width: min(1200px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.sim-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.sim-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #111;
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.18), rgba(56, 189, 248, 0.18), rgba(167, 139, 250, 0.18), rgba(251, 113, 133, 0.18));
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.sim-title {
+  margin: 0;
+  font-size: clamp(26px, 3.2vw, 38px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  background: linear-gradient(90deg, #22c55e, #38bdf8, #a78bfa, #fb7185);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sim-subtitle {
+  margin: 0;
+  max-width: 58ch;
+  font-size: 15px;
+  line-height: 1.45;
+  color: rgba(17, 17, 17, 0.78);
+  font-weight: 600;
+}
+
+.sim-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.sim-panel {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  padding: 18px;
+}
+
+.sim-panel-left {
+  border-top: 3px solid rgba(34, 197, 94, 0.65);
+}
+
+.sim-panel-right {
+  border-top: 3px solid rgba(56, 189, 248, 0.65);
+}
+
+.sim-panelTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sim-panelTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: #111;
+}
+
+.sim-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.sim-btn {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: linear-gradient(135deg, #111 0%, #000 100%);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.sim-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.sim-btn-ghost {
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.18), rgba(56, 189, 248, 0.18), rgba(167, 139, 250, 0.18), rgba(251, 113, 133, 0.18));
+  color: #111;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: none;
+}
+
+.sim-btn-add {
+  background: linear-gradient(90deg, #22c55e, #38bdf8, #a78bfa);
+  color: #0b1020;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.sim-addRow {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+.sim-select {
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  padding: 10px 12px;
+  font-weight: 800;
+  background: #fff;
+  color: #111;
+}
+
+.sim-list {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sim-row {
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-left: 6px solid #111;
+  border-radius: 16px;
+  padding: 12px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.95));
+}
+
+.sim-rowHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sim-rowTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 900;
+  color: #111;
+}
+
+.sim-rowMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sim-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+}
+
+.sim-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 12px;
+  color: #0b1020;
+}
+
+.sim-iconBtn {
+  border: none;
+  background: transparent;
+  color: #111;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  cursor: pointer;
+  font-weight: 900;
+  padding: 0;
+  line-height: 1;
+}
+
+.sim-sliderRow {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.sim-slider {
+  width: 100%;
+}
+
+.sim-weight {
+  font-weight: 900;
+  min-width: 36px;
+  text-align: right;
+}
+
+.sim-foot {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.14);
+}
+
+.sim-miniTitle {
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(17, 17, 17, 0.55);
+}
+
+.sim-total {
+  font-size: 20px;
+  font-weight: 900;
+  color: #111;
+}
+
+.sim-tip {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(17, 17, 17, 0.75);
+}
+
+.sim-chartWrap {
+  margin-top: 10px;
+  background:
+    radial-gradient(600px 300px at 30% 20%, rgba(34, 197, 94, 0.12), transparent 55%),
+    radial-gradient(540px 260px at 70% 20%, rgba(56, 189, 248, 0.12), transparent 55%),
+    radial-gradient(600px 320px at 60% 90%, rgba(167, 139, 250, 0.12), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 1) 100%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  padding: 12px;
+  aspect-ratio: 1 / 1;
+  min-height: 340px;
+}
+
+.sim-radar {
+  width: 100%;
+  height: 100%;
+}
+
+.sim-axisLabel {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.sim-legend {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.sim-legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.sim-legendText {
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(17, 17, 17, 0.78);
+}
+
+.sim-legendMore {
+  font-size: 13px;
+  font-weight: 900;
+  color: rgba(17, 17, 17, 0.55);
+}
+
+@media (max-width: 900px) {
+  .sim-grid {
+    grid-template-columns: 1fr;
+  }
+  .sim-chartWrap {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sim-inner {
+    width: calc(100% - 24px);
+  }
+  .sim-section {
+    padding: 42px 0 38px 0;
+    margin-top: 34px;
+  }
+  .sim-actions {
+    gap: 8px;
+  }
+  .sim-btn {
+    padding: 8px 10px;
+  }
+}

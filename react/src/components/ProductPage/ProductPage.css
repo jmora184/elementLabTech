@@ -552,7 +552,7 @@
 
 .pp-h1{ font-size: 28px; margin: 0 0 10px; }
 .pp-h2{ font-size: 18px; margin: 0 0 10px; }
-.pp-h3{ font-size: 15px; margin: 18px 0 10px; }
+.pp-h3{ font-size: 15px; margin: 18px 0 10px; color: #fff; }
 .pp-list{ margin: 0; padding-left: 18px; display: grid; gap: 8px; }
 
 /* Responsive: stack for mobile */

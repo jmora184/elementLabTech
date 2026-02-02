@@ -284,8 +284,8 @@
 }
 /* --- Mobile-specific classes --- */
 .ts-mobileSection {
-  background: transparent;
-  padding: 8px 0 12px 0;
+  background: #ffffff;
+  padding: calc(8px + var(--ts-header-h) + var(--ts-mini-h)) 0 12px 0;
 }
 .ts-mobileInner {
   padding: 0 4px;
@@ -433,6 +433,13 @@
   --ts-max: 1200px;
   --ts-radius: 20px;
   --ts-shadow: 0 18px 50px rgba(0,0,0,0.10);
+  --ts-header-h: 64px;
+  --ts-mini-h: 44px;
+}
+
+/* Offset all page content for fixed header + mini header */
+.ts-pageContent{
+  padding-top: calc(var(--ts-header-h) + var(--ts-mini-h));
 }
 
 /* Local reset so global template styles don’t squeeze layouts */
@@ -444,7 +451,10 @@
   width: 100%;
   background: linear-gradient(135deg, #0b0d17 0%, #0f172a 55%, #0b3d91 100%);
   z-index: 9999;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
@@ -457,6 +467,20 @@
   justify-content: space-between;
   gap: 16px;
   position: relative;
+}
+
+/* Header action cluster (search + hamburger) */
+.ts-headerActions{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+}
+
+/* Tighten the search sizing when used inside the header */
+.ts-siteNav .ts-headerJump{
+  min-width: 360px;
+  max-width: 420px;
 }
 
 .ts-logoLink{
@@ -516,6 +540,11 @@
   background: #000;
   color: #fff;
   border-bottom: 1px solid #222;
+  position: fixed;
+  top: var(--ts-header-h);
+  left: 0;
+  right: 0;
+  z-index: 9998;
 }
 
 .ts-miniHeaderInner{
@@ -607,6 +636,46 @@
 /* Mobile nav */
 @media (max-width: 768px){
   .ts-menuBtn{ display: inline-flex; }
+  /* Make the header wrap cleanly on mobile:
+     Row 1: logo + hamburger
+     Row 2: search (full width)
+     Row 3: nav links (dropdown)
+  */
+  .ts-siteNav{
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .ts-siteLogo{ height: 34px; }
+
+  .ts-headerActions{
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .ts-siteNav .ts-headerJump{
+    min-width: 0;
+    max-width: none;
+    /* Half-width search on mobile to avoid oversized bar */
+    width: min(52vw, 360px);
+    flex: 0 1 auto;
+    margin-left: 0;
+    margin-right: 0;
+    order: 1;
+  }
+
+  .ts-headerActions .ts-menuBtn{
+    order: 2;
+    margin-right: 14px;
+  }
+
+  .ts-siteNav .ts-select{
+    height: 38px;
+    font-size: 14px;
+  }
 
   .ts-navLinks{
     position: absolute;
@@ -632,10 +701,84 @@
   }
 }
 
+/* Mini header mobile tweaks */
+@media (max-width: 768px){
+  .ts-miniHeaderInner{
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  .ts-miniLinks{
+    margin-left: 0;
+    margin-right: 0;
+    justify-content: flex-start;
+    gap: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ts-miniLink{
+    padding: 6px 12px;
+    flex: 0 0 auto;
+  }
+
+  .ts-miniMenuPanel{
+    min-width: min(420px, 92vw);
+    max-width: 92vw;
+  }
+}
+
+@media (max-width: 520px){
+  .ts-miniMenuGrid{
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px){
+  .ts-miniMenuGrid{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mini header mobile polish */
+@media (max-width: 768px){
+  .ts-miniHeaderInner{
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  .ts-miniLinks{
+    gap: 10px;
+    justify-content: flex-start;
+    margin-left: 0;
+    margin-right: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ts-miniLink{
+    padding: 6px 12px;
+    flex: 0 0 auto;
+  }
+
+  .ts-miniMenuPanel{
+    min-width: min(420px, 92vw);
+    max-width: 92vw;
+  }
+}
+
+@media (max-width: 520px){
+  .ts-miniMenuGrid{
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---------- Section ---------- */
 .ts-section{
-  background: linear-gradient(135deg, #ede9fe 0%, #c7d2fe 40%, #a78bfa 100%);
-  padding: 22px 0 44px 0;
+  background: #ffffff;
+  padding: calc(22px + var(--ts-header-h) + var(--ts-mini-h)) 0 44px 0;
 }
 
 .ts-inner{

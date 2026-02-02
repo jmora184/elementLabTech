@@ -1,11 +1,10 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { terpeneCollections } from "../TerpeneShowcase/terpenesData";
-import "../TerpeneShowcase/TerpeneShowcase.css"; // reuse your existing header styling
 import "./ProductPage.css";
+// Header is provided globally by SiteLayout.
 
 import bottleImg from "../../assets/bottle.png";
-import elementLabsLogo from "../../assets/ElementLabsLogos.png";
 import dt2 from "../../assets/dominant-terpenes-2.png";
 import dt3 from "../../assets/dominant-terpenes-3.png";
 
@@ -61,10 +60,7 @@ export default function ProductPage() {
   const tabs = ["Details", "Specs", "Documents", "Reviews", "Shipping", "Isolates", "Terpenes"];
   const [tab, setTab] = useState("Details");
 
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [jumpToId, setJumpToId] = useState("");
   const [cartCount, setCartCount] = useState(0);
-  const [miniMenuOpen, setMiniMenuOpen] = useState(false);
 
   const flavorInfo = {
     intro:
@@ -78,31 +74,6 @@ export default function ProductPage() {
     flavorAroma: ["candy", "sweet", "sour", "green apple"],
     mood: "Uplift Inspired",
   };
-
-  const miniMenuLeft = [
-    "Savory",
-    "Desserts",
-    "Fruits",
-    "Botanicals",
-    "Treats",
-    "Mixers",
-    "Sips & Bites",
-    "Fresh Picks",
-    "Zest",
-    "Essentials",
-  ];
-  const miniMenuRight = [
-    "Wildcard",
-    "Flavor Experiments",
-    "Curiosities",
-    "Twist & Shout",
-    "Rebel Flavors",
-    "Bizarre & Brilliant",
-    "Taste Adventures",
-    "Quirk & Perk",
-    "Off the Map",
-    "WTF Flavors",
-  ];
 
   // Lightweight local reviews for now (so page feels real)
   const reviewKey = `el_reviews_${id || "unknown"}`;
@@ -189,159 +160,11 @@ export default function ProductPage() {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  const onJumpChange = (e) => {
-    const nextId = e.target.value;
-    setJumpToId(nextId);
-    navigate("/");
-    setTimeout(() => {
-      const el = document.getElementById(`card-${nextId}`);
-      el?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 150);
-  };
-
-  const goToSection = (sectionId) => {
-    navigate("/");
-    setTimeout(() => {
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 150);
-    setMenuOpen(false);
-  };
-
-  const renderHeader = () => (
-    <>
-      <header className="ts-siteHeader">
-        <nav
-          className="ts-siteNav"
-          aria-label="Primary"
-          style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}
-        >
-          <a
-            href="/"
-            className="ts-logoLink"
-            aria-label="Element Labs Home"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate("/");
-            }}
-          >
-            <img src={elementLabsLogo} alt="Element Labs Logo" className="ts-siteLogo" />
-          </a>
-          <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-            <div className="ts-jump" style={{ minWidth: 360, maxWidth: 420 }}>
-              <input
-                id="collectionJump"
-                className="ts-select ts-selectSearch"
-                type="text"
-                value={jumpToId}
-                onChange={onJumpChange}
-                placeholder="Search collections"
-                aria-label="Search collections"
-              />
-            </div>
-            <button
-              className="ts-menuBtn"
-              type="button"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((v) => !v)}
-              style={{ marginRight: 8 }}
-            >
-              ☰
-            </button>
-          </div>
-          <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}>
-            <a
-              href="/#contact"
-              className="ts-siteNavLink"
-              onClick={(e) => {
-                e.preventDefault();
-                goToSection("contact");
-              }}
-            >
-              Contact
-            </a>
-            <a
-              href="/#network"
-              className="ts-siteNavLink"
-              onClick={(e) => {
-                e.preventDefault();
-                goToSection("network");
-              }}
-            >
-              Network
-            </a>
-            <a
-              href="/#about"
-              className="ts-siteNavLink"
-              onClick={(e) => {
-                e.preventDefault();
-                goToSection("about");
-              }}
-            >
-              About Us
-            </a>
-            <a
-              href="/#supply-chain"
-              className="ts-siteNavLink"
-              onClick={(e) => {
-                e.preventDefault();
-                goToSection("supply-chain");
-              }}
-            >
-              Supply Chain
-            </a>
-          </div>
-        </nav>
-      </header>
-      <div className="ts-miniHeader">
-        <div className="ts-miniHeaderInner">
-          <div className="ts-miniMenu">
-            <button
-              className="ts-miniMenuBtn"
-              type="button"
-              aria-expanded={miniMenuOpen}
-              aria-controls="mini-menu-panel"
-              onClick={() => setMiniMenuOpen((v) => !v)}
-            >
-              ☰ All
-            </button>
-            {miniMenuOpen && (
-              <div id="mini-menu-panel" className="ts-miniMenuPanel">
-                <div className="ts-miniMenuGrid">
-                  <div className="ts-miniMenuCol">
-                    {miniMenuLeft.map((label) => (
-                      <button key={label} type="button" className="ts-miniMenuItem">
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="ts-miniMenuCol">
-                    {miniMenuRight.map((label) => (
-                      <button key={label} type="button" className="ts-miniMenuItem">
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="ts-miniLinks">
-            <a href="/#terpenes" className="ts-miniLink" onClick={(e) => { e.preventDefault(); goToSection("terpenes"); }}>Terpenes</a>
-            <a href="/#blends" className="ts-miniLink" onClick={(e) => { e.preventDefault(); goToSection("blends"); }}>Blends</a>
-            <a href="/#isolates" className="ts-miniLink" onClick={(e) => { e.preventDefault(); goToSection("isolates"); }}>Isolates</a>
-            <a href="/#lines" className="ts-miniLink" onClick={(e) => { e.preventDefault(); goToSection("lines"); }}>Lines</a>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+  // Header is provided globally by SiteLayout.
 
   if (!collection) {
     return (
       <div className="pp-page">
-        {renderHeader()}
-
         <main className="pp-container">
           <div className="pp-card">
             <h1 className="pp-h1">Product not found</h1>
@@ -357,8 +180,6 @@ export default function ProductPage() {
 
   return (
     <div className="pp-page">
-      {renderHeader()}
-
       <main className="pp-container">
         <div className="pp-topGrid">
           {/* LEFT: Images (smaller column) */}
@@ -392,7 +213,6 @@ export default function ProductPage() {
               <br></br>
               <div className="pp-muted">{collection.tagline}</div>
                           <div className="pp-galleryMeta">
-              <h2 className="pp-h2">About this collection</h2>
               <p className="pp-body">{collection.description}</p>
             </div>
             </div>
@@ -422,7 +242,7 @@ export default function ProductPage() {
             <div className="pp-tabPanel" role="tabpanel">
               {tab === "Details" && (
                 <>
-                  <h3 className="pp-h3">Flavor Profiles</h3>
+           
                   
 {expandedProfile && (
   <div className="pp-ingredients pp-flavorInfo" aria-live="polite">
@@ -496,7 +316,10 @@ export default function ProductPage() {
     </div>
   </div>
 )}
+
+<h3 className="pp-h3">Flavor Profiles</h3>
 <div className="pp-chipGrid">
+  
                     {profiles.map((p) => (
                       <button
                         key={p}

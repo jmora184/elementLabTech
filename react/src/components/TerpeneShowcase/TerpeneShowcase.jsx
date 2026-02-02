@@ -1,56 +1,16 @@
-import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { heroCopy, terpeneCollections } from "./terpenesData";
 import "./TerpeneShowcase.css";
 import bottleImg from "../../assets/bottle.png";
-import elementLabsLogo from "../../assets/ElementLabsLogos.png";
 import { useIsMobile } from "./useIsMobile";
+import { useNavigate } from "react-router-dom";
+// Header is provided globally by SiteLayout.
 
 export default function TerpeneShowcase({ HeroBanner }) {
   const isMobile = useIsMobile();
-  const [jumpToId, setJumpToId] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [miniMenuOpen, setMiniMenuOpen] = useState(false);
-  // Refs for each collection card
-  const cardRefs = useRef({});
+  
 
   const addToCart = () => {};
-  const onJumpChange = (e) => {
-    const id = e.target.value;
-    setJumpToId(id);
-    // Scroll to the card with the selected id
-    setTimeout(() => {
-      const ref = cardRefs.current[id];
-      if (ref && ref.scrollIntoView) {
-        ref.scrollIntoView({ behavior: "smooth", block: isMobile ? "start" : "center" });
-      }
-    }, 50);
-  };
-  const closeMenu = () => setMenuOpen(false);
-  const miniMenuLeft = [
-    "Savory",
-    "Desserts",
-    "Fruits",
-    "Botanicals",
-    "Treats",
-    "Mixers",
-    "Sips & Bites",
-    "Fresh Picks",
-    "Zest",
-    "Essentials",
-  ];
-  const miniMenuRight = [
-    "Wildcard",
-    "Flavor Experiments",
-    "Curiosities",
-    "Twist & Shout",
-    "Rebel Flavors",
-    "Bizarre & Brilliant",
-    "Taste Adventures",
-    "Quirk & Perk",
-    "Off the Map",
-    "WTF Flavors",
-  ];
   const displayedCollections = [...terpeneCollections, ...terpeneCollections.slice(0, 4)];
 
   return (
@@ -58,92 +18,6 @@ export default function TerpeneShowcase({ HeroBanner }) {
       {/* Desktop content */}
       {!isMobile && (
         <>
-          <header className="ts-siteHeader">
-            <nav className="ts-siteNav" aria-label="Primary" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-              <a href="#" className="ts-logoLink" aria-label="Element Labs Home" onClick={(e) => e.preventDefault()}>
-                <img src={elementLabsLogo} alt="Element Labs Logo" className="ts-siteLogo" />
-              </a>
-              <div style={{display: 'flex', alignItems: 'center', gap: 18}}>
-                <div className="ts-jump" style={{ minWidth: 360, maxWidth: 420 }}>
-                  <input
-                    id="collectionJump"
-                    className="ts-select ts-selectSearch"
-                    type="text"
-                    value={jumpToId}
-                    onChange={onJumpChange}
-                    placeholder="Search collections"
-                    aria-label="Search collections"
-                  />
-                </div>
-                <button
-                  className="ts-menuBtn"
-                  type="button"
-                  aria-label={menuOpen ? "Close menu" : "Open menu"}
-                  aria-expanded={menuOpen}
-                  onClick={() => setMenuOpen((v) => !v)}
-                  style={{marginRight: 8}}
-                >
-                  ☰
-                </button>
-              </div>
-              <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`} style={{display: 'flex', alignItems: 'center', gap: 0}}>
-                <a href="#contact" className="ts-siteNavLink" onClick={closeMenu}>Contact</a>
-                <a href="#network" className="ts-siteNavLink" onClick={closeMenu}>Network</a>
-                <a href="#about" className="ts-siteNavLink" onClick={closeMenu}>About Us</a>
-                <a href="#supply-chain" className="ts-siteNavLink" onClick={closeMenu}>Supply Chain</a>
-              </div>
-            </nav>
-          </header>
-          {/* Mini header below main header */}
-          <div className="ts-miniHeader">
-            <div className="ts-miniHeaderInner">
-              <div className="ts-miniMenu">
-                <button
-                  className="ts-miniMenuBtn"
-                  type="button"
-                  aria-expanded={miniMenuOpen}
-                  aria-controls="mini-menu-panel"
-                  onClick={() => setMiniMenuOpen((v) => !v)}
-                >
-                  ☰ All
-                </button>
-                {miniMenuOpen && (
-                  <div id="mini-menu-panel" className="ts-miniMenuPanel">
-                    <div className="ts-miniMenuGrid">
-                      <div className="ts-miniMenuCol">
-                        {miniMenuLeft.map((label) => (
-                          <button
-                            key={label}
-                            type="button"
-                            className="ts-miniMenuItem"
-                          >
-                            {label}
-                          </button>
-                        ))}
-                      </div>
-                      <div className="ts-miniMenuCol">
-                        {miniMenuRight.map((label) => (
-                          <button
-                            key={label}
-                            type="button"
-                            className="ts-miniMenuItem"
-                          >
-                            {label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="ts-miniLinks">
-                <a href="#terpenes" className="ts-miniLink">Terpenes</a>
-                <a href="#blends" className="ts-miniLink">Blends</a>
-                <a href="#isolates" className="ts-miniLink">Isolates</a>
-                <a href="#lines" className="ts-miniLink">Lines</a>
-              </div>
-            </div>
-          </div>
           {HeroBanner && <HeroBanner />}
           <section className="ts-section">
             <div className="ts-inner">
@@ -163,7 +37,6 @@ export default function TerpeneShowcase({ HeroBanner }) {
                   return (
                     <div
                       key={`${c.id}-${i}`}
-                      ref={isOriginal ? el => { cardRefs.current[c.id] = el; } : undefined}
                       id={isOriginal ? `card-${c.id}` : undefined}
                     >
                       <CollectionCard
@@ -198,49 +71,6 @@ export default function TerpeneShowcase({ HeroBanner }) {
       {/* Mobile content */}
       {isMobile && (
         <section className="ts-mobileSection ts-mobileMessage">
-          <header className="ts-siteHeader">
-            <nav className="ts-siteNav" aria-label="Primary" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-              <a href="#" className="ts-logoLink" aria-label="Element Labs Home" onClick={(e) => e.preventDefault()}>
-                <img src={elementLabsLogo} alt="Element Labs Logo" className="ts-siteLogo" />
-              </a>
-              <div style={{display: 'flex', alignItems: 'center', gap: 18}}>
-                <div className="ts-mobileJump" style={{ minWidth: 240, maxWidth: 280 }}>
-                  <input
-                    id="collectionJump"
-                    className="ts-mobileSelect ts-mobileSelectSearch"
-                    type="text"
-                    value={jumpToId}
-                    onChange={onJumpChange}
-                    placeholder="Search"
-                    aria-label="Search collections"
-                  />
-                </div>
-                <button
-                  className="ts-menuBtn"
-                  type="button"
-                  aria-label={menuOpen ? "Close menu" : "Open menu"}
-                  aria-expanded={menuOpen}
-                  onClick={() => setMenuOpen((v) => !v)}
-                  style={{marginRight: 8}}
-                >
-                  ☰
-                </button>
-              </div>
-              <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}> 
-                <a href="#contact" className="ts-siteNavLink" onClick={closeMenu}>Contact</a>
-                <a href="#network" className="ts-siteNavLink" onClick={closeMenu}>Network</a>
-                <a href="#about" className="ts-siteNavLink" onClick={closeMenu}>About Us</a>
-                <a href="#supply-chain" className="ts-siteNavLink" onClick={closeMenu}>Supply Chain</a>
-              </div>
-            </nav>
-          </header>
-          {/* Mini header below main header for mobile */}
-          <div style={{width: '100%', background: 'linear-gradient(90deg, #ede9fe 0%, #a78bfa 100%)', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '8px 0', gap: 18, fontWeight: 700, fontSize: 15, letterSpacing: '.04em', borderBottom: '1px solid #e9d5ff'}}>
-            <a href="#terpenes" style={{color: '#7c3aed', textDecoration: 'none', padding: '6px 12px', borderRadius: '8px', transition: 'background 0.15s'}} onMouseOver={e => e.currentTarget.style.background = '#f3e8ff'} onMouseOut={e => e.currentTarget.style.background = 'transparent'}>Terpenes</a>
-            <a href="#blends" style={{color: '#7c3aed', textDecoration: 'none', padding: '6px 12px', borderRadius: '8px', transition: 'background 0.15s'}} onMouseOver={e => e.currentTarget.style.background = '#f3e8ff'} onMouseOut={e => e.currentTarget.style.background = 'transparent'}>Blends</a>
-            <a href="#isolates" style={{color: '#7c3aed', textDecoration: 'none', padding: '6px 12px', borderRadius: '8px', transition: 'background 0.15s'}} onMouseOver={e => e.currentTarget.style.background = '#f3e8ff'} onMouseOut={e => e.currentTarget.style.background = 'transparent'}>Isolates</a>
-            <a href="#lines" style={{color: '#7c3aed', textDecoration: 'none', padding: '6px 12px', borderRadius: '8px', transition: 'background 0.15s'}} onMouseOver={e => e.currentTarget.style.background = '#f3e8ff'} onMouseOut={e => e.currentTarget.style.background = 'transparent'}>Lines</a>
-          </div>
           {HeroBanner && <HeroBanner />}
           <div className="ts-mobileInner">
             {/* <div className="ts-mobileHeader">
@@ -259,7 +89,6 @@ export default function TerpeneShowcase({ HeroBanner }) {
                 return (
                   <div
                     key={`${c.id}-${i}`}
-                    ref={isOriginal ? el => { cardRefs.current[c.id] = el; } : undefined}
                     id={isOriginal ? `card-${c.id}` : undefined}
                     style={{ width: '100%' }}
                   >

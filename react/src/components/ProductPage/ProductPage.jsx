@@ -602,17 +602,7 @@ export default function ProductPage() {
                         )}
 
                       {/* Admin-only Edit button (edits selected profile) */}
-                      {selectedSlug && (
-                        <button
-                          type="button"
-                          className="pp-primaryBtn"
-                          style={{ padding: "8px 12px", fontSize: 14 }}
-                          onClick={() => { setShowEdit(true); setEditErr(""); }}
-                          aria-label="Edit selected flavor profile"
-                        >
-                          Edit
-                        </button>
-                      )}
+                     
                       </div>
                     )}
                   </div>

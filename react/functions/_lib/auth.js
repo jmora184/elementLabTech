@@ -163,7 +163,7 @@ export async function getUserFromSession(env, sessionToken) {
 
   const row = await env.DB.prepare(
     `
-    SELECT u.id as id, u.email as email, s.expires_at as expires_at
+    SELECT u.id as id, u.email as email, u.role as role, s.expires_at as expires_at
     FROM sessions s
     JOIN users u ON u.id = s.user_id
     WHERE s.token = ?
@@ -179,7 +179,7 @@ export async function getUserFromSession(env, sessionToken) {
   const exp = Date.parse(row.expires_at);
   if (Number.isFinite(exp) && exp < Date.now()) return null;
 
-  return { id: row.id, email: row.email };
+  return { id: row.id, email: row.email, role: row.role || 'user' };
 }
 
 /* ---------- helpers ---------- */

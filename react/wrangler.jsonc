@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "elementlab-pages",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-02-05",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "elementlab-db",
+      "database_id": "cc0b38b3-01f2-47f4-be68-b6ceaea15d09"
+    }
+  ],
+  "vars": {
+    "ENV": "local"
+  }
+}

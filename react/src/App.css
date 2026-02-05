@@ -43,3 +43,77 @@
 .read-the-docs {
   color: #888;
 }
+
+
+
+/* --- Auth pages (minimal, matches existing dark/gradient vibe) --- */
+.el-authPage{
+  max-width: 520px;
+  margin: 40px auto;
+  padding: 16px;
+}
+.el-authTitle{
+  margin: 0 0 6px;
+  font-size: 32px;
+}
+.el-authSub{
+  margin: 0 0 18px;
+  opacity: 0.8;
+}
+.el-authCard{
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 16px;
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(6px);
+}
+.el-authLabel{
+  display: block;
+  margin: 12px 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+.el-authInput{
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(0,0,0,0.35);
+  color: inherit;
+}
+.el-authBtn{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.10);
+  color: inherit;
+  cursor: pointer;
+}
+.el-authBtn:disabled{
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.el-authFooter{
+  margin-top: 12px;
+  font-size: 14px;
+  opacity: 0.85;
+}
+.el-authError{
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,100,100,0.35);
+  background: rgba(255,60,60,0.12);
+  margin-bottom: 10px;
+}
+.el-authRow{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.el-authKey{ opacity: 0.8; }
+.el-authVal{ font-weight: 600; }

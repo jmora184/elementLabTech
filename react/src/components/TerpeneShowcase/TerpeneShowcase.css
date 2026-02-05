@@ -1249,3 +1249,30 @@
     display: block;
   }
 }
+
+
+
+/* Header auth buttons */
+.ts-authArea{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: 10px;
+}
+.ts-authBtn{
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.10);
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ts-authBtnSecondary{
+  background: rgba(0,0,0,0.25);
+}
+@media (max-width: 720px){
+  .ts-authArea{
+    display: none; /* keep mobile header clean; login still available via /login */
+  }
+}

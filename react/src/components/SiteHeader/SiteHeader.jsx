@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/AuthContext";
 
 // Reuse your existing header + mini-header styling so the look stays the same everywhere.
 import "../TerpeneShowcase/TerpeneShowcase.css";
@@ -68,6 +69,7 @@ export default function SiteHeader({
   onLogoClick,
 }) {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   // Local state so this component works even if you don't pass controlled props.
   const [localSearch, setLocalSearch] = useState("");
@@ -137,6 +139,38 @@ export default function SiteHeader({
                 placeholder={searchPlaceholder}
                 aria-label={searchPlaceholder}
               />
+            </div>
+
+            <div className="ts-authArea">
+              {user ? (
+                <>
+                  <button
+                    className="ts-authBtn"
+                    type="button"
+                    onClick={() => navigate("/account")}
+                  >
+                    Account
+                  </button>
+                  <button
+                    className="ts-authBtn ts-authBtnSecondary"
+                    type="button"
+                    onClick={async () => {
+                      await logout();
+                      navigate("/");
+                    }}
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <button
+                  className="ts-authBtn"
+                  type="button"
+                  onClick={() => navigate("/login")}
+                >
+                  Login
+                </button>
+              )}
             </div>
 
             <button

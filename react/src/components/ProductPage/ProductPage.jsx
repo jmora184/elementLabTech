@@ -58,6 +58,98 @@ export default function ProductPage() {
   const [me, setMe] = useState(null);
   const isAdmin = me?.role === "admin";
 
+  // Admin: Add Profile modal state
+  const [showAdd, setShowAdd] = useState(false);
+  const [addForm, setAddForm] = useState({
+    name: "",
+    slug: "",
+    flavor_type: "",
+    flavor_category: "",
+    description: "",
+    mood: "",
+    dominant_terpenes_csv: "",
+    flavor_aroma_csv: "",
+    sort_order: "",
+  });
+  const [addErr, setAddErr] = useState("");
+  const [adding, setAdding] = useState(false);
+
+  async function refreshProfiles() {
+    if (!id) return;
+    const list = await fetchJson(`/api/collections/${encodeURIComponent(id)}/profiles`);
+    const profiles = Array.isArray(list?.profiles) ? list.profiles : [];
+    setDbProfiles(profiles);
+    if (profiles.length) {
+      const still = profiles.find((p) => p.slug === selectedSlug);
+      const first = profiles[0]?.slug || "";
+      if (!still) {
+        setSelectedSlug(first);
+        setExpandedSlug(first);
+      }
+    }
+  }
+
+  async function createProfile() {
+    setAddErr("");
+    const name = addForm.name.trim();
+    if (!name) {
+      setAddErr("Name is required.");
+      return;
+    }
+    setAdding(true);
+    try {
+      const payload = {
+        name,
+        slug: addForm.slug.trim() || undefined,
+        flavor_type: addForm.flavor_type.trim() || undefined,
+        flavor_category: addForm.flavor_category.trim() || undefined,
+        description: addForm.description.trim() || undefined,
+        mood: addForm.mood.trim() || undefined,
+        dominant_terpenes: addForm.dominant_terpenes_csv
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean),
+        flavor_aroma: addForm.flavor_aroma_csv
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean),
+        sort_order: addForm.sort_order === "" ? undefined : Number(addForm.sort_order),
+      };
+
+      const res = await fetchJson(`/api/collections/${encodeURIComponent(id)}/profiles`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const created = res?.profile;
+      await refreshProfiles();
+
+      if (created?.slug) {
+        setSelectedSlug(created.slug);
+        setExpandedSlug(created.slug);
+      }
+
+      setShowAdd(false);
+      setAddForm({
+        name: "",
+        slug: "",
+        flavor_type: "",
+        flavor_category: "",
+        description: "",
+        mood: "",
+        dominant_terpenes_csv: "",
+        flavor_aroma_csv: "",
+        sort_order: "",
+      });
+    } catch (err) {
+      setAddErr(err?.message || "Could not create profile.");
+    } finally {
+      setAdding(false);
+    }
+  }
+
+
   // Load current user (role comes from /api/auth/me)
   useEffect(() => {
     let alive = true;
@@ -468,7 +560,7 @@ export default function ProductPage() {
                         type="button"
                         className="pp-primaryBtn"
                         style={{ padding: "8px 12px", fontSize: 14 }}
-                        onClick={() => alert("Admin: next step is Add Profile UI + POST endpoint.")}
+                        onClick={() => { setShowAdd(true); setAddErr(""); }}
                         aria-label="Add flavor profile"
                       >
                         + Add
@@ -505,6 +597,181 @@ export default function ProductPage() {
                       );
                     })}
                   </div>
+
+
+                  {/* Admin Add Profile Modal */}
+                  {showAdd && (
+                    <div
+                      role="dialog"
+                      aria-modal="true"
+                      aria-label="Add flavor profile"
+                      onClick={(e) => {
+                        if (e.target === e.currentTarget) setShowAdd(false);
+                      }}
+                      style={{
+                        position: "fixed",
+                        inset: 0,
+                        background: "rgba(0,0,0,0.55)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: 16,
+                        zIndex: 9999,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "min(720px, 100%)",
+                          background: "#0b1220",
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          borderRadius: 16,
+                          boxShadow: "0 30px 80px rgba(0,0,0,0.5)",
+                          padding: 16,
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                          <h3 className="pp-h3" style={{ margin: 0 }}>Add Flavor Profile</h3>
+                          <button
+                            type="button"
+                            className="pp-qtyBtn"
+                            onClick={() => setShowAdd(false)}
+                            aria-label="Close"
+                            style={{ width: 36, height: 36 }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+
+                        <p className="pp-muted" style={{ marginTop: 6 }}>
+                          This creates a new profile in D1 (images/documents next).
+                        </p>
+
+                        {addErr && (
+                          <div
+                            style={{
+                              marginTop: 10,
+                              background: "rgba(239,68,68,0.12)",
+                              border: "1px solid rgba(239,68,68,0.35)",
+                              color: "#fecaca",
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                            }}
+                          >
+                            {addErr}
+                          </div>
+                        )}
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 12 }}>
+                          <label className="pp-label">
+                            Name *
+                            <input
+                              className="pp-input"
+                              value={addForm.name}
+                              onChange={(e) => setAddForm((p) => ({ ...p, name: e.target.value }))}
+                              placeholder="Blazin Banana"
+                            />
+                          </label>
+
+                          <label className="pp-label">
+                            Slug (optional)
+                            <input
+                              className="pp-input"
+                              value={addForm.slug}
+                              onChange={(e) => setAddForm((p) => ({ ...p, slug: e.target.value }))}
+                              placeholder="blazin-banana"
+                            />
+                          </label>
+
+                          <label className="pp-label">
+                            Flavor type
+                            <input
+                              className="pp-input"
+                              value={addForm.flavor_type}
+                              onChange={(e) => setAddForm((p) => ({ ...p, flavor_type: e.target.value }))}
+                              placeholder="Fruit / Candy"
+                            />
+                          </label>
+
+                          <label className="pp-label">
+                            Flavor category
+                            <input
+                              className="pp-input"
+                              value={addForm.flavor_category}
+                              onChange={(e) => setAddForm((p) => ({ ...p, flavor_category: e.target.value }))}
+                              placeholder="Candy"
+                            />
+                          </label>
+
+                          <label className="pp-label" style={{ gridColumn: "1 / -1" }}>
+                            Description
+                            <textarea
+                              className="pp-textarea"
+                              rows={3}
+                              value={addForm.description}
+                              onChange={(e) => setAddForm((p) => ({ ...p, description: e.target.value }))}
+                              placeholder="A bold banana-candy forward profile..."
+                            />
+                          </label>
+
+                          <label className="pp-label">
+                            Mood
+                            <input
+                              className="pp-input"
+                              value={addForm.mood}
+                              onChange={(e) => setAddForm((p) => ({ ...p, mood: e.target.value }))}
+                              placeholder="Euphoric / Uplifting"
+                            />
+                          </label>
+
+                          <label className="pp-label">
+                            Sort order (optional)
+                            <input
+                              className="pp-input"
+                              inputMode="numeric"
+                              value={addForm.sort_order}
+                              onChange={(e) => setAddForm((p) => ({ ...p, sort_order: e.target.value }))}
+                              placeholder="10"
+                            />
+                          </label>
+
+                          <label className="pp-label" style={{ gridColumn: "1 / -1" }}>
+                            Dominant terpenes (comma-separated)
+                            <input
+                              className="pp-input"
+                              value={addForm.dominant_terpenes_csv}
+                              onChange={(e) => setAddForm((p) => ({ ...p, dominant_terpenes_csv: e.target.value }))}
+                              placeholder="Isoamyl acetate, Ethyl maltol"
+                            />
+                          </label>
+
+                          <label className="pp-label" style={{ gridColumn: "1 / -1" }}>
+                            Flavor & aroma (comma-separated)
+                            <input
+                              className="pp-input"
+                              value={addForm.flavor_aroma_csv}
+                              onChange={(e) => setAddForm((p) => ({ ...p, flavor_aroma_csv: e.target.value }))}
+                              placeholder="banana, candy, sweet"
+                            />
+                          </label>
+                        </div>
+
+                        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 14 }}>
+                          <button type="button" className="pp-docBtn" onClick={() => setShowAdd(false)}>
+                            Cancel
+                          </button>
+                          <button
+                            type="button"
+                            className="pp-primaryBtn"
+                            onClick={createProfile}
+                            disabled={adding}
+                          >
+                            {adding ? "Creating…" : "Create profile"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                 </>
               )}
 

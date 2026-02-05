@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { terpeneCollections } from "../TerpeneShowcase/terpenesData";
 import "./ProductPage.css";
+import AdminEditProfileModal from "./AdminEditProfileModal";
 // Header is provided globally by SiteLayout.
 
 import bottleImg from "../../assets/bottle.png";
@@ -149,8 +150,29 @@ export default function ProductPage() {
     }
   }
 
+  // Admin: Edit Profile
+  const [showEdit, setShowEdit] = useState(false);
 
-  // Load current user (role comes from /api/auth/me)
+  async function saveProfileEdits(payload) {
+    if (!selectedSlug) {
+      throw new Error("No profile selected.");
+    }
+
+    await fetchJson(`/api/profiles/${encodeURIComponent(selectedSlug)}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    // Refresh bundle so UI updates
+    const bundle = await fetchJson(`/api/profiles/${encodeURIComponent(selectedSlug)}`);
+    setProfileBundle(bundle);
+
+    // Refresh list (in case name/order changed)
+    await refreshProfiles();
+  }
+
+// Load current user (role comes from /api/auth/me)
   useEffect(() => {
     let alive = true;
     fetchJson("/api/auth/me")
@@ -556,7 +578,8 @@ export default function ProductPage() {
                     <h3 className="pp-h3" style={{ margin: 0 }}>Flavor Profiles</h3>
 
                     {isAdmin && (
-                      <button
+                      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                        <button
                         type="button"
                         className="pp-primaryBtn"
                         style={{ padding: "8px 12px", fontSize: 14 }}
@@ -565,6 +588,32 @@ export default function ProductPage() {
                       >
                         + Add
                       </button>
+
+                        {selectedSlug && (
+                          <button
+                            type="button"
+                            className="pp-primaryBtn"
+                            style={{ padding: "8px 12px", fontSize: 14 }}
+                            onClick={() => setShowEdit(true)}
+                            aria-label="Edit selected flavor profile"
+                          >
+                            Edit
+                          </button>
+                        )}
+
+                      {/* Admin-only Edit button (edits selected profile) */}
+                      {selectedSlug && (
+                        <button
+                          type="button"
+                          className="pp-primaryBtn"
+                          style={{ padding: "8px 12px", fontSize: 14 }}
+                          onClick={() => { setShowEdit(true); setEditErr(""); }}
+                          aria-label="Edit selected flavor profile"
+                        >
+                          Edit
+                        </button>
+                      )}
+                      </div>
                     )}
                   </div>
 
@@ -635,6 +684,7 @@ export default function ProductPage() {
                             type="button"
                             className="pp-qtyBtn"
                             onClick={() => setShowAdd(false)}
+
                             aria-label="Close"
                             style={{ width: 36, height: 36 }}
                           >
@@ -771,6 +821,17 @@ export default function ProductPage() {
                       </div>
                     </div>
                   )}
+
+                  <AdminEditProfileModal
+                  open={showEdit}
+                  onClose={() => setShowEdit(false)}
+                  initialProfile={dbProfile}
+                  onSave={async (payload) => {
+                    await saveProfileEdits(payload);
+                    setShowEdit(false);
+                  }}
+                />
+
 
                 </>
               )}

@@ -28,7 +28,7 @@ export function normalizeEmail(email) {
 export function cookieOptions(opts = {}) {
   const defaults = {
     httpOnly: true,
-    secure: true, // in local dev on http, Chrome may ignore Secure cookies; see note below.
+    secure: true,
     sameSite: "Lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 14, // 14 days
@@ -78,10 +78,19 @@ export function randomToken(byteLen = 32) {
 }
 
 /**
+ * IMPORTANT: Cloudflare PBKDF2 iteration cap
+ * Cloudflare Workers WebCrypto PBKDF2 supports up to 100,000 iterations.
+ * We use 100,000 as the default to avoid runtime errors in production.
+ */
+const DEFAULT_PBKDF2_ITERS = 100_000;
+
+/**
  * Password hashing: PBKDF2 using WebCrypto.
  * Stored format: pbkdf2$<iters>$<saltHex>$<hashHex>
  */
-export async function hashPassword(password, iters = 210_000) {
+export async function hashPassword(password, iters = DEFAULT_PBKDF2_ITERS) {
+  const safeIters = Math.min(Number(iters) || DEFAULT_PBKDF2_ITERS, 100_000);
+
   const salt = new Uint8Array(16);
   crypto.getRandomValues(salt);
 
@@ -97,7 +106,7 @@ export async function hashPassword(password, iters = 210_000) {
     {
       name: "PBKDF2",
       salt,
-      iterations: iters,
+      iterations: safeIters,
       hash: "SHA-256",
     },
     keyMaterial,
@@ -105,7 +114,7 @@ export async function hashPassword(password, iters = 210_000) {
   );
 
   const hash = new Uint8Array(bits);
-  return `pbkdf2$${iters}$${toHex(salt)}$${toHex(hash)}`;
+  return `pbkdf2$${safeIters}$${toHex(salt)}$${toHex(hash)}`;
 }
 
 /**
@@ -116,7 +125,7 @@ export async function verifyPassword(password, stored) {
     const [alg, itersStr, saltHex, hashHex] = String(stored || "").split("$");
     if (alg !== "pbkdf2") return false;
 
-    const iters = Number(itersStr);
+    const iters = Math.min(Number(itersStr) || DEFAULT_PBKDF2_ITERS, 100_000);
     const salt = fromHex(saltHex);
     const expected = fromHex(hashHex);
 
@@ -194,10 +203,3 @@ function timingSafeEqual(a, b) {
   for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
   return diff === 0;
 }
-
-/**
- * NOTE about Secure cookies on localhost:
- * Secure cookies won't be set over http:// in most browsers.
- * If you can't stay logged in locally, set secure:false in cookieOptions()
- * when env.ENV === "local".
- */

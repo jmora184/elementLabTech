@@ -27,16 +27,217 @@ function Stars({ value = 4.8 }) {
   const stars = Array.from({ length: 5 }).map((_, i) => {
     const isFull = i < full;
     const isHalf = i === full && half;
+  const parseJsonArray = (value, fallback = []) => {
+    if (!value) return fallback;
+    try {
+      const v = typeof value === "string" ? JSON.parse(value) : value;
+      return Array.isArray(v) ? v : fallback;
+    } catch {
+      return fallback;
+    }
+  };
+
+  const openTabEditor = (key) => {
+    if (!collection) return;
+    setEditTabError("");
+    setEditTabKey(key);
+
+    if (key === "Shipping") {
+      setEditText(String(collection.shipping_md || ""));
+      setEditRows([]);
+    } else if (key === "Specs") {
+      const rows = parseJsonArray(collection.specs_json, []).map((r) => ({
+        label: String(r?.label || ""),
+        value: String(r?.value || ""),
+      }));
+      setEditRows(rows.length ? rows : [{ label: "", value: "" }]);
+      setEditText("");
+    } else if (key === "Documents") {
+      const rows = parseJsonArray(collection.documents_json, []).map((r) => ({
+        title: String(r?.title || ""),
+        url: String(r?.url || ""),
+        type: String(r?.type || ""),
+      }));
+      setEditRows(rows.length ? rows : [{ title: "", url: "", type: "" }]);
+      setEditText("");
+    } else if (key === "Reviews") {
+      const rows = parseJsonArray(collection.reviews_json, []).map((r) => ({
+        author: String(r?.author || ""),
+        rating: Number(r?.rating ?? 5),
+        text: String(r?.text || ""),
+      }));
+      setEditRows(rows.length ? rows : [{ author: "", rating: 5, text: "" }]);
+      setEditText("");
+    } else if (key === "Isolates") {
+      const rows = parseJsonArray(collection.isolates_json, []).map((r) => ({
+        name: String(r?.name || ""),
+        percent: r?.percent === null || typeof r?.percent === "undefined" ? "" : String(r.percent),
+      }));
+      setEditRows(rows.length ? rows : [{ name: "", percent: "" }]);
+      setEditText("");
+    } else if (key === "Terpenes") {
+      const rows = parseJsonArray(collection.terpenes_json, []).map((r) => ({
+        name: String(r?.name || ""),
+        percent: r?.percent === null || typeof r?.percent === "undefined" ? "" : String(r.percent),
+      }));
+      setEditRows(rows.length ? rows : [{ name: "", percent: "" }]);
+      setEditText("");
+    } else if (key === "Images") {
+      const rows = parseJsonArray(collection.images_json, []).map((r) => ({
+        url: String(r?.url || ""),
+        alt: String(r?.alt || ""),
+        isPrimary: !!r?.isPrimary,
+      }));
+      setEditRows(rows.length ? rows : [{ url: "", alt: "", isPrimary: true }]);
+      setEditText("");
+    } else {
+      setEditRows([]);
+      setEditText("");
+    }
+
+    setEditTabOpen(true);
+  };
+
+  const addRow = () => {
+    setEditRows((prev) => {
+      const key = editTabKey;
+      if (key === "Specs") return [...prev, { label: "", value: "" }];
+      if (key === "Documents") return [...prev, { title: "", url: "", type: "" }];
+      if (key === "Reviews") return [...prev, { author: "", rating: 5, text: "" }];
+      if (key === "Isolates" || key === "Terpenes") return [...prev, { name: "", percent: "" }];
+      if (key === "Images") return [...prev, { url: "", alt: "", isPrimary: prev.length === 0 }];
+      return prev;
+    });
+  };
+
+  const removeRow = (idx) => {
+    setEditRows((prev) => {
+      const next = prev.filter((_, i) => i !== idx);
+      // Keep at least one row
+      return next.length ? next : prev;
+    });
+  };
+
+  const saveTab = async () => {
+    if (!collection?.id) return;
+    setEditTabSaving(true);
+    setEditTabError("");
+
+    try {
+      const payload = {};
+      const key = editTabKey;
+
+      if (key === "Shipping") {
+        payload.shipping_md = editText;
+      } else if (key === "Specs") {
+        const cleaned = editRows
+          .map((r) => ({ label: String(r.label || "").trim(), value: String(r.value || "").trim() }))
+          .filter((r) => r.label || r.value);
+        payload.specs_json = JSON.stringify(cleaned);
+      } else if (key === "Documents") {
+        const cleaned = editRows
+          .map((r) => ({
+            title: String(r.title || "").trim(),
+            url: String(r.url || "").trim(),
+            type: String(r.type || "").trim(),
+          }))
+          .filter((r) => r.title || r.url);
+        payload.documents_json = JSON.stringify(cleaned);
+      } else if (key === "Reviews") {
+        const cleaned = editRows
+          .map((r) => ({
+            author: String(r.author || "").trim(),
+            rating: Number(r.rating ?? 5),
+            text: String(r.text || "").trim(),
+          }))
+          .filter((r) => r.author || r.text);
+        payload.reviews_json = JSON.stringify(cleaned);
+      } else if (key === "Isolates") {
+        const cleaned = editRows
+          .map((r) => ({
+            name: String(r.name || "").trim(),
+            percent: r.percent === "" ? null : Number(r.percent),
+          }))
+          .filter((r) => r.name);
+        payload.isolates_json = JSON.stringify(cleaned);
+      } else if (key === "Terpenes") {
+        const cleaned = editRows
+          .map((r) => ({
+            name: String(r.name || "").trim(),
+            percent: r.percent === "" ? null : Number(r.percent),
+          }))
+          .filter((r) => r.name);
+        payload.terpenes_json = JSON.stringify(cleaned);
+      } else if (key === "Images") {
+        // ensure exactly one primary if any rows exist
+        let primaryFound = false;
+        const cleaned = editRows
+          .map((r, i) => {
+            const url = String(r.url || "").trim();
+            const alt = String(r.alt || "").trim();
+            let isPrimary = !!r.isPrimary;
+            if (isPrimary && !primaryFound) primaryFound = true;
+            else if (isPrimary && primaryFound) isPrimary = false;
+            return { url, alt, isPrimary };
+          })
+          .filter((r) => r.url);
+
+        if (cleaned.length && !cleaned.some((x) => x.isPrimary)) {
+          cleaned[0].isPrimary = true;
+        }
+        payload.images_json = JSON.stringify(cleaned);
+      }
+
+      const data = await fetchJson(`/api/collections/${collection.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (data?.collection) {
+        setCollection(data.collection);
+      }
+
+      setEditTabOpen(false);
+    } catch (e) {
+      setEditTabError(e?.message || "Failed to save.");
+    } finally {
+      setEditTabSaving(false);
+    }
+  };
+
     return (
       <span key={i} className="pp-star" aria-hidden="true">
-        {isFull ? "★" : isHalf ? "⯨" : "☆"}
+        {isFull ? "*" : isHalf ? "*" : "."}
       </span>
     );
   });
   return <span className="pp-stars">{stars}</span>;
 }
 
+
 export default function ProductPage() {
+
+  // Admin: edit core collection fields (name/tagline/description/etc.)
+  const [editCollectionOpen, setEditCollectionOpen] = useState(false);
+  const [editCollectionSaving, setEditCollectionSaving] = useState(false);
+  const [editCollectionError, setEditCollectionError] = useState("");
+  const [editCollectionForm, setEditCollectionForm] = useState({
+    name: "",
+    tagline: "",
+    description: "",
+    badge: "",
+    sort_order: 0,
+    is_active: true,
+  });
+
+  // Admin: edit per-tab content (Specs/Documents/Reviews/Shipping/Isolates/Terpenes) + Images
+  const [editTabOpen, setEditTabOpen] = useState(false);
+  const [editTabSaving, setEditTabSaving] = useState(false);
+  const [editTabError, setEditTabError] = useState("");
+  const [editTabKey, setEditTabKey] = useState(""); // e.g. "Specs" | "Documents" | "Shipping" | "Images"
+  const [editRows, setEditRows] = useState([]); // array for row-based tabs
+  const [editText, setEditText] = useState(""); // textarea for Shipping
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -263,7 +464,7 @@ export default function ProductPage() {
   const [activeImg, setActiveImg] = useState(0);
 
   // Variant-ish selections
-  const hardcodedProfiles = collection?.profiles ?? [];
+  const hardcodedProfiles = useMemo(() => collection?.profiles ?? [], [collection?.profiles]);
   const profileDisplayRows = dbProfiles.length
     ? dbProfiles.map((p) => ({ slug: p.slug, label: p.name || p.slug }))
     : hardcodedProfiles.map((name) => ({ slug: name, label: name })); // fallback uses name as slug too (until fully migrated)
@@ -277,7 +478,7 @@ export default function ProductPage() {
   const [fallbackProfile, setFallbackProfile] = useState(hardcodedProfiles[0] ?? "");
   useEffect(() => {
     setFallbackProfile(hardcodedProfiles[0] ?? "");
-  }, [id]); // reset on route change
+  }, [id, hardcodedProfiles]); // reset on route change
 
   const [size, setSize] = useState("15ml");
   const [qty, setQty] = useState(1);
@@ -412,7 +613,8 @@ export default function ProductPage() {
 
   if (!collection) {
     return (
-      <div className="pp-page">
+      <>
+        <div className="pp-page">
         <main className="pp-container">
           <div className="pp-card">
             <h1 className="pp-h1">Product not found</h1>
@@ -423,15 +625,61 @@ export default function ProductPage() {
           </div>
         </main>
       </div>
+      </>
     );
   }
 
   const documents = profileBundle?.documents || [];
 
+  // Admin: edit core collection fields
+  const openEditCollection = () => {
+    if (!collection) return;
+    setEditCollectionError("");
+    setEditCollectionForm({
+      name: collection.name || "",
+      tagline: collection.tagline || "",
+      description: collection.description || "",
+      badge: collection.badge || "",
+      sort_order: Number(collection.sort_order ?? 0),
+      is_active: (collection.is_active ?? 1) ? true : false,
+    });
+    setEditCollectionOpen(true);
+  };
+
+  const saveEditCollection = async () => {
+    if (!collection?.id) return;
+    setEditCollectionSaving(true);
+    setEditCollectionError("");
+    try {
+      const data = await fetchJson(`/api/collections/${collection.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: editCollectionForm.name,
+          tagline: editCollectionForm.tagline,
+          description: editCollectionForm.description,
+          badge: editCollectionForm.badge,
+          sort_order: Number(editCollectionForm.sort_order ?? 0),
+          is_active: editCollectionForm.is_active ? 1 : 0,
+        }),
+      });
+      if (data?.collection) {
+        setDbCollection(data.collection);
+      }
+      setEditCollectionOpen(false);
+    } catch (e) {
+      setEditCollectionError(e?.message || "Failed to save.");
+    } finally {
+      setEditCollectionSaving(false);
+    }
+  };
+
+
   return (
-    <div className="pp-page">
-      <main className="pp-container">
-        <div className="pp-topGrid">
+    <>
+      <div className="pp-page">
+        <main className="pp-container">
+          <div className="pp-topGrid">
           {/* LEFT: Images (smaller column) */}
           <section className="pp-card pp-galleryCard" aria-label="Product images">
             <div className="pp-galleryMain">
@@ -453,7 +701,45 @@ export default function ProductPage() {
             </div>
 
             <div className="pp-galleryMeta">
+                {isAdmin && (
+                  <div style={{ marginBottom: 10 }}>
+                    <button
+                      type="button"
+                      onClick={() => openTabEditor("Images")}
+                      style={{
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        background: "rgba(0,0,0,0.25)",
+                        color: "white",
+                        padding: "8px 12px",
+                        borderRadius: 10,
+                        cursor: "pointer",
+                        fontWeight: 800,
+                      }}
+                    >
+                      Edit Images
+                    </button>
+                  </div>
+                )}
+
               <div className="pp-collectionName">{collection.name}</div>
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={openEditCollection}
+                  style={{
+                    marginTop: 10,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(0,0,0,0.25)",
+                    color: "white",
+                    padding: "8px 12px",
+                    borderRadius: 10,
+                    cursor: "pointer",
+                    fontWeight: 800,
+                  }}
+                >
+                  Edit Collection
+                </button>
+              )}
               <div className="pp-body">{flavorInfo.intro}</div>
               <br></br>
               <div className="pp-muted">{collection.tagline}</div>
@@ -478,7 +764,27 @@ export default function ProductPage() {
                   {t}
                 </button>
               ))}
-            </div>
+            
+              {isAdmin && tab !== "Details" && (
+                <button
+                  type="button"
+                  onClick={() => openTabEditor(tab)}
+                  style={{
+                    marginLeft: 10,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(0,0,0,0.25)",
+                    color: "white",
+                    padding: "8px 12px",
+                    borderRadius: 10,
+                    cursor: "pointer",
+                    fontWeight: 800,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Edit {tab}
+                </button>
+              )}
+</div>
 
             <div className="pp-tabPanel" role="tabpanel">
               {tab === "Details" && (
@@ -1064,8 +1370,643 @@ export default function ProductPage() {
               <div>✔ Small-batch quality</div>
             </div>
           </section>
+          </div>
+        </main>
+      </div>
+      {/* Admin: Edit Collection Modal */}
+      {editCollectionOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.55)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: 16,
+          }}
+          onClick={() => setEditCollectionOpen(false)}
+        >
+          <div
+            style={{
+              width: "min(720px, 100%)",
+              background: "#0b1220",
+              border: "1px solid rgba(255,255,255,0.10)",
+              borderRadius: 16,
+              padding: 18,
+              boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+              <div>
+                <div style={{ fontSize: 18, fontWeight: 900 }}>Edit Collection</div>
+                <div style={{ opacity: 0.75, fontSize: 13 }}>Update name, tagline, description, badge, sort order, active.</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditCollectionOpen(false)}
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 10,
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  background: "rgba(0,0,0,0.25)",
+                  color: "white",
+                  cursor: "pointer",
+                }}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 14 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <label style={{ fontSize: 12, opacity: 0.85 }}>Name</label>
+                <input
+                  value={editCollectionForm.name}
+                  onChange={(e) => setEditCollectionForm((p) => ({ ...p, name: e.target.value }))}
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: 12,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(0,0,0,0.25)",
+                    color: "white",
+                    outline: "none",
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <label style={{ fontSize: 12, opacity: 0.85 }}>Badge</label>
+                <input
+                  value={editCollectionForm.badge}
+                  onChange={(e) => setEditCollectionForm((p) => ({ ...p, badge: e.target.value }))}
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: 12,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(0,0,0,0.25)",
+                    color: "white",
+                    outline: "none",
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <label style={{ fontSize: 12, opacity: 0.85 }}>Tagline</label>
+                <input
+                  value={editCollectionForm.tagline}
+                  onChange={(e) => setEditCollectionForm((p) => ({ ...p, tagline: e.target.value }))}
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: 12,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(0,0,0,0.25)",
+                    color: "white",
+                    outline: "none",
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <label style={{ fontSize: 12, opacity: 0.85 }}>Sort order</label>
+                <input
+                  type="number"
+                  value={editCollectionForm.sort_order}
+                  onChange={(e) => setEditCollectionForm((p) => ({ ...p, sort_order: e.target.value }))}
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: 12,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(0,0,0,0.25)",
+                    color: "white",
+                    outline: "none",
+                  }}
+                />
+              </div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 12 }}>
+              <label style={{ fontSize: 12, opacity: 0.85 }}>Description</label>
+              <textarea
+                value={editCollectionForm.description}
+                onChange={(e) => setEditCollectionForm((p) => ({ ...p, description: e.target.value }))}
+                rows={5}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 12,
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  background: "rgba(0,0,0,0.25)",
+                  color: "white",
+                  outline: "none",
+                  resize: "vertical",
+                }}
+              />
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 }}>
+              <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+                <input
+                  type="checkbox"
+                  checked={!!editCollectionForm.is_active}
+                  onChange={(e) => setEditCollectionForm((p) => ({ ...p, is_active: e.target.checked }))}
+                />
+                <span style={{ fontSize: 13, opacity: 0.9 }}>Active (show on site)</span>
+              </label>
+
+              <div style={{ display: "flex", gap: 10 }}>
+                <button
+                  type="button"
+                  onClick={() => setEditCollectionOpen(false)}
+                  style={{
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(0,0,0,0.25)",
+                    color: "white",
+                    padding: "10px 14px",
+                    borderRadius: 12,
+                    cursor: "pointer",
+                    fontWeight: 800,
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={saveEditCollection}
+                  disabled={editCollectionSaving}
+                  style={{
+                    background: "#ff4d2d",
+                    border: "none",
+                    color: "white",
+                    padding: "10px 14px",
+                    borderRadius: 12,
+                    cursor: editCollectionSaving ? "not-allowed" : "pointer",
+                    fontWeight: 900,
+                    opacity: editCollectionSaving ? 0.65 : 1,
+                  }}
+                >
+                  {editCollectionSaving ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </div>
+
+            {editCollectionError && (
+              <div style={{ marginTop: 10, color: "#ff6b6b", fontWeight: 700, fontSize: 13 }}>
+                {editCollectionError}
+              </div>
+            )}
+          </div>
         </div>
-      </main>
-    </div>
-  );
+      )}
+    
+      {/* Admin: Edit Tab Modal */}
+      {editTabOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.55)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: 16,
+          }}
+          onClick={() => setEditTabOpen(false)}
+        >
+          <div
+            style={{
+              width: "min(820px, 100%)",
+              background: "#0b1220",
+              border: "1px solid rgba(255,255,255,0.10)",
+              borderRadius: 16,
+              padding: 18,
+              boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
+              color: "white",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+              <div>
+                <div style={{ fontSize: 18, fontWeight: 900 }}>Edit {editTabKey}</div>
+                <div style={{ opacity: 0.75, fontSize: 13 }}>
+                  {editTabKey === "Shipping"
+                    ? "Edit shipping text (markdown/plain)."
+                    : editTabKey === "Images"
+                    ? "Add image URLs for this collection."
+                    : "Add / remove rows. Saved to the collection table."}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditTabOpen(false)}
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 10,
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  background: "rgba(0,0,0,0.25)",
+                  color: "white",
+                  cursor: "pointer",
+                }}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            {editTabKey === "Shipping" ? (
+              <div style={{ marginTop: 14 }}>
+                <textarea
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  rows={10}
+                  style={{
+                    width: "100%",
+                    padding: "10px 12px",
+                    borderRadius: 12,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(0,0,0,0.25)",
+                    color: "white",
+                    outline: "none",
+                    resize: "vertical",
+                  }}
+                />
+              </div>
+            ) : (
+              <div style={{ marginTop: 14 }}>
+                <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+                  <button
+                    type="button"
+                    onClick={addRow}
+                    style={{
+                      border: "1px solid rgba(255,255,255,0.12)",
+                      background: "rgba(0,0,0,0.25)",
+                      color: "white",
+                      padding: "8px 12px",
+                      borderRadius: 10,
+                      cursor: "pointer",
+                      fontWeight: 800,
+                    }}
+                  >
+                    + Add Row
+                  </button>
+                </div>
+
+                <div style={{ display: "grid", gap: 10 }}>
+                  {editRows.map((row, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        border: "1px solid rgba(255,255,255,0.10)",
+                        borderRadius: 12,
+                        padding: 12,
+                        background: "rgba(0,0,0,0.18)",
+                      }}
+                    >
+                      {editTabKey === "Specs" && (
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: 10 }}>
+                          <input
+                            placeholder="Label"
+                            value={row.label}
+                            onChange={(e) =>
+                              setEditRows((p) => p.map((r, i) => (i === idx ? { ...r, label: e.target.value } : r)))
+                            }
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                            }}
+                          />
+                          <input
+                            placeholder="Value"
+                            value={row.value}
+                            onChange={(e) =>
+                              setEditRows((p) => p.map((r, i) => (i === idx ? { ...r, value: e.target.value } : r)))
+                            }
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeRow(idx)}
+                            style={{
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              cursor: "pointer",
+                              fontWeight: 900,
+                            }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      )}
+
+                      {editTabKey === "Documents" && (
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr 0.8fr auto", gap: 10 }}>
+                          <input
+                            placeholder="Title"
+                            value={row.title}
+                            onChange={(e) =>
+                              setEditRows((p) => p.map((r, i) => (i === idx ? { ...r, title: e.target.value } : r)))
+                            }
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                            }}
+                          />
+                          <input
+                            placeholder="URL"
+                            value={row.url}
+                            onChange={(e) =>
+                              setEditRows((p) => p.map((r, i) => (i === idx ? { ...r, url: e.target.value } : r)))
+                            }
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                            }}
+                          />
+                          <input
+                            placeholder="Type (COA, SDS...)"
+                            value={row.type}
+                            onChange={(e) =>
+                              setEditRows((p) => p.map((r, i) => (i === idx ? { ...r, type: e.target.value } : r)))
+                            }
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeRow(idx)}
+                            style={{
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              cursor: "pointer",
+                              fontWeight: 900,
+                            }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      )}
+
+                      {editTabKey === "Reviews" && (
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 0.5fr auto", gap: 10 }}>
+                          <input
+                            placeholder="Author"
+                            value={row.author}
+                            onChange={(e) =>
+                              setEditRows((p) => p.map((r, i) => (i === idx ? { ...r, author: e.target.value } : r)))
+                            }
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                            }}
+                          />
+                          <input
+                            type="number"
+                            min="1"
+                            max="5"
+                            placeholder="Rating"
+                            value={row.rating}
+                            onChange={(e) =>
+                              setEditRows((p) =>
+                                p.map((r, i) => (i === idx ? { ...r, rating: Number(e.target.value) } : r))
+                              )
+                            }
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeRow(idx)}
+                            style={{
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              cursor: "pointer",
+                              fontWeight: 900,
+                            }}
+                          >
+                            ✕
+                          </button>
+
+                          <textarea
+                            placeholder="Review text"
+                            value={row.text}
+                            onChange={(e) =>
+                              setEditRows((p) => p.map((r, i) => (i === idx ? { ...r, text: e.target.value } : r)))
+                            }
+                            rows={3}
+                            style={{
+                              gridColumn: "1 / -1",
+                              marginTop: 10,
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                              resize: "vertical",
+                            }}
+                          />
+                        </div>
+                      )}
+
+                      {(editTabKey === "Isolates" || editTabKey === "Terpenes") && (
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 0.5fr auto", gap: 10 }}>
+                          <input
+                            placeholder="Name"
+                            value={row.name}
+                            onChange={(e) =>
+                              setEditRows((p) => p.map((r, i) => (i === idx ? { ...r, name: e.target.value } : r)))
+                            }
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                            }}
+                          />
+                          <input
+                            placeholder="% (optional)"
+                            value={row.percent}
+                            onChange={(e) =>
+                              setEditRows((p) =>
+                                p.map((r, i) => (i === idx ? { ...r, percent: e.target.value } : r))
+                              )
+                            }
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeRow(idx)}
+                            style={{
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              cursor: "pointer",
+                              fontWeight: 900,
+                            }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      )}
+
+                      {editTabKey === "Images" && (
+                        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr auto", gap: 10 }}>
+                          <input
+                            placeholder="Image URL"
+                            value={row.url}
+                            onChange={(e) =>
+                              setEditRows((p) => p.map((r, i) => (i === idx ? { ...r, url: e.target.value } : r)))
+                            }
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                            }}
+                          />
+                          <input
+                            placeholder="Alt text"
+                            value={row.alt}
+                            onChange={(e) =>
+                              setEditRows((p) => p.map((r, i) => (i === idx ? { ...r, alt: e.target.value } : r)))
+                            }
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeRow(idx)}
+                            style={{
+                              border: "1px solid rgba(255,255,255,0.12)",
+                              background: "rgba(0,0,0,0.25)",
+                              color: "white",
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              cursor: "pointer",
+                              fontWeight: 900,
+                            }}
+                          >
+                            ✕
+                          </button>
+
+                          <label style={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 8 }}>
+                            <input
+                              type="radio"
+                              name="primaryImage"
+                              checked={!!row.isPrimary}
+                              onChange={() =>
+                                setEditRows((p) => p.map((r, i) => ({ ...r, isPrimary: i === idx })))
+                              }
+                            />
+                            <span style={{ opacity: 0.85 }}>Primary image</span>
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 14 }}>
+              <button
+                type="button"
+                onClick={() => setEditTabOpen(false)}
+                style={{
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  background: "rgba(0,0,0,0.25)",
+                  color: "white",
+                  padding: "10px 14px",
+                  borderRadius: 12,
+                  cursor: "pointer",
+                  fontWeight: 800,
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={saveTab}
+                disabled={editTabSaving}
+                style={{
+                  background: "#ff4d2d",
+                  border: "none",
+                  color: "white",
+                  padding: "10px 14px",
+                  borderRadius: 12,
+                  cursor: editTabSaving ? "not-allowed" : "pointer",
+                  fontWeight: 900,
+                  opacity: editTabSaving ? 0.65 : 1,
+                }}
+              >
+                {editTabSaving ? "Saving..." : "Save"}
+              </button>
+            </div>
+
+            {editTabError && (
+              <div style={{ marginTop: 10, color: "#ff6b6b", fontWeight: 700, fontSize: 13 }}>
+                {editTabError}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+</>
+);
 }

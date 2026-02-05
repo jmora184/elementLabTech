@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { heroCopy, terpeneCollections } from "./terpenesData";
 import "./TerpeneShowcase.css";
 import bottleImg from "../../assets/bottle.png";
@@ -9,10 +9,99 @@ import TerpeneSimulator from "../TerpeneSimulator/TerpeneSimulator";
 
 export default function TerpeneShowcase({ HeroBanner }) {
   const isMobile = useIsMobile();
-  
 
   const addToCart = () => {};
-  const displayedCollections = terpeneCollections;
+
+  // Load collections from DB (fallback to hardcoded if API/DB not ready)
+  const [dbCollections, setDbCollections] = useState(null); // null = loading/unknown
+  const displayedCollections = Array.isArray(dbCollections) && dbCollections.length
+    ? dbCollections
+    : terpeneCollections;
+
+  // Current user (to show admin-only controls)
+  const [me, setMe] = useState(null);
+  const isAdmin = (me?.role || "user") === "admin";
+
+  // Add Collection modal state
+  const [showAdd, setShowAdd] = useState(false);
+  const [addForm, setAddForm] = useState({
+    name: "",
+    id: "",
+    badge: "",
+    tagline: "",
+    description: "",
+    sort_order: 0,
+    is_active: 1,
+  });
+  const [addError, setAddError] = useState("");
+  const [addBusy, setAddBusy] = useState(false);
+
+  async function fetchJson(url, opts) {
+    const res = await fetch(url, { credentials: "include", ...opts });
+    const text = await res.text();
+    let data;
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch {
+      data = null;
+    }
+    if (!res.ok) {
+      const msg = data?.error || data?.message || `Request failed (${res.status})`;
+      throw new Error(msg);
+    }
+    return data;
+  }
+
+  async function loadCollections() {
+    try {
+      const d = await fetchJson("/api/collections");
+      setDbCollections(Array.isArray(d?.collections) ? d.collections : []);
+    } catch (err) {
+      // Fall back to hardcoded without breaking homepage
+      console.warn("DB collections load failed, falling back to hardcoded:", err?.message || err);
+      setDbCollections([]);
+    }
+  }
+
+  useEffect(() => {
+    // Load current user
+    fetchJson("/api/auth/me")
+      .then((d) => setMe(d?.user || null))
+      .catch(() => setMe(null));
+
+    // Load collections list
+    loadCollections();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function submitAddCollection() {
+    setAddError("");
+    setAddBusy(true);
+    try {
+      const payload = {
+        name: addForm.name,
+        id: addForm.id,
+        badge: addForm.badge,
+        tagline: addForm.tagline,
+        description: addForm.description,
+        sort_order: Number(addForm.sort_order) || 0,
+        is_active: addForm.is_active ? 1 : 0,
+      };
+      await fetchJson("/api/collections", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      setShowAdd(false);
+      setAddForm({ name: "", id: "", badge: "", tagline: "", description: "", sort_order: 0, is_active: 1 });
+      await loadCollections();
+    } catch (err) {
+      setAddError(err?.message || "Request failed");
+    } finally {
+      setAddBusy(false);
+    }
+  }
 
   return (
     <>
@@ -22,6 +111,25 @@ export default function TerpeneShowcase({ HeroBanner }) {
           {HeroBanner && <HeroBanner />}
           <section className="ts-section">
             <div className="ts-inner">
+              {isAdmin && (
+                <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 14 }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowAdd(true)}
+                    style={{
+                      padding: "10px 14px",
+                      borderRadius: 12,
+                      border: "1px solid rgba(255,255,255,0.18)",
+                      background: "rgba(0,0,0,0.35)",
+                      color: "#fff",
+                      fontWeight: 800,
+                      cursor: "pointer",
+                    }}
+                  >
+                    + Add Collection
+                  </button>
+                </div>
+              )}
               {/* <div className="ts-header">
                 <h2 className="ts-title">Terpenes By Element Labs</h2>
               </div> */}
@@ -62,6 +170,25 @@ export default function TerpeneShowcase({ HeroBanner }) {
         <section className="ts-mobileSection ts-mobileMessage">
           {HeroBanner && <HeroBanner />}
           <div className="ts-mobileInner">
+            {isAdmin && (
+              <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+                <button
+                  type="button"
+                  onClick={() => setShowAdd(true)}
+                  style={{
+                    padding: "10px 14px",
+                    borderRadius: 12,
+                    border: "1px solid rgba(255,255,255,0.18)",
+                    background: "rgba(0,0,0,0.35)",
+                    color: "#fff",
+                    fontWeight: 800,
+                    cursor: "pointer",
+                  }}
+                >
+                  + Add Collection
+                </button>
+              </div>
+            )}
             {/* <div className="ts-mobileHeader">
               <h2 className="ts-mobileTitle">Terpenes By Element Labs</h2>
             </div> */}
@@ -97,9 +224,189 @@ export default function TerpeneShowcase({ HeroBanner }) {
           </div>
         </section>
       )}
+
+      {showAdd && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.6)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+          }}
+          onMouseDown={(e) => {
+            // click outside to close
+            if (e.target === e.currentTarget) setShowAdd(false);
+          }}
+        >
+          <div
+            style={{
+              width: "min(720px, 96vw)",
+              borderRadius: 18,
+              background: "rgba(10, 15, 25, 0.96)",
+              border: "1px solid rgba(255,255,255,0.10)",
+              boxShadow: "0 18px 60px rgba(0,0,0,0.55)",
+              padding: 18,
+              color: "#fff",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+              <div>
+                <div style={{ fontSize: 22, fontWeight: 900 }}>Add Collection</div>
+                <div style={{ opacity: 0.8, fontSize: 13, marginTop: 4 }}>
+                  Creates a new homepage collection card (admin only).
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAdd(false)}
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
+                  border: "1px solid rgba(255,255,255,0.16)",
+                  background: "transparent",
+                  color: "#fff",
+                  cursor: "pointer",
+                  fontSize: 18,
+                }}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 14 }}>
+              <div>
+                <label style={{ fontSize: 12, opacity: 0.85 }}>Name *</label>
+                <input
+                  value={addForm.name}
+                  onChange={(e) => setAddForm((s) => ({ ...s, name: e.target.value }))}
+                  style={inputStyle}
+                  placeholder="Amplify Collection"
+                />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, opacity: 0.85 }}>Id / Slug (optional)</label>
+                <input
+                  value={addForm.id}
+                  onChange={(e) => setAddForm((s) => ({ ...s, id: e.target.value }))}
+                  style={inputStyle}
+                  placeholder="amplify-collection"
+                />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, opacity: 0.85 }}>Badge</label>
+                <input
+                  value={addForm.badge}
+                  onChange={(e) => setAddForm((s) => ({ ...s, badge: e.target.value }))}
+                  style={inputStyle}
+                  placeholder="AMPLIFY"
+                />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, opacity: 0.85 }}>Tagline</label>
+                <input
+                  value={addForm.tagline}
+                  onChange={(e) => setAddForm((s) => ({ ...s, tagline: e.target.value }))}
+                  style={inputStyle}
+                  placeholder="Terpene-inspired profiles"
+                />
+              </div>
+              <div style={{ gridColumn: "1 / -1" }}>
+                <label style={{ fontSize: 12, opacity: 0.85 }}>Description</label>
+                <textarea
+                  value={addForm.description}
+                  onChange={(e) => setAddForm((s) => ({ ...s, description: e.target.value }))}
+                  style={{ ...inputStyle, minHeight: 90, resize: "vertical" }}
+                  placeholder="A curated set of terpene-inspired profiles..."
+                />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, opacity: 0.85 }}>Sort order</label>
+                <input
+                  type="number"
+                  value={addForm.sort_order}
+                  onChange={(e) => setAddForm((s) => ({ ...s, sort_order: e.target.value }))}
+                  style={inputStyle}
+                />
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <input
+                  id="add-active"
+                  type="checkbox"
+                  checked={!!addForm.is_active}
+                  onChange={(e) => setAddForm((s) => ({ ...s, is_active: e.target.checked ? 1 : 0 }))}
+                />
+                <label htmlFor="add-active" style={{ fontSize: 13, opacity: 0.9 }}>
+                  Show on site
+                </label>
+              </div>
+            </div>
+
+            {addError && (
+              <div style={{ marginTop: 10, color: "#ff7b7b", fontSize: 13, fontWeight: 700 }}>
+                {addError}
+              </div>
+            )}
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 16 }}>
+              <button
+                type="button"
+                onClick={() => setShowAdd(false)}
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: 12,
+                  background: "transparent",
+                  border: "1px solid rgba(255,255,255,0.18)",
+                  color: "#fff",
+                  cursor: "pointer",
+                  fontWeight: 700,
+                }}
+                disabled={addBusy}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={submitAddCollection}
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: 12,
+                  background: "#ff3b30",
+                  border: "1px solid rgba(255,255,255,0.18)",
+                  color: "#fff",
+                  cursor: "pointer",
+                  fontWeight: 900,
+                }}
+                disabled={addBusy || !String(addForm.name || "").trim()}
+              >
+                {addBusy ? "Creating..." : "Create Collection"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  marginTop: 6,
+  padding: "10px 12px",
+  borderRadius: 12,
+  border: "1px solid rgba(255,255,255,0.14)",
+  background: "rgba(255,255,255,0.06)",
+  color: "#fff",
+  outline: "none",
+  fontSize: 14,
+};
 
 function CollectionCard({ collection, isMobile, cardClass, addToCart, cardIndex }) {
   const navigate = useNavigate();

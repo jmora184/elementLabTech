@@ -2,7 +2,7 @@
 // GET: list profiles for a collection
 // POST (admin-only): create a new flavor profile under a collection
 
-import { parseCookie, getUserFromSession } from "../../../_lib/auth";
+import { parseCookie, getUserFromSession } from "../../../_lib/auth.js";
 
 function json(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {

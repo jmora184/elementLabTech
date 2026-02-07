@@ -987,6 +987,9 @@ export default function ProductPage() {
                           borderRadius: 16,
                           boxShadow: "0 30px 80px rgba(0,0,0,0.5)",
                           padding: 16,
+                          maxHeight: "85vh",
+                          display: "flex",
+                          flexDirection: "column",
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
@@ -1003,9 +1006,10 @@ export default function ProductPage() {
                           </button>
                         </div>
 
-                        <p className="pp-muted" style={{ marginTop: 6 }}>
-                          This creates a new profile in D1 (images/documents next).
-                        </p>
+                        <div style={{ marginTop: 12, overflowY: "auto", paddingRight: 6, flex: "1 1 auto", minHeight: 0 }}>
+                          <p className="pp-muted" style={{ marginTop: 6 }}>
+                            This creates a new profile in D1 (images/documents next).
+                          </p>
 
                         {addErr && (
                           <div
@@ -1083,8 +1087,9 @@ export default function ProductPage() {
                               accept="image/*"
                               disabled={addProfileImgBusy}
                               onChange={async (e) => {
-                                const files = e.target.files;
+                                const files = Array.from(e.target.files || []);
                                 e.target.value = "";
+                                if (!files.length) return;
                                 await uploadFilesToRows(files, {
                                   setRows: setAddProfileImages,
                                   setBusy: setAddProfileImgBusy,
@@ -1169,7 +1174,9 @@ export default function ProductPage() {
                           </label>
                         </div>
 
-                        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 14 }}>
+                        </div>
+
+                        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.12)", marginTop: 12 }}>
                           <button type="button" className="pp-docBtn" onClick={() => setShowAdd(false)}>
                             Cancel
                           </button>

@@ -95,7 +95,7 @@ export default function TerpeneShowcase({ HeroBanner }) {
               .map((x, idx) => ({
                 url: String(x.url).trim(),
                 alt: String(x.alt || "").trim(),
-                isPrimary: idx === 0,
+                isPrimary: !!x.isPrimary,
               }))
           : [],
       };
@@ -391,9 +391,30 @@ export default function TerpeneShowcase({ HeroBanner }) {
                           placeholder="Alt text"
                           style={inputStyle}
                         />
+<label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, opacity: 0.9 }}>
+                          <input
+                            type="radio"
+                            name="collectionPrimaryImage"
+                            checked={!!img.isPrimary}
+                            onChange={() =>
+                              setAddImages((p) => p.map((r, i) => ({ ...r, isPrimary: i === idx })))
+                            }
+                          />
+                          <span>Primary</span>
+                        </label>
+
                         <button
                           type="button"
-                          onClick={() => setAddImages((p) => p.filter((_, i) => i !== idx))}
+                          onClick={() =>
+                            setAddImages((p) => {
+                              const next = p.filter((_, i) => i !== idx);
+                              if (!next.length) return next;
+                              const hasPrimary = next.some((x) => !!x.isPrimary);
+                              if (hasPrimary) return next;
+                              // If we removed the primary image, promote the first remaining image
+                              return next.map((x, i) => ({ ...x, isPrimary: i === 0 }));
+                            })
+                          }
                           style={{
                             padding: "10px 12px",
                             borderRadius: 12,

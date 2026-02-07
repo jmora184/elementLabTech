@@ -2,7 +2,7 @@
 // GET: returns a profile bundle: { profile, images, documents }
 // PUT (admin-only): updates profile fields (details only)
 
-import { parseCookie, getUserFromSession } from "../../_lib/auth";
+import { parseCookie, getUserFromSession } from "../../_lib/auth.js";
 
 function json(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {

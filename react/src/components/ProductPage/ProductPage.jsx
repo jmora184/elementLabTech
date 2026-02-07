@@ -31,6 +31,28 @@ const parseJsonArray = (value, fallback = []) => {
   }
 };
 
+const collectionDocDownloadUrl = (collectionId, doc) => {
+  const cid = encodeURIComponent(collectionId || "");
+  const did = encodeURIComponent(doc?.id || "");
+  if (did) return `/api/collections/${cid}/documents/${did}/download`;
+  return String(doc?.url || "");
+};
+
+async function uploadCollectionDocument(collectionId, file, { title = "", type = "" } = {}) {
+  const cid = encodeURIComponent(collectionId || "");
+  const fd = new FormData();
+  fd.append("file", file);
+  if (title) fd.append("title", title);
+  if (type) fd.append("type", type);
+  return await fetchJson(`/api/collections/${cid}/documents/upload`, { method: "POST", body: fd });
+}
+
+async function deleteCollectionDocument(collectionId, docId) {
+  const cid = encodeURIComponent(collectionId || "");
+  const did = encodeURIComponent(docId || "");
+  return await fetchJson(`/api/collections/${cid}/documents/${did}`, { method: "DELETE" });
+}
+
 function Stars({ value = 4.8 }) {
   const full = Math.floor(value);
   const half = value - full >= 0.5;
@@ -518,12 +540,25 @@ export default function ProductPage() {
       setEditRows(rows.length ? rows : [{ label: "", value: "" }]);
       setEditText("");
     } else if (key === "Documents") {
-      const rows = parseJsonArray(collection.documents_json, []).map((r) => ({
-        title: String(r?.title || ""),
-        url: String(r?.url || ""),
-        type: String(r?.type || ""),
-      }));
-      setEditRows(rows.length ? rows : [{ title: "", url: "", type: "" }]);
+      const rows = parseJsonArray(collection.documents_json, []).map((r) => {
+        const id = String(r?.id || "").trim();
+        const key = String(r?.key || "").trim();
+        const url = String(r?.url || "").trim() || (id ? collectionDocDownloadUrl(collection.id, { id }) : "");
+        return {
+          id,
+          key,
+          title: String(r?.title || ""),
+          type: String(r?.type || ""),
+          url,
+          fileName: String(r?.fileName || ""),
+          contentType: String(r?.contentType || ""),
+          size: r?.size ?? "",
+          created_at: String(r?.created_at || ""),
+        };
+      });
+      setEditRows(
+        rows.length ? rows : [{ id: "", key: "", title: "", type: "", url: "", fileName: "", contentType: "", size: "", created_at: "" }]
+      );
       setEditText("");
     } else if (key === "Reviews") {
       const rows = parseJsonArray(collection.reviews_json, []).map((r) => ({
@@ -567,7 +602,7 @@ export default function ProductPage() {
     setEditRows((prev) => {
       const key = editTabKey;
       if (key === "Specs") return [...prev, { label: "", value: "" }];
-      if (key === "Documents") return [...prev, { title: "", url: "", type: "" }];
+      if (key === "Documents") return [...prev, { id: "", key: "", title: "", type: "", url: "", fileName: "", contentType: "", size: "", created_at: "" }];
       if (key === "Reviews") return [...prev, { author: "", rating: 5, text: "" }];
       if (key === "Isolates" || key === "Terpenes") return [...prev, { name: "", percent: "" }];
       if (key === "Images") return [...prev, { url: "", alt: "", isPrimary: prev.length === 0 }];
@@ -600,12 +635,34 @@ export default function ProductPage() {
         payload.specs_json = JSON.stringify(cleaned);
       } else if (key === "Documents") {
         const cleaned = editRows
-          .map((r) => ({
-            title: String(r.title || "").trim(),
-            url: String(r.url || "").trim(),
-            type: String(r.type || "").trim(),
-          }))
-          .filter((r) => r.title || r.url);
+          .map((r) => {
+            const title = String(r.title || "").trim();
+            const type = String(r.type || "").trim();
+            const id = String(r.id || "").trim();
+            const key = String(r.key || "").trim();
+            const url = String(r.url || "").trim();
+
+            // R2-backed document (preferred)
+            if (id && key) {
+              return {
+                id,
+                key,
+                title: title || String(r.fileName || "Document"),
+                type,
+                fileName: String(r.fileName || ""),
+                contentType: String(r.contentType || ""),
+                size: r.size ?? null,
+                created_at: String(r.created_at || ""),
+              };
+            }
+
+            // Legacy/external link support
+            if (title || url) {
+              return { title, url, type };
+            }
+            return null;
+          })
+          .filter(Boolean);
         payload.documents_json = JSON.stringify(cleaned);
       } else if (key === "Reviews") {
         const cleaned = editRows
@@ -1240,17 +1297,21 @@ export default function ProductPage() {
 
                   {documentsRows.length ? (
                     <div className="pp-docList">
-                      {documentsRows.map((d, idx) => (
-                        <a
-                          key={d.id || d.url || idx}
-                          className="pp-docBtn"
-                          href={d.url}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {d.title || d.name || "Document"}
-                        </a>
-                      ))}
+                      {documentsRows.map((d, idx) => {
+                        const href = String(d?.url || "").trim() || collectionDocDownloadUrl(collection?.id, d);
+                        if (!href) return null;
+                        return (
+                          <a
+                            key={d.id || d.url || idx}
+                            className="pp-docBtn"
+                            href={href}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {d.title || d.name || d.fileName || "Document"}
+                          </a>
+                        );
+                      })}
                     </div>
                   ) : (
                     <p className="pp-muted">No documents have been added yet.</p>
@@ -1779,7 +1840,7 @@ export default function ProductPage() {
                       )}
 
                       {editTabKey === "Documents" && (
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr 0.8fr auto", gap: 10 }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 0.8fr 1.4fr auto", gap: 10, alignItems: "start" }}>
                           <input
                             placeholder="Title"
                             value={row.title}
@@ -1794,20 +1855,7 @@ export default function ProductPage() {
                               color: "white",
                             }}
                           />
-                          <input
-                            placeholder="URL"
-                            value={row.url}
-                            onChange={(e) =>
-                              setEditRows((p) => p.map((r, i) => (i === idx ? { ...r, url: e.target.value } : r)))
-                            }
-                            style={{
-                              padding: "10px 12px",
-                              borderRadius: 12,
-                              border: "1px solid rgba(255,255,255,0.12)",
-                              background: "rgba(0,0,0,0.25)",
-                              color: "white",
-                            }}
-                          />
+
                           <input
                             placeholder="Type (COA, SDS...)"
                             value={row.type}
@@ -1822,9 +1870,130 @@ export default function ProductPage() {
                               color: "white",
                             }}
                           />
+
+                          <div style={{ display: "grid", gap: 8 }}>
+                            {row?.id && row?.key && (
+                              <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                                <a
+                                  href={collectionDocDownloadUrl(collection?.id, row)}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  style={{ color: "white", textDecoration: "underline", fontWeight: 800 }}
+                                >
+                                  Download
+                                </a>
+                                <span style={{ fontSize: 12, opacity: 0.75 }}>
+                                  {row.fileName || "Stored in R2"}
+                                </span>
+                              </div>
+                            )}
+
+                            <label
+                              style={{
+                                display: "inline-block",
+                                cursor: "pointer",
+                                border: "1px solid rgba(255,255,255,0.12)",
+                                background: "rgba(0,0,0,0.25)",
+                                color: "white",
+                                padding: "10px 12px",
+                                borderRadius: 12,
+                                fontWeight: 800,
+                              }}
+                              title="Upload a file to Cloudflare R2"
+                            >
+                              Upload / Replace file
+                              <input
+                                type="file"
+                                accept=".pdf,.doc,.docx,.txt,.csv,.xlsx,.xls,.ppt,.pptx,.png,.jpg,.jpeg,.webp"
+                                onChange={async (e) => {
+                                  const files = Array.from(e.target.files || []);
+                                  e.target.value = "";
+                                  if (!files.length) return;
+
+                                  // If replacing, best-effort delete the old doc to avoid orphaned storage.
+                                  if (row?.id && row?.key) {
+                                    try {
+                                      await deleteCollectionDocument(collection?.id, row.id);
+                                    } catch {
+                                      // ignore
+                                    }
+                                  }
+
+                                  setEditTabError("");
+                                  try {
+                                    const file = files[0];
+                                    const out = await uploadCollectionDocument(collection?.id, file, {
+                                      title: String(row.title || file.name).trim(),
+                                      type: String(row.type || "").trim(),
+                                    });
+
+                                    const doc = out?.doc;
+                                    if (!doc?.id || !doc?.key) throw new Error("Upload succeeded but no doc id/key returned.");
+
+                                    setEditRows((p) =>
+                                      p.map((r, i) =>
+                                        i === idx
+                                          ? {
+                                              ...r,
+                                              id: String(doc.id || ""),
+                                              key: String(doc.key || ""),
+                                              title: String(doc.title || r.title || ""),
+                                              type: String(doc.type || r.type || ""),
+                                              fileName: String(doc.fileName || file.name || ""),
+                                              contentType: String(doc.contentType || file.type || ""),
+                                              size: doc.size ?? r.size ?? "",
+                                              created_at: String(doc.created_at || r.created_at || ""),
+                                              url: String(doc.url || ""),
+                                            }
+                                          : r
+                                      )
+                                    );
+                                  } catch (ex) {
+                                    setEditTabError(ex?.message || "Document upload failed.");
+                                  }
+                                }}
+                                style={{
+                                  position: "absolute",
+                                  left: -9999,
+                                  width: 1,
+                                  height: 1,
+                                  opacity: 0,
+                                }}
+                              />
+                            </label>
+
+                            {/* Optional: allow external links (legacy support) */}
+                            {!row?.key && (
+                              <input
+                                placeholder="External URL (optional)"
+                                value={row.url}
+                                onChange={(e) =>
+                                  setEditRows((p) => p.map((r, i) => (i === idx ? { ...r, url: e.target.value } : r)))
+                                }
+                                style={{
+                                  padding: "10px 12px",
+                                  borderRadius: 12,
+                                  border: "1px solid rgba(255,255,255,0.12)",
+                                  background: "rgba(0,0,0,0.25)",
+                                  color: "white",
+                                }}
+                              />
+                            )}
+                          </div>
+
                           <button
                             type="button"
-                            onClick={() => removeRow(idx)}
+                            onClick={async () => {
+                              // If stored in R2, delete it too.
+                              if (row?.id && row?.key) {
+                                try {
+                                  await deleteCollectionDocument(collection?.id, row.id);
+                                } catch {
+                                  // ignore
+                                }
+                              }
+                              removeRow(idx);
+                            }}
                             style={{
                               border: "1px solid rgba(255,255,255,0.12)",
                               background: "rgba(0,0,0,0.25)",

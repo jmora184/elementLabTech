@@ -3,6 +3,7 @@
   "name": "elementlab-pages",
   "pages_build_output_dir": "./dist",
   "compatibility_date": "2026-02-05",
+
   "d1_databases": [
     {
       "binding": "DB",
@@ -10,6 +11,14 @@
       "database_id": "cc0b38b3-01f2-47f4-be68-b6ceaea15d09"
     }
   ],
+
+  "r2_buckets": [
+    {
+      "binding": "DOCS_BUCKET",
+      "bucket_name": "elementlab-docs"
+    }
+  ],
+
   "vars": {
     "ENV": "local"
   }

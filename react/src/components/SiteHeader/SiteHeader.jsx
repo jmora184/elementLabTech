@@ -174,7 +174,11 @@ export default function SiteHeader({
                   <button
                     className="ts-authBtn"
                     type="button"
-                    onClick={() => navigate("/account")}
+                    onClick={() => {
+                      setMenuOpen(false);
+                      setMiniMenuOpen(false);
+                      navigate("/account");
+                    }}
                   >
                     Account
                   </button>
@@ -182,6 +186,8 @@ export default function SiteHeader({
                     className="ts-authBtn ts-authBtnSecondary"
                     type="button"
                     onClick={async () => {
+                      setMenuOpen(false);
+                      setMiniMenuOpen(false);
                       await logout();
                       navigate("/");
                     }}
@@ -193,7 +199,11 @@ export default function SiteHeader({
                 <button
                   className="ts-authBtn"
                   type="button"
-                  onClick={() => navigate("/login")}
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setMiniMenuOpen(false);
+                    navigate("/login");
+                  }}
                 >
                   Login
                 </button>

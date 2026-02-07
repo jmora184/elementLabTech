@@ -258,6 +258,7 @@ export default function TerpeneShowcase({ HeroBanner }) {
           }}
         >
           <div
+            className="ts-addModal"
             style={{
               width: "min(720px, 96vw)",
               borderRadius: 18,
@@ -294,9 +295,9 @@ export default function TerpeneShowcase({ HeroBanner }) {
               </button>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 14 }}>
-              <div>
-                <label style={{ fontSize: 12, opacity: 0.85 }}>Name *</label>
+            <div className="ts-addFormGrid">
+              <div className="ts-addFormField">
+                <label className="ts-addFormLabel">Name *</label>
                 <input
                   value={addForm.name}
                   onChange={(e) => setAddForm((s) => ({ ...s, name: e.target.value }))}
@@ -304,8 +305,8 @@ export default function TerpeneShowcase({ HeroBanner }) {
                   placeholder="Amplify Collection"
                 />
               </div>
-              <div>
-                <label style={{ fontSize: 12, opacity: 0.85 }}>Id / Slug (optional)</label>
+              <div className="ts-addFormField">
+                <label className="ts-addFormLabel">Id / Slug (optional)</label>
                 <input
                   value={addForm.id}
                   onChange={(e) => setAddForm((s) => ({ ...s, id: e.target.value }))}
@@ -313,8 +314,8 @@ export default function TerpeneShowcase({ HeroBanner }) {
                   placeholder="amplify-collection"
                 />
               </div>
-              <div>
-                <label style={{ fontSize: 12, opacity: 0.85 }}>Badge</label>
+              <div className="ts-addFormField">
+                <label className="ts-addFormLabel">Badge</label>
                 <input
                   value={addForm.badge}
                   onChange={(e) => setAddForm((s) => ({ ...s, badge: e.target.value }))}
@@ -322,8 +323,8 @@ export default function TerpeneShowcase({ HeroBanner }) {
                   placeholder="AMPLIFY"
                 />
               </div>
-              <div>
-                <label style={{ fontSize: 12, opacity: 0.85 }}>Tagline</label>
+              <div className="ts-addFormField">
+                <label className="ts-addFormLabel">Tagline</label>
                 <input
                   value={addForm.tagline}
                   onChange={(e) => setAddForm((s) => ({ ...s, tagline: e.target.value }))}
@@ -331,8 +332,8 @@ export default function TerpeneShowcase({ HeroBanner }) {
                   placeholder="Terpene-inspired profiles"
                 />
               </div>
-              <div style={{ gridColumn: "1 / -1" }}>
-                <label style={{ fontSize: 12, opacity: 0.85 }}>Description</label>
+              <div className="ts-addFormField" style={{ gridColumn: "1 / -1" }}>
+                <label className="ts-addFormLabel">Description</label>
                 <textarea
                   value={addForm.description}
                   onChange={(e) => setAddForm((s) => ({ ...s, description: e.target.value }))}
@@ -341,8 +342,8 @@ export default function TerpeneShowcase({ HeroBanner }) {
                 />
               </div>
 
-              <div style={{ gridColumn: "1 / -1" }}>
-                <label style={{ fontSize: 12, opacity: 0.85 }}>Upload collection images (optional)</label>
+              <div className="ts-addFormField" style={{ gridColumn: "1 / -1" }}>
+                <label className="ts-addFormLabel">Upload collection images (optional)</label>
                 <input
                   type="file"
                   multiple
@@ -432,8 +433,8 @@ export default function TerpeneShowcase({ HeroBanner }) {
                   </div>
                 )}
               </div>
-              <div>
-                <label style={{ fontSize: 12, opacity: 0.85 }}>Sort order</label>
+              <div className="ts-addFormField">
+                <label className="ts-addFormLabel">Sort order</label>
                 <input
                   type="number"
                   value={addForm.sort_order}

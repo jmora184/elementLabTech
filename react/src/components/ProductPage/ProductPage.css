@@ -474,6 +474,53 @@
   resize: vertical;
 }
 
+/* Admin edit profile modal form */
+.pp-editFormGrid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+  align-items: start;
+}
+
+.pp-editFormField{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: rgba(255,255,255,0.8);
+  font-size: 12px;
+}
+
+.pp-editFormField input,
+.pp-editFormField textarea,
+.pp-editFormField select{
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pp-editModal .pp-editFormField input,
+.pp-editModal .pp-editFormField textarea,
+.pp-editModal .pp-editFormField select{
+  max-width: 320px;
+}
+
+.pp-editModal .pp-editFormField[style*="grid-column"] input,
+.pp-editModal .pp-editFormField[style*="grid-column"] textarea,
+.pp-editModal .pp-editFormField[style*="grid-column"] select{
+  max-width: 100%;
+}
+
+.pp-editModal{
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+@media (max-width: 720px){
+  .pp-editFormGrid{
+    grid-template-columns: 1fr;
+  }
+}
+
 .pp-reviewList{
   margin-top: 14px;
   display: flex;

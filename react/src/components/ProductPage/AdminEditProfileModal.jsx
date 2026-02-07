@@ -109,6 +109,7 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, i
       }}
     >
       <div
+        className="pp-editModal"
         style={{
           width: "min(720px, 100%)",
           background: "#0b1220",
@@ -153,8 +154,8 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, i
           </div>
         )}
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 12 }}>
-          <label style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>
+        <div className="pp-editFormGrid">
+          <label className="pp-editFormField">
             Name
             <input
               value={form.name}
@@ -172,7 +173,7 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, i
             />
           </label>
 
-          <label style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>
+          <label className="pp-editFormField">
             Sort order
             <input
               inputMode="numeric"
@@ -191,7 +192,7 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, i
             />
           </label>
 
-          <label style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>
+          <label className="pp-editFormField">
             Flavor type
             <input
               value={form.flavor_type}
@@ -209,7 +210,7 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, i
             />
           </label>
 
-          <label style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>
+          <label className="pp-editFormField">
             Flavor category
             <input
               value={form.flavor_category}
@@ -227,7 +228,7 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, i
             />
           </label>
 
-          <label style={{ color: "rgba(255,255,255,0.8)", fontSize: 12, gridColumn: "1 / -1" }}>
+          <label className="pp-editFormField" style={{ gridColumn: "1 / -1" }}>
             Description
             <textarea
               rows={3}
@@ -247,7 +248,7 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, i
             />
           </label>
 
-          <label style={{ color: "rgba(255,255,255,0.8)", fontSize: 12, gridColumn: "1 / -1" }}>
+          <label className="pp-editFormField" style={{ gridColumn: "1 / -1" }}>
             Upload images (optional)
             <input
               type="file"
@@ -340,7 +341,7 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, i
             )}
           </label>
 
-          <label style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>
+          <label className="pp-editFormField">
             Mood
             <input
               value={form.mood}
@@ -367,7 +368,7 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, i
             Active
           </label>
 
-          <label style={{ color: "rgba(255,255,255,0.8)", fontSize: 12, gridColumn: "1 / -1" }}>
+          <label className="pp-editFormField" style={{ gridColumn: "1 / -1" }}>
             Dominant terpenes (comma-separated)
             <input
               value={form.dominant_terpenes_csv}
@@ -385,7 +386,7 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, i
             />
           </label>
 
-          <label style={{ color: "rgba(255,255,255,0.8)", fontSize: 12, gridColumn: "1 / -1" }}>
+          <label className="pp-editFormField" style={{ gridColumn: "1 / -1" }}>
             Flavor & aroma (comma-separated)
             <input
               value={form.flavor_aroma_csv}

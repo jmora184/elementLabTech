@@ -119,28 +119,55 @@ export default function SiteHeader({
     <>
       <header className="ts-siteHeader">
         <nav className="ts-siteNav" aria-label="Primary">
-          <a
-            href="/"
-            className="ts-logoLink"
-            aria-label="Element Labs Home"
-            onClick={handleLogoClick}
-          >
-            <img src={logoSrc} alt="Element Labs Logo" className="ts-siteLogo" />
-          </a>
+          <div className="ts-logoSearchCenter">
+            <a
+              href="/"
+              className="ts-logoLink"
+              aria-label="Element Labs Home"
+              onClick={handleLogoClick}
+            >
+              <img src={logoSrc} alt="Element Labs Logo" className="ts-siteLogo" />
+            </a>
 
-          <div className="ts-headerActions">
-            <div className="ts-jump ts-headerJump">
-              <input
-                id="collectionJump"
-                className="ts-select ts-selectSearch"
-                type="text"
-                value={value}
-                onChange={handleSearchChange}
-                placeholder={searchPlaceholder}
-                aria-label={searchPlaceholder}
-              />
+            <div className="ts-headerActions">
+              <div className="ts-jump ts-headerJump">
+                <input
+                  id="collectionJump"
+                  className="ts-select ts-selectSearch"
+                  type="text"
+                  value={value}
+                  onChange={handleSearchChange}
+                  placeholder={searchPlaceholder}
+                  aria-label={searchPlaceholder}
+                />
+              </div>
+
+              <button
+                className="ts-menuBtn"
+                type="button"
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={menuOpen}
+                onClick={() => setMenuOpen((v) => !v)}
+              >
+                ☰
+              </button>
             </div>
+          </div>
 
+          <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}>
+            {resolvedNavLinks.map((l) => (
+              <a
+                key={l.id}
+                href={`/#${l.id}`}
+                className="ts-siteNavLink"
+                onClick={(e) => {
+                  e.preventDefault();
+                  goToSection(l.id);
+                }}
+              >
+                {l.label}
+              </a>
+            ))}
             <div className="ts-authArea">
               {user ? (
                 <>
@@ -172,32 +199,6 @@ export default function SiteHeader({
                 </button>
               )}
             </div>
-
-            <button
-              className="ts-menuBtn"
-              type="button"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((v) => !v)}
-            >
-              ☰
-            </button>
-          </div>
-
-          <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}>
-            {resolvedNavLinks.map((l) => (
-              <a
-                key={l.id}
-                href={`/#${l.id}`}
-                className="ts-siteNavLink"
-                onClick={(e) => {
-                  e.preventDefault();
-                  goToSection(l.id);
-                }}
-              >
-                {l.label}
-              </a>
-            ))}
           </div>
         </nav>
       </header>

@@ -1509,9 +1509,9 @@ export default function ProductPage() {
             </button>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 12 }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <label style={{ fontSize: 12, opacity: 0.85 }}>Name</label>
+          <div className="pp-editFormGrid">
+            <label className="pp-editFormField">
+              Name
               <input
                 value={editCollectionForm.name}
                 onChange={(e) => setEditCollectionForm((p) => ({ ...p, name: e.target.value }))}
@@ -1524,10 +1524,10 @@ export default function ProductPage() {
                   outline: "none",
                 }}
               />
-            </div>
+            </label>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <label style={{ fontSize: 12, opacity: 0.85 }}>Badge</label>
+            <label className="pp-editFormField">
+              Badge
               <input
                 value={editCollectionForm.badge}
                 onChange={(e) => setEditCollectionForm((p) => ({ ...p, badge: e.target.value }))}
@@ -1540,10 +1540,10 @@ export default function ProductPage() {
                   outline: "none",
                 }}
               />
-            </div>
+            </label>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <label style={{ fontSize: 12, opacity: 0.85 }}>Tagline</label>
+            <label className="pp-editFormField">
+              Tagline
               <input
                 value={editCollectionForm.tagline}
                 onChange={(e) => setEditCollectionForm((p) => ({ ...p, tagline: e.target.value }))}
@@ -1556,10 +1556,10 @@ export default function ProductPage() {
                   outline: "none",
                 }}
               />
-            </div>
+            </label>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <label style={{ fontSize: 12, opacity: 0.85 }}>Sort order</label>
+            <label className="pp-editFormField">
+              Sort order
               <input
                 type="number"
                 value={editCollectionForm.sort_order}
@@ -1573,25 +1573,25 @@ export default function ProductPage() {
                   outline: "none",
                 }}
               />
-            </div>
-          </div>
+            </label>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 12 }}>
-            <label style={{ fontSize: 12, opacity: 0.85 }}>Description</label>
-            <textarea
-              value={editCollectionForm.description}
-              onChange={(e) => setEditCollectionForm((p) => ({ ...p, description: e.target.value }))}
-              rows={5}
-              style={{
-                padding: "10px 12px",
-                borderRadius: 12,
-                border: "1px solid rgba(255,255,255,0.12)",
-                background: "rgba(0,0,0,0.25)",
-                color: "white",
-                outline: "none",
-                resize: "vertical",
-              }}
-            />
+            <label className="pp-editFormField" style={{ gridColumn: "1 / -1" }}>
+              Description
+              <textarea
+                value={editCollectionForm.description}
+                onChange={(e) => setEditCollectionForm((p) => ({ ...p, description: e.target.value }))}
+                rows={5}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 12,
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  background: "rgba(0,0,0,0.25)",
+                  color: "white",
+                  outline: "none",
+                  resize: "vertical",
+                }}
+              />
+            </label>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 }}>

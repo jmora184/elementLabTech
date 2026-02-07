@@ -69,6 +69,45 @@
   background: linear-gradient(135deg, #fff5e6 0%, #ffd699 60%, #ffe0b2 100%) !important;
   box-shadow: 0 4px 32px rgba(255, 183, 77, 0.10);
 }
+
+/* Add collection form layout */
+.ts-addFormGrid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+  align-items: start;
+}
+
+.ts-addFormField{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ts-addFormLabel{
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.ts-addModal{
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+.ts-addModal .ts-addFormField input,
+.ts-addModal .ts-addFormField textarea,
+.ts-addModal .ts-addFormField select{
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 720px){
+  .ts-addFormGrid{
+    grid-template-columns: 1fr;
+  }
+}
 @media (max-width: 600px) {
   .ts-mobileCardStack {
     display: grid;
@@ -459,14 +498,25 @@
 }
 
 .ts-siteNav{
-  max-width: var(--ts-max);
+  max-width: 100%;
   margin: 0 auto;
   padding: 10px 16px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 16px;
   position: relative;
+}
+
+.ts-logoSearchCenter{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex: 1;
+  margin-left: auto;
+  margin-right: auto;
+  transform: translateX(120px);
 }
 
 /* Header action cluster (search + hamburger) */
@@ -475,6 +525,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 18px;
+  flex: 0 1 auto;
 }
 
 /* Tighten the search sizing when used inside the header */
@@ -514,6 +565,9 @@
   display: flex;
   align-items: center;
   gap: 14px;
+  margin-left: auto;
+  justify-content: flex-end;
+  margin-right: 24px;
 }
 
 .ts-siteNavLink{
@@ -610,7 +664,7 @@
 
 .ts-miniLinks{
   display: flex;
-  gap: 16px;
+  gap: 8px;
   align-items: center;
   justify-content: center;
   margin-left: auto;
@@ -633,11 +687,29 @@
   color: #000;
 }
 
+@media (max-width: 768px){
+  .ts-miniMenuBtn{
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+  .ts-miniLinks{
+    gap: 4px;
+  }
+  .ts-miniLink{
+    padding: 4px 10px;
+  }
+}
+
 /* Mobile nav */
 @media (max-width: 768px){
   .ts-menuBtn{ display: inline-flex; }
   /* Hide the logo entirely on mobile to keep the header clean */
   .ts-logoLink{ display: none; }
+  .ts-logoSearchCenter{
+    width: 100%;
+    justify-content: center;
+    transform: none;
+  }
   /* Make the header wrap cleanly on mobile:
      Row 1: logo + hamburger
      Row 2: search (full width)
@@ -646,37 +718,40 @@
   .ts-siteNav{
     flex-wrap: wrap;
     gap: 10px;
-    padding: 10px 12px;
+    padding: 8px 10px;
   }
 
   .ts-siteLogo{ height: 34px; }
 
   .ts-headerActions{
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
+    position: relative;
   }
 
   .ts-siteNav .ts-headerJump{
     min-width: 0;
     max-width: none;
-    /* Half-width search on mobile to avoid oversized bar */
-    width: min(52vw, 360px);
+    /* Center the search input on mobile */
+    width: min(56vw, 260px);
     flex: 0 1 auto;
     margin-left: 0;
-    margin-right: 0;
+    margin-right: auto;
     order: 1;
   }
 
   .ts-headerActions .ts-menuBtn{
     order: 2;
-    margin-right: 14px;
+    position: absolute;
+    right: 0;
+    margin-right: 0;
   }
 
   .ts-siteNav .ts-select{
-    height: 38px;
-    font-size: 14px;
+    height: 34px;
+    font-size: 13px;
   }
 
   .ts-navLinks{
@@ -706,23 +781,25 @@
 /* Mini header mobile tweaks */
 @media (max-width: 768px){
   .ts-miniHeaderInner{
-    padding: 8px 12px;
+    padding: 6px 8px;
     gap: 10px;
   }
 
   .ts-miniLinks{
     margin-left: 0;
     margin-right: 0;
-    justify-content: flex-start;
-    gap: 10px;
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    justify-content: stretch;
   }
 
   .ts-miniLink{
-    padding: 6px 12px;
-    flex: 0 0 auto;
+    padding: 4px 6px;
+    font-size: 11px;
+    line-height: 1.1;
+    text-align: center;
+    flex: 1 1 auto;
   }
 
   .ts-miniMenuPanel{
@@ -746,23 +823,25 @@
 /* Mini header mobile polish */
 @media (max-width: 768px){
   .ts-miniHeaderInner{
-    padding: 8px 12px;
+    padding: 6px 8px;
     gap: 10px;
   }
 
   .ts-miniLinks{
-    gap: 10px;
-    justify-content: flex-start;
     margin-left: 0;
     margin-right: 0;
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    justify-content: stretch;
   }
 
   .ts-miniLink{
-    padding: 6px 12px;
-    flex: 0 0 auto;
+    padding: 4px 6px;
+    font-size: 11px;
+    line-height: 1.1;
+    text-align: center;
+    flex: 1 1 auto;
   }
 
   .ts-miniMenuPanel{
@@ -1257,7 +1336,7 @@
   display: flex;
   gap: 8px;
   align-items: center;
-  margin-left: 10px;
+  margin-left: 18px;
 }
 .ts-authBtn{
   padding: 8px 10px;
@@ -1273,6 +1352,17 @@
 }
 @media (max-width: 720px){
   .ts-authArea{
-    display: none; /* keep mobile header clean; login still available via /login */
+    display: flex;
+    gap: 6px;
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+    padding-right: 10px;
+  }
+  .ts-authBtn{
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    min-height: 38px;
   }
 }

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { uploadImageFile } from "../../utils/cloudflareImages";
+
 /**
  * AdminEditProfileModal
  * - Drop-in modal to edit a flavor profile's details.
@@ -8,9 +10,10 @@ import React, { useEffect, useState } from "react";
  *   open: boolean
  *   onClose: () => void
  *   initialProfile: object | null   (expects fields like name, flavor_type, etc)
+ *   initialImages: array (optional)     (rows from flavor_profile_images)
  *   onSave: (payload) => Promise<void>  (payload matches the PUT endpoint body)
  */
-export default function AdminEditProfileModal({ open, onClose, initialProfile, onSave }) {
+export default function AdminEditProfileModal({ open, onClose, initialProfile, initialImages = [], onSave }) {
   const [form, setForm] = useState({
     name: "",
     flavor_type: "",
@@ -24,6 +27,9 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, o
   });
   const [err, setErr] = useState("");
   const [saving, setSaving] = useState(false);
+
+  const [images, setImages] = useState([]); // [{ url, alt, kind }]
+  const [imgBusy, setImgBusy] = useState(false);
 
   useEffect(() => {
     if (!initialProfile) return;
@@ -39,7 +45,13 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, o
       is_active: initialProfile.is_active === undefined ? true : Boolean(initialProfile.is_active),
     });
     setErr("");
-  }, [initialProfile, open]);
+    const next = Array.isArray(initialImages) ? initialImages : [];
+    setImages(
+      next
+        .filter((x) => x && typeof x.url === "string" && x.url.trim())
+        .map((x) => ({ url: String(x.url).trim(), alt: String(x.alt || "").trim(), kind: String(x.kind || "gallery").trim() || "gallery" }))
+    );
+  }, [initialProfile, initialImages, open]);
 
   if (!open) return null;
 
@@ -57,6 +69,16 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, o
         flavor_aroma: form.flavor_aroma_csv.split(",").map((s) => s.trim()).filter(Boolean),
         sort_order: form.sort_order === "" ? null : Number(form.sort_order),
         is_active: Boolean(form.is_active),
+        images: Array.isArray(images)
+          ? images
+              .filter((x) => x && typeof x.url === "string" && x.url.trim())
+              .map((x, idx) => ({
+                url: String(x.url).trim(),
+                alt: String(x.alt || "").trim(),
+                kind: String(x.kind || "gallery").trim() || "gallery",
+                sort_order: idx,
+              }))
+          : [],
       };
       await onSave(payload);
       onClose();
@@ -223,6 +245,99 @@ export default function AdminEditProfileModal({ open, onClose, initialProfile, o
                 resize: "vertical",
               }}
             />
+          </label>
+
+          <label style={{ color: "rgba(255,255,255,0.8)", fontSize: 12, gridColumn: "1 / -1" }}>
+            Upload images (optional)
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              disabled={imgBusy}
+              onChange={async (e) => {
+                const files = Array.from(e.target.files || []);
+                e.target.value = "";
+                if (!files.length) return;
+                setErr("");
+                setImgBusy(true);
+                try {
+                  for (const file of files) {
+                    const out = await uploadImageFile(file, {
+                      metadata: {
+                        purpose: "flavor_profile",
+                        collection_id: initialProfile?.collection_id,
+                        profile_id: initialProfile?.id,
+                        slug: initialProfile?.slug,
+                      },
+                    });
+                    if (!out?.url) throw new Error("Upload succeeded but no delivery URL was returned.");
+                    setImages((p) => [...(Array.isArray(p) ? p : []), { url: out.url, alt: "", kind: "gallery" }]);
+                  }
+                } catch (ex) {
+                  setErr(ex?.message || "Image upload failed.");
+                } finally {
+                  setImgBusy(false);
+                }
+              }}
+              style={{
+                width: "100%",
+                marginTop: 6,
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "1px solid rgba(255,255,255,0.12)",
+                background: "rgba(255,255,255,0.06)",
+                color: "white",
+                outline: "none",
+              }}
+            />
+            <div style={{ opacity: 0.7, fontSize: 12, marginTop: 6 }}>
+              Pick files from your device (or drag-select multiple). They’ll upload to Cloudflare Images.
+            </div>
+
+            {!!images.length && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 10 }}>
+                {images.map((img, idx) => (
+                  <div key={idx} style={{ display: "grid", gap: 6, width: 160 }}>
+                    <img
+                      src={img.url}
+                      alt={img.alt || ""}
+                      style={{ width: "100%", height: 110, objectFit: "cover", borderRadius: 12, border: "1px solid rgba(255,255,255,0.12)" }}
+                    />
+                    <input
+                      value={img.alt || ""}
+                      onChange={(e) =>
+                        setImages((p) => p.map((r, i) => (i === idx ? { ...r, alt: e.target.value } : r)))
+                      }
+                      placeholder="Alt text"
+                      style={{
+                        width: "100%",
+                        padding: "10px 12px",
+                        borderRadius: 12,
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        background: "rgba(255,255,255,0.06)",
+                        color: "white",
+                        outline: "none",
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setImages((p) => p.filter((_, i) => i !== idx))}
+                      style={{
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        background: "rgba(0,0,0,0.25)",
+                        color: "white",
+                        padding: "10px 12px",
+                        borderRadius: 12,
+                        cursor: "pointer",
+                        fontWeight: 900,
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </label>
 
           <label style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>

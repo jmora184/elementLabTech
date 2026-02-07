@@ -5,6 +5,7 @@ import bottleImg from "../../assets/bottle.png";
 import { useIsMobile } from "./useIsMobile";
 import { useNavigate } from "react-router-dom";
 import TerpeneSimulator from "../TerpeneSimulator/TerpeneSimulator";
+import { uploadImageFile } from "../../utils/cloudflareImages";
 // Header is provided globally by SiteLayout.
 
 export default function TerpeneShowcase({ HeroBanner }) {
@@ -35,6 +36,8 @@ export default function TerpeneShowcase({ HeroBanner }) {
   });
   const [addError, setAddError] = useState("");
   const [addBusy, setAddBusy] = useState(false);
+  const [addImages, setAddImages] = useState([]); // [{ url, alt, isPrimary }]
+  const [addImgBusy, setAddImgBusy] = useState(false);
 
   async function fetchJson(url, opts) {
     const res = await fetch(url, { credentials: "include", ...opts });
@@ -86,6 +89,15 @@ export default function TerpeneShowcase({ HeroBanner }) {
         description: addForm.description,
         sort_order: Number(addForm.sort_order) || 0,
         is_active: addForm.is_active ? 1 : 0,
+        images: Array.isArray(addImages)
+          ? addImages
+              .filter((x) => x && typeof x.url === "string" && x.url.trim())
+              .map((x, idx) => ({
+                url: String(x.url).trim(),
+                alt: String(x.alt || "").trim(),
+                isPrimary: idx === 0,
+              }))
+          : [],
       };
       await fetchJson("/api/collections", {
         method: "POST",
@@ -95,6 +107,7 @@ export default function TerpeneShowcase({ HeroBanner }) {
 
       setShowAdd(false);
       setAddForm({ name: "", id: "", badge: "", tagline: "", description: "", sort_order: 0, is_active: 1 });
+      setAddImages([]);
       await loadCollections();
     } catch (err) {
       setAddError(err?.message || "Request failed");
@@ -327,6 +340,77 @@ export default function TerpeneShowcase({ HeroBanner }) {
                   placeholder="A curated set of terpene-inspired profiles..."
                 />
               </div>
+
+              <div style={{ gridColumn: "1 / -1" }}>
+                <label style={{ fontSize: 12, opacity: 0.85 }}>Upload collection images (optional)</label>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  disabled={addImgBusy || addBusy}
+                  onChange={async (e) => {
+                    const files = Array.from(e.target.files || []);
+                    e.target.value = "";
+                    if (!files.length) return;
+                    setAddError("");
+                    setAddImgBusy(true);
+                    try {
+                      for (const file of files) {
+                        const out = await uploadImageFile(file, { metadata: { purpose: "collection", slug: addForm.id || addForm.name } });
+                        if (!out?.url) throw new Error("Upload succeeded but no delivery URL was returned.");
+                        setAddImages((p) => {
+                          const next = Array.isArray(p) ? [...p] : [];
+                          next.push({ url: out.url, alt: "", isPrimary: next.length === 0 });
+                          return next;
+                        });
+                      }
+                    } catch (ex) {
+                      setAddError(ex?.message || "Image upload failed.");
+                    } finally {
+                      setAddImgBusy(false);
+                    }
+                  }}
+                  style={{ ...inputStyle, paddingTop: 10, paddingBottom: 10 }}
+                />
+                <div style={{ opacity: 0.7, fontSize: 12, marginTop: 6 }}>
+                  Pick files from your device (or drag-select multiple). They’ll upload to Cloudflare Images.
+                </div>
+
+                {!!addImages.length && (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 10 }}>
+                    {addImages.map((img, idx) => (
+                      <div key={idx} style={{ display: "grid", gap: 6, width: 160 }}>
+                        <img
+                          src={img.url}
+                          alt={img.alt || ""}
+                          style={{ width: "100%", height: 110, objectFit: "cover", borderRadius: 12, border: "1px solid rgba(255,255,255,0.12)" }}
+                        />
+                        <input
+                          value={img.alt || ""}
+                          onChange={(e) => setAddImages((p) => p.map((r, i) => (i === idx ? { ...r, alt: e.target.value } : r)))}
+                          placeholder="Alt text"
+                          style={inputStyle}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setAddImages((p) => p.filter((_, i) => i !== idx))}
+                          style={{
+                            padding: "10px 12px",
+                            borderRadius: 12,
+                            background: "transparent",
+                            border: "1px solid rgba(255,255,255,0.18)",
+                            color: "#fff",
+                            cursor: "pointer",
+                            fontWeight: 800,
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
               <div>
                 <label style={{ fontSize: 12, opacity: 0.85 }}>Sort order</label>
                 <input
@@ -410,6 +494,19 @@ const inputStyle = {
 
 function CollectionCard({ collection, isMobile, cardClass, addToCart, cardIndex }) {
   const navigate = useNavigate();
+  let cardImageSrc = bottleImg;
+  try {
+    const raw = collection?.images_json;
+    const arr = Array.isArray(raw) ? raw : raw ? JSON.parse(raw) : [];
+    if (Array.isArray(arr) && arr.length) {
+      const primary = arr.find((r) => !!r?.isPrimary && typeof r?.url === "string" && r.url.trim());
+      const first = arr.find((r) => typeof r?.url === "string" && r.url.trim());
+      const url = (primary?.url || first?.url || "").trim();
+      if (url) cardImageSrc = url;
+    }
+  } catch {
+    // ignore
+  }
   const primaryLabel =
     cardIndex === 0
       ? "Shop Now"
@@ -443,7 +540,7 @@ function CollectionCard({ collection, isMobile, cardClass, addToCart, cardIndex 
         <div className="ts-cardImgWrapper" style={{ position: 'relative', minHeight: '350px', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <img
             className="ts-cardImg"
-            src={bottleImg}
+            src={cardImageSrc}
             alt={collection.name + " bottle"}
             style={{ cursor: 'pointer', maxHeight: '100%', maxWidth: '90%', objectFit: 'contain', zIndex: 2, marginTop: '80px' }}
             onClick={() => navigate(`/product/${collection.id}`)}

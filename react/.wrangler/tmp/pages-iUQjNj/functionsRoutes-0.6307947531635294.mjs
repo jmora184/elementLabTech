@@ -3,6 +3,8 @@ import { onRequestPost as __api_auth_login_js_onRequestPost } from "C:\\Users\\J
 import { onRequestPost as __api_auth_logout_js_onRequestPost } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\auth\\logout.js"
 import { onRequestGet as __api_auth_me_js_onRequestGet } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\auth\\me.js"
 import { onRequestPost as __api_auth_register_js_onRequestPost } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\auth\\register.js"
+import { onRequestOptions as __api_images_direct_upload_js_onRequestOptions } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\images\\direct-upload.js"
+import { onRequestPost as __api_images_direct_upload_js_onRequestPost } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\images\\direct-upload.js"
 import { onRequestGet as __api_collections__id__js_onRequestGet } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\collections\\[id].js"
 import { onRequestOptions as __api_collections__id__js_onRequestOptions } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\collections\\[id].js"
 import { onRequestPut as __api_collections__id__js_onRequestPut } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\collections\\[id].js"
@@ -46,6 +48,20 @@ export const routes = [
       method: "POST",
       middlewares: [],
       modules: [__api_auth_register_js_onRequestPost],
+    },
+  {
+      routePath: "/api/images/direct-upload",
+      mountPath: "/api/images",
+      method: "OPTIONS",
+      middlewares: [],
+      modules: [__api_images_direct_upload_js_onRequestOptions],
+    },
+  {
+      routePath: "/api/images/direct-upload",
+      mountPath: "/api/images",
+      method: "POST",
+      middlewares: [],
+      modules: [__api_images_direct_upload_js_onRequestPost],
     },
   {
       routePath: "/api/collections/:id",

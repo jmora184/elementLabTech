@@ -25,6 +25,18 @@ function nowIso() {
   return new Date().toISOString();
 }
 
+function cleanImagesArray(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((x) => x && typeof x.url === "string" && x.url.trim())
+    .map((x, idx) => ({
+      url: String(x.url).trim(),
+      alt: String(x.alt || "").trim(),
+      kind: String(x.kind || "gallery").trim() || "gallery",
+      sort_order: x.sort_order === undefined || x.sort_order === null || x.sort_order === "" ? idx : Number(x.sort_order),
+    }));
+}
+
 async function requireAdmin(request, env) {
   // IMPORTANT: parseCookie expects a cookie HEADER STRING, not the Request object.
   const cookieHeader = request.headers.get("Cookie") || "";
@@ -87,10 +99,12 @@ export async function onRequest(context) {
       ? JSON.stringify(body.flavor_aroma)
       : JSON.stringify([]);
 
-    const sort_order =
+    let sort_order =
       body?.sort_order === undefined || body?.sort_order === null || body?.sort_order === ""
         ? null
         : Number(body.sort_order);
+
+    const images = cleanImagesArray(body?.images);
 
     const idVal = crypto.randomUUID();
     const ts = nowIso();
@@ -103,6 +117,16 @@ export async function onRequest(context) {
       // unique slug
       const existing = await env.DB.prepare("SELECT id FROM flavor_profiles WHERE slug=?").bind(slug).first();
       if (existing) return json({ ok: false, error: "Slug already exists" }, 409);
+
+      // sort_order is NOT NULL in this schema; if omitted, append to end of the list
+      if (sort_order === null || Number.isNaN(sort_order)) {
+        const nextRow = await env.DB.prepare(
+          "SELECT COALESCE(MAX(sort_order), -1) + 1 AS next_sort FROM flavor_profiles WHERE collection_id=?"
+        )
+          .bind(id)
+          .first();
+        sort_order = Number(nextRow?.next_sort ?? 0);
+      }
 
       await env.DB.prepare(
         `INSERT INTO flavor_profiles
@@ -125,6 +149,23 @@ export async function onRequest(context) {
           ts
         )
         .run();
+
+      // Save images (optional)
+      if (images.length) {
+        try {
+          const stmt = env.DB.prepare(
+            "INSERT INTO flavor_profile_images (id, profile_id, url, alt, kind, sort_order, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
+          );
+          for (const img of images) {
+            await stmt
+              .bind(crypto.randomUUID(), idVal, img.url, img.alt, img.kind, img.sort_order)
+              .run();
+          }
+        } catch (e) {
+          console.error("PROFILE IMAGES INSERT ERROR:", e);
+          // fail soft: profile is created, images can be re-added via edit
+        }
+      }
 
       const created = await env.DB.prepare(
         "SELECT id, collection_id, slug, name, sort_order, is_active, created_at, updated_at FROM flavor_profiles WHERE id=?"

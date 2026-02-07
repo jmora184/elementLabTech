@@ -1,7 +1,9 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
-// _lib/auth.js
+// .wrangler/tmp/pages-iUQjNj/functionsWorker-0.9324063781548744.mjs
+var __defProp2 = Object.defineProperty;
+var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
 var encoder = new TextEncoder();
 function json(status, data, extraHeaders = {}) {
   const headers = new Headers({
@@ -11,10 +13,12 @@ function json(status, data, extraHeaders = {}) {
   return new Response(JSON.stringify(data), { status, headers });
 }
 __name(json, "json");
+__name2(json, "json");
 function normalizeEmail(email) {
   return String(email || "").trim().toLowerCase();
 }
 __name(normalizeEmail, "normalizeEmail");
+__name2(normalizeEmail, "normalizeEmail");
 function cookieOptions(opts = {}) {
   const defaults = {
     httpOnly: true,
@@ -27,6 +31,7 @@ function cookieOptions(opts = {}) {
   return { ...defaults, ...opts };
 }
 __name(cookieOptions, "cookieOptions");
+__name2(cookieOptions, "cookieOptions");
 function setCookie(headers, name, value, options = {}) {
   const opts = cookieOptions(options);
   const parts = [`${name}=${encodeURIComponent(value)}`];
@@ -39,6 +44,7 @@ function setCookie(headers, name, value, options = {}) {
   headers.append("Set-Cookie", parts.join("; "));
 }
 __name(setCookie, "setCookie");
+__name2(setCookie, "setCookie");
 function parseCookie(cookieHeader) {
   const out = {};
   const str = cookieHeader || "";
@@ -50,12 +56,14 @@ function parseCookie(cookieHeader) {
   return out;
 }
 __name(parseCookie, "parseCookie");
+__name2(parseCookie, "parseCookie");
 function randomToken(byteLen = 32) {
   const bytes = new Uint8Array(byteLen);
   crypto.getRandomValues(bytes);
   return [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 __name(randomToken, "randomToken");
+__name2(randomToken, "randomToken");
 var DEFAULT_PBKDF2_ITERS = 1e5;
 async function hashPassword(password, iters = DEFAULT_PBKDF2_ITERS) {
   const safeIters = Math.min(Number(iters) || DEFAULT_PBKDF2_ITERS, 1e5);
@@ -82,6 +90,7 @@ async function hashPassword(password, iters = DEFAULT_PBKDF2_ITERS) {
   return `pbkdf2$${safeIters}$${toHex(salt)}$${toHex(hash)}`;
 }
 __name(hashPassword, "hashPassword");
+__name2(hashPassword, "hashPassword");
 async function verifyPassword(password, stored) {
   try {
     const [alg, itersStr, saltHex, hashHex] = String(stored || "").split("$");
@@ -113,6 +122,7 @@ async function verifyPassword(password, stored) {
   }
 }
 __name(verifyPassword, "verifyPassword");
+__name2(verifyPassword, "verifyPassword");
 async function getUserFromSession(env, sessionToken) {
   if (!env?.DB || !sessionToken) return null;
   const row = await env.DB.prepare(
@@ -130,10 +140,12 @@ async function getUserFromSession(env, sessionToken) {
   return { id: row.id, email: row.email, role: row.role || "user" };
 }
 __name(getUserFromSession, "getUserFromSession");
+__name2(getUserFromSession, "getUserFromSession");
 function toHex(u8) {
   return [...u8].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 __name(toHex, "toHex");
+__name2(toHex, "toHex");
 function fromHex(hex) {
   const clean = String(hex || "").trim();
   const out = new Uint8Array(clean.length / 2);
@@ -143,6 +155,7 @@ function fromHex(hex) {
   return out;
 }
 __name(fromHex, "fromHex");
+__name2(fromHex, "fromHex");
 function timingSafeEqual(a, b) {
   if (a.length !== b.length) return false;
   let diff = 0;
@@ -150,23 +163,36 @@ function timingSafeEqual(a, b) {
   return diff === 0;
 }
 __name(timingSafeEqual, "timingSafeEqual");
-
-// api/collections/[id]/profiles.js
+__name2(timingSafeEqual, "timingSafeEqual");
 function json2(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...extraHeaders }
   });
 }
-__name(json2, "json");
+__name(json2, "json2");
+__name2(json2, "json");
 function slugify(input) {
   return String(input || "").trim().toLowerCase().replace(/['"]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
 }
 __name(slugify, "slugify");
+__name2(slugify, "slugify");
 function nowIso() {
   return (/* @__PURE__ */ new Date()).toISOString();
 }
 __name(nowIso, "nowIso");
+__name2(nowIso, "nowIso");
+function cleanImagesArray(value) {
+  if (!Array.isArray(value)) return [];
+  return value.filter((x) => x && typeof x.url === "string" && x.url.trim()).map((x, idx) => ({
+    url: String(x.url).trim(),
+    alt: String(x.alt || "").trim(),
+    kind: String(x.kind || "gallery").trim() || "gallery",
+    sort_order: x.sort_order === void 0 || x.sort_order === null || x.sort_order === "" ? idx : Number(x.sort_order)
+  }));
+}
+__name(cleanImagesArray, "cleanImagesArray");
+__name2(cleanImagesArray, "cleanImagesArray");
 async function requireAdmin(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -177,6 +203,7 @@ async function requireAdmin(request, env) {
   return { ok: true, user };
 }
 __name(requireAdmin, "requireAdmin");
+__name2(requireAdmin, "requireAdmin");
 async function onRequest(context) {
   const { request, env, params } = context;
   const id = params?.id;
@@ -211,7 +238,8 @@ async function onRequest(context) {
     const mood = String(body?.mood || "").trim();
     const dominant_terpenes = Array.isArray(body?.dominant_terpenes) ? JSON.stringify(body.dominant_terpenes) : JSON.stringify([]);
     const flavor_aroma = Array.isArray(body?.flavor_aroma) ? JSON.stringify(body.flavor_aroma) : JSON.stringify([]);
-    const sort_order = body?.sort_order === void 0 || body?.sort_order === null || body?.sort_order === "" ? null : Number(body.sort_order);
+    let sort_order = body?.sort_order === void 0 || body?.sort_order === null || body?.sort_order === "" ? null : Number(body.sort_order);
+    const images = cleanImagesArray(body?.images);
     const idVal = crypto.randomUUID();
     const ts = nowIso();
     try {
@@ -219,6 +247,12 @@ async function onRequest(context) {
       if (!col) return json2({ ok: false, error: "Collection not found" }, 404);
       const existing = await env.DB.prepare("SELECT id FROM flavor_profiles WHERE slug=?").bind(slug).first();
       if (existing) return json2({ ok: false, error: "Slug already exists" }, 409);
+      if (sort_order === null || Number.isNaN(sort_order)) {
+        const nextRow = await env.DB.prepare(
+          "SELECT COALESCE(MAX(sort_order), -1) + 1 AS next_sort FROM flavor_profiles WHERE collection_id=?"
+        ).bind(id).first();
+        sort_order = Number(nextRow?.next_sort ?? 0);
+      }
       await env.DB.prepare(
         `INSERT INTO flavor_profiles
           (id, collection_id, slug, name, flavor_type, flavor_category, description, dominant_terpenes, flavor_aroma, mood, is_active, sort_order, created_at, updated_at)
@@ -238,6 +272,18 @@ async function onRequest(context) {
         ts,
         ts
       ).run();
+      if (images.length) {
+        try {
+          const stmt = env.DB.prepare(
+            "INSERT INTO flavor_profile_images (id, profile_id, url, alt, kind, sort_order, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
+          );
+          for (const img of images) {
+            await stmt.bind(crypto.randomUUID(), idVal, img.url, img.alt, img.kind, img.sort_order).run();
+          }
+        } catch (e) {
+          console.error("PROFILE IMAGES INSERT ERROR:", e);
+        }
+      }
       const created = await env.DB.prepare(
         "SELECT id, collection_id, slug, name, sort_order, is_active, created_at, updated_at FROM flavor_profiles WHERE id=?"
       ).bind(idVal).first();
@@ -250,8 +296,7 @@ async function onRequest(context) {
   return json2({ ok: false, error: "Method not allowed" }, 405);
 }
 __name(onRequest, "onRequest");
-
-// api/auth/login.js
+__name2(onRequest, "onRequest");
 var SESSION_COOKIE = "el_session";
 var SESSION_TTL_MS = 1e3 * 60 * 60 * 24 * 14;
 async function onRequestPost(context) {
@@ -293,8 +338,7 @@ async function onRequestPost(context) {
   }
 }
 __name(onRequestPost, "onRequestPost");
-
-// api/auth/logout.js
+__name2(onRequestPost, "onRequestPost");
 var SESSION_COOKIE2 = "el_session";
 async function onRequestPost2(context) {
   const { request, env } = context;
@@ -311,9 +355,8 @@ async function onRequestPost2(context) {
   setCookie(headers, SESSION_COOKIE2, "", cookieOptions({ maxAge: 0 }));
   return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
 }
-__name(onRequestPost2, "onRequestPost");
-
-// api/auth/me.js
+__name(onRequestPost2, "onRequestPost2");
+__name2(onRequestPost2, "onRequestPost");
 var SESSION_COOKIE3 = "el_session";
 async function onRequestGet(context) {
   const cookies = parseCookie(context.request.headers.get("Cookie"));
@@ -322,8 +365,7 @@ async function onRequestGet(context) {
   return json(200, { ok: true, user: user || null });
 }
 __name(onRequestGet, "onRequestGet");
-
-// api/auth/register.js
+__name2(onRequestGet, "onRequestGet");
 async function onRequestPost3(context) {
   try {
     const { request, env } = context;
@@ -370,90 +412,528 @@ async function onRequestPost3(context) {
     return json(500, { ok: false, error: String(e?.message || e) });
   }
 }
-__name(onRequestPost3, "onRequestPost");
-
-// api/collections/[id].js
+__name(onRequestPost3, "onRequestPost3");
+__name2(onRequestPost3, "onRequestPost");
+var CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
 function json3(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: {
-      "Content-Type": "application/json",
-      ...extraHeaders
-    }
+    headers: { "Content-Type": "application/json", ...CORS_HEADERS, ...extraHeaders }
   });
 }
-__name(json3, "json");
-function badRequest(msg) {
-  return json3({ ok: false, error: msg }, 400);
+__name(json3, "json3");
+__name2(json3, "json");
+async function requireAdmin2(request, env) {
+  const cookieHeader = request.headers.get("Cookie") || "";
+  const cookies = parseCookie(cookieHeader);
+  const token = cookies?.el_session || "";
+  const user = await getUserFromSession(env, token);
+  if (!user) return { ok: false, status: 401, error: "Unauthorized" };
+  if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
+  return { ok: true, user };
 }
-__name(badRequest, "badRequest");
-function notFound(msg = "Not found") {
-  return json3({ ok: false, error: msg }, 404);
+__name(requireAdmin2, "requireAdmin2");
+__name2(requireAdmin2, "requireAdmin");
+async function onRequestOptions() {
+  return new Response(null, { status: 204, headers: { ...CORS_HEADERS } });
 }
-__name(notFound, "notFound");
-async function onRequestGet2(context) {
-  const { env, params } = context;
-  const id = params?.id;
-  if (!id) return badRequest("Missing collection id.");
-  try {
-    const row = await env.DB.prepare("SELECT id, name, tagline, description, badge, sort_order, is_active, created_at, updated_at FROM collections WHERE id = ? AND is_active = 1").bind(id).first();
-    if (!row) return notFound("Collection not found.");
-    return json3({ ok: true, collection: row });
-  } catch (err) {
-    console.error("COLLECTION GET ERROR:", err);
-    return json3({ ok: false, error: "Server error." }, 500);
+__name(onRequestOptions, "onRequestOptions");
+__name2(onRequestOptions, "onRequestOptions");
+async function onRequestPost4({ request, env }) {
+  const gate = await requireAdmin2(request, env);
+  if (!gate.ok) return json3({ ok: false, error: gate.error }, gate.status);
+  const accountId = env.CF_IMAGES_ACCOUNT_ID;
+  const apiToken = env.CF_IMAGES_API_TOKEN;
+  if (!accountId || !apiToken) {
+    return json3(
+      {
+        ok: false,
+        error: "Missing Cloudflare Images env vars. Set CF_IMAGES_ACCOUNT_ID and CF_IMAGES_API_TOKEN in Pages settings."
+      },
+      500
+    );
   }
+  let body = {};
+  try {
+    body = await request.json();
+  } catch {
+    body = {};
+  }
+  const form = new FormData();
+  if (body?.metadata) {
+    try {
+      form.append("metadata", JSON.stringify(body.metadata));
+    } catch {
+    }
+  }
+  form.append("requireSignedURLs", "false");
+  const cfRes = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${accountId}/images/v2/direct_upload`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiToken}`
+      },
+      body: form
+    }
+  );
+  const data = await cfRes.json().catch(() => null);
+  if (!cfRes.ok || !data?.success) {
+    console.error("CF IMAGES DIRECT UPLOAD ERROR:", cfRes.status, data);
+    const msg = data?.errors?.[0]?.message || `Cloudflare Images error (${cfRes.status})`;
+    return json3({ ok: false, error: msg }, 502);
+  }
+  return json3({ ok: true, id: data.result?.id, uploadURL: data.result?.uploadURL });
 }
-__name(onRequestGet2, "onRequestGet");
-
-// api/profiles/[slug].js
+__name(onRequestPost4, "onRequestPost4");
+__name2(onRequestPost4, "onRequestPost");
+var CORS_HEADERS2 = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET,PUT,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
 function json4(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: {
-      "Content-Type": "application/json",
-      ...extraHeaders
-    }
+    headers: { "Content-Type": "application/json", ...CORS_HEADERS2, ...extraHeaders }
   });
 }
-__name(json4, "json");
-function badRequest2(msg) {
-  return json4({ ok: false, error: msg }, 400);
+__name(json4, "json4");
+__name2(json4, "json");
+async function requireAdmin3(request, env) {
+  const cookieHeader = request.headers.get("Cookie") || "";
+  const cookies = parseCookie(cookieHeader);
+  const token = cookies?.el_session || "";
+  const user = await getUserFromSession(env, token);
+  if (!user) return { ok: false, status: 401, error: "Unauthorized" };
+  if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
+  return { ok: true, user };
 }
-__name(badRequest2, "badRequest");
-function notFound2(msg = "Not found") {
-  return json4({ ok: false, error: msg }, 404);
+__name(requireAdmin3, "requireAdmin3");
+__name2(requireAdmin3, "requireAdmin");
+function toText(v) {
+  if (v === null || typeof v === "undefined") return null;
+  return String(v);
 }
-__name(notFound2, "notFound");
-async function onRequestGet3(context) {
-  const { env, params } = context;
-  const slug = params?.slug;
-  if (!slug) return badRequest2("Missing profile slug.");
+__name(toText, "toText");
+__name2(toText, "toText");
+function toNumber(v) {
+  if (v === null || typeof v === "undefined" || v === "") return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+__name(toNumber, "toNumber");
+__name2(toNumber, "toNumber");
+function toBool01(v) {
+  if (v === null || typeof v === "undefined") return null;
+  return v === true || v === 1 || v === "1" || v === "true" ? 1 : 0;
+}
+__name(toBool01, "toBool01");
+__name2(toBool01, "toBool01");
+function toJsonText(v) {
+  if (v === null || typeof v === "undefined") return null;
+  if (typeof v === "string") return v;
   try {
-    const profile = await env.DB.prepare(
-      "SELECT id, collection_id, slug, name, flavor_type, flavor_category, description, mood, dominant_terpenes, flavor_aroma, sort_order, is_active, created_at, updated_at FROM flavor_profiles WHERE slug = ? AND is_active = 1"
-    ).bind(slug).first();
-    if (!profile) return notFound2("Profile not found.");
-    const images = await env.DB.prepare("SELECT id, profile_id, url, alt, kind, sort_order, created_at FROM flavor_profile_images WHERE profile_id = ? ORDER BY sort_order ASC, created_at ASC").bind(profile.id).all();
-    const documents = await env.DB.prepare("SELECT id, profile_id, title, url, doc_type, sort_order, created_at FROM flavor_profile_documents WHERE profile_id = ? ORDER BY sort_order ASC, created_at ASC").bind(profile.id).all();
-    return json4({
-      ok: true,
-      profile: {
-        ...profile,
-        dominant_terpenes: profile.dominant_terpenes ? JSON.parse(profile.dominant_terpenes) : [],
-        flavor_aroma: profile.flavor_aroma ? JSON.parse(profile.flavor_aroma) : []
-      },
-      images: images?.results || [],
-      documents: documents?.results || []
-    });
+    return JSON.stringify(v);
+  } catch {
+    return null;
+  }
+}
+__name(toJsonText, "toJsonText");
+__name2(toJsonText, "toJsonText");
+async function onRequestOptions2() {
+  return new Response(null, { status: 204, headers: { ...CORS_HEADERS2 } });
+}
+__name(onRequestOptions2, "onRequestOptions2");
+__name2(onRequestOptions2, "onRequestOptions");
+async function onRequestGet2({ env, params }) {
+  const id = params?.id;
+  if (!id) return json4({ ok: false, error: "Missing collection id." }, 400);
+  try {
+    const row = await env.DB.prepare(
+      "SELECT id, name, tagline, description, badge, sort_order, is_active, specs_json, documents_json, reviews_json, shipping_md, isolates_json, terpenes_json, images_json, created_at, updated_at FROM collections WHERE id=?"
+    ).bind(id).first();
+    if (!row) return json4({ ok: false, error: "Collection not found." }, 404);
+    return json4({ ok: true, collection: row });
   } catch (err) {
-    console.error("PROFILE GET ERROR:", err);
+    console.error("COLLECTION GET ERROR:", err);
     return json4({ ok: false, error: "Server error." }, 500);
   }
 }
-__name(onRequestGet3, "onRequestGet");
-
-// ../.wrangler/tmp/pages-JeYcJW/functionsRoutes-0.47672918376314644.mjs
+__name(onRequestGet2, "onRequestGet2");
+__name2(onRequestGet2, "onRequestGet");
+async function onRequestPut({ request, env, params }) {
+  const id = params?.id;
+  if (!id) return json4({ ok: false, error: "Missing collection id." }, 400);
+  const auth = await requireAdmin3(request, env);
+  if (!auth.ok) return json4({ ok: false, error: auth.error }, auth.status);
+  let payload = {};
+  try {
+    payload = await request.json();
+  } catch {
+    return json4({ ok: false, error: "Invalid JSON body." }, 400);
+  }
+  const name = toText(payload.name);
+  const tagline = toText(payload.tagline);
+  const description = toText(payload.description);
+  const badge = toText(payload.badge);
+  const sortOrder = toNumber(payload.sort_order);
+  const isActive = toBool01(payload.is_active);
+  const specsJson = toJsonText(payload.specs_json ?? payload.specs);
+  const documentsJson = toJsonText(payload.documents_json ?? payload.documents);
+  const reviewsJson = toJsonText(payload.reviews_json ?? payload.reviews);
+  const shippingMd = toText(payload.shipping_md ?? payload.shipping);
+  const isolatesJson = toJsonText(payload.isolates_json ?? payload.isolates);
+  const terpenesJson = toJsonText(payload.terpenes_json ?? payload.terpenes);
+  const imagesJson = toJsonText(payload.images_json ?? payload.images);
+  const sets = [];
+  const binds = [];
+  function add(col, val) {
+    if (val === null) return;
+    sets.push(`${col}=?`);
+    binds.push(val);
+  }
+  __name(add, "add");
+  __name2(add, "add");
+  add("name", name);
+  add("tagline", tagline);
+  add("description", description);
+  add("badge", badge);
+  if (sortOrder !== null) add("sort_order", sortOrder);
+  if (isActive !== null) add("is_active", isActive);
+  add("specs_json", specsJson);
+  add("documents_json", documentsJson);
+  add("reviews_json", reviewsJson);
+  add("shipping_md", shippingMd);
+  add("isolates_json", isolatesJson);
+  add("terpenes_json", terpenesJson);
+  add("images_json", imagesJson);
+  if (sets.length === 0) return json4({ ok: false, error: "No fields to update." }, 400);
+  const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
+  sets.push("updated_at=?");
+  binds.push(updatedAt);
+  binds.push(id);
+  try {
+    await env.DB.prepare(`UPDATE collections SET ${sets.join(", ")} WHERE id=?`).bind(...binds).run();
+    const row = await env.DB.prepare(
+      "SELECT id, name, tagline, description, badge, sort_order, is_active, specs_json, documents_json, reviews_json, shipping_md, isolates_json, terpenes_json, images_json, created_at, updated_at FROM collections WHERE id=?"
+    ).bind(id).first();
+    return json4({ ok: true, collection: row });
+  } catch (err) {
+    console.error("COLLECTION UPDATE ERROR:", err);
+    return json4({ ok: false, error: "Server error." }, 500);
+  }
+}
+__name(onRequestPut, "onRequestPut");
+__name2(onRequestPut, "onRequestPut");
+function json5(body, status = 200, extraHeaders = {}) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json", ...extraHeaders }
+  });
+}
+__name(json5, "json5");
+__name2(json5, "json");
+function nowIso2() {
+  return (/* @__PURE__ */ new Date()).toISOString();
+}
+__name(nowIso2, "nowIso2");
+__name2(nowIso2, "nowIso");
+async function requireAdmin4(request, env) {
+  const cookieHeader = request.headers.get("Cookie") || "";
+  const cookies = parseCookie(cookieHeader);
+  const token = cookies?.el_session || "";
+  const user = await getUserFromSession(env, token);
+  if (!user) return { ok: false, status: 401, error: "Unauthorized" };
+  if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
+  return { ok: true, user };
+}
+__name(requireAdmin4, "requireAdmin4");
+__name2(requireAdmin4, "requireAdmin");
+function asJsonTextArray(value) {
+  if (Array.isArray(value)) {
+    const arr = value.map((s) => String(s).trim()).filter(Boolean);
+    return JSON.stringify(arr);
+  }
+  if (typeof value === "string") {
+    const arr = value.split(",").map((s) => s.trim()).filter(Boolean);
+    return JSON.stringify(arr);
+  }
+  return JSON.stringify([]);
+}
+__name(asJsonTextArray, "asJsonTextArray");
+__name2(asJsonTextArray, "asJsonTextArray");
+function parseJsonArray(text) {
+  try {
+    const v = JSON.parse(text || "[]");
+    return Array.isArray(v) ? v : [];
+  } catch {
+    return [];
+  }
+}
+__name(parseJsonArray, "parseJsonArray");
+__name2(parseJsonArray, "parseJsonArray");
+function cleanImagesArray2(value) {
+  if (!Array.isArray(value)) return [];
+  return value.filter((x) => x && typeof x.url === "string" && x.url.trim()).map((x, idx) => ({
+    url: String(x.url).trim(),
+    alt: String(x.alt || "").trim(),
+    kind: String(x.kind || "gallery").trim() || "gallery",
+    sort_order: x.sort_order === void 0 || x.sort_order === null || x.sort_order === "" ? idx : Number(x.sort_order)
+  }));
+}
+__name(cleanImagesArray2, "cleanImagesArray2");
+__name2(cleanImagesArray2, "cleanImagesArray");
+async function onRequest2(context) {
+  const { request, env, params } = context;
+  const slug = params?.slug;
+  if (!slug) return json5({ ok: false, error: "Missing slug" }, 400);
+  if (request.method === "GET") {
+    try {
+      const profile = await env.DB.prepare(
+        "SELECT * FROM flavor_profiles WHERE slug=? LIMIT 1"
+      ).bind(slug).first();
+      if (!profile) return json5({ ok: false, error: "Not found" }, 404);
+      let images = [];
+      let documents = [];
+      try {
+        const imgRes = await env.DB.prepare(
+          "SELECT * FROM flavor_profile_images WHERE profile_id=? ORDER BY COALESCE(sort_order, 999999), created_at ASC"
+        ).bind(profile.id).all();
+        images = imgRes?.results || [];
+      } catch {
+        images = [];
+      }
+      try {
+        const docRes = await env.DB.prepare(
+          "SELECT * FROM flavor_profile_documents WHERE profile_id=? ORDER BY COALESCE(sort_order, 999999), created_at ASC"
+        ).bind(profile.id).all();
+        documents = docRes?.results || [];
+      } catch {
+        documents = [];
+      }
+      const normalized = {
+        ...profile,
+        dominant_terpenes: parseJsonArray(profile.dominant_terpenes),
+        flavor_aroma: parseJsonArray(profile.flavor_aroma)
+      };
+      return json5({ ok: true, profile: normalized, images, documents });
+    } catch (err) {
+      console.error("PROFILE GET ERROR:", err);
+      return json5({ ok: false, error: String(err?.message || err) }, 500);
+    }
+  }
+  if (request.method === "PUT") {
+    const gate = await requireAdmin4(request, env);
+    if (!gate.ok) return json5({ ok: false, error: gate.error }, gate.status);
+    let body = null;
+    try {
+      body = await request.json();
+    } catch {
+      return json5({ ok: false, error: "Invalid JSON" }, 400);
+    }
+    try {
+      const existing = await env.DB.prepare(
+        "SELECT * FROM flavor_profiles WHERE slug=? LIMIT 1"
+      ).bind(slug).first();
+      if (!existing) return json5({ ok: false, error: "Not found" }, 404);
+      const name = body?.name !== void 0 ? String(body.name).trim() : existing.name;
+      const flavor_type = body?.flavor_type !== void 0 ? String(body.flavor_type).trim() : existing.flavor_type || "";
+      const flavor_category = body?.flavor_category !== void 0 ? String(body.flavor_category).trim() : existing.flavor_category || "";
+      const description = body?.description !== void 0 ? String(body.description).trim() : existing.description || "";
+      const mood = body?.mood !== void 0 ? String(body.mood).trim() : existing.mood || "";
+      const dominant_terpenes = body?.dominant_terpenes !== void 0 ? asJsonTextArray(body.dominant_terpenes) : existing.dominant_terpenes || "[]";
+      const flavor_aroma = body?.flavor_aroma !== void 0 ? asJsonTextArray(body.flavor_aroma) : existing.flavor_aroma || "[]";
+      const sort_order = body?.sort_order === void 0 ? existing.sort_order : body.sort_order === null || body.sort_order === "" ? null : Number(body.sort_order);
+      const is_active = body?.is_active === void 0 ? existing.is_active : body.is_active ? 1 : 0;
+      const images = body?.images !== void 0 ? cleanImagesArray2(body.images) : null;
+      const ts = nowIso2();
+      await env.DB.prepare(
+        `UPDATE flavor_profiles
+         SET name=?,
+             flavor_type=?,
+             flavor_category=?,
+             description=?,
+             dominant_terpenes=?,
+             flavor_aroma=?,
+             mood=?,
+             sort_order=?,
+             is_active=?,
+             updated_at=?
+         WHERE slug=?`
+      ).bind(
+        name,
+        flavor_type,
+        flavor_category,
+        description,
+        dominant_terpenes,
+        flavor_aroma,
+        mood,
+        sort_order,
+        is_active,
+        ts,
+        slug
+      ).run();
+      if (images !== null) {
+        try {
+          await env.DB.prepare("DELETE FROM flavor_profile_images WHERE profile_id=?").bind(existing.id).run();
+          if (images.length) {
+            const stmt = env.DB.prepare(
+              "INSERT INTO flavor_profile_images (id, profile_id, url, alt, kind, sort_order, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
+            );
+            for (const img of images) {
+              await stmt.bind(crypto.randomUUID(), existing.id, img.url, img.alt, img.kind, img.sort_order).run();
+            }
+          }
+        } catch (e) {
+          console.error("PROFILE IMAGES UPDATE ERROR:", e);
+        }
+      }
+      const updated = await env.DB.prepare(
+        "SELECT * FROM flavor_profiles WHERE slug=? LIMIT 1"
+      ).bind(slug).first();
+      const normalized = {
+        ...updated,
+        dominant_terpenes: parseJsonArray(updated.dominant_terpenes),
+        flavor_aroma: parseJsonArray(updated.flavor_aroma)
+      };
+      return json5({ ok: true, profile: normalized });
+    } catch (err) {
+      console.error("PROFILE PUT ERROR:", err);
+      return json5({ ok: false, error: String(err?.message || err) }, 500);
+    }
+  }
+  return json5({ ok: false, error: "Method not allowed" }, 405);
+}
+__name(onRequest2, "onRequest2");
+__name2(onRequest2, "onRequest");
+var CORS_HEADERS3 = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
+function json6(body, status = 200, extraHeaders = {}) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json", ...CORS_HEADERS3, ...extraHeaders }
+  });
+}
+__name(json6, "json6");
+__name2(json6, "json");
+function slugify2(input) {
+  return String(input || "").trim().toLowerCase().replace(/['"]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
+}
+__name(slugify2, "slugify2");
+__name2(slugify2, "slugify");
+async function requireAdmin5(request, env) {
+  const cookieHeader = request.headers.get("Cookie") || "";
+  const cookies = parseCookie(cookieHeader);
+  const token = cookies?.el_session || "";
+  const user = await getUserFromSession(env, token);
+  if (!user) return { ok: false, status: 401, error: "Unauthorized" };
+  if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
+  return { ok: true, user };
+}
+__name(requireAdmin5, "requireAdmin5");
+__name2(requireAdmin5, "requireAdmin");
+async function onRequestOptions3() {
+  return new Response(null, { status: 204, headers: { ...CORS_HEADERS3 } });
+}
+__name(onRequestOptions3, "onRequestOptions3");
+__name2(onRequestOptions3, "onRequestOptions");
+async function onRequestGet3({ env }) {
+  try {
+    const res = await env.DB.prepare(
+      "SELECT id, name, tagline, description, badge, sort_order, is_active, images_json, created_at, updated_at FROM collections WHERE is_active=1 ORDER BY COALESCE(sort_order, 999999), created_at ASC"
+    ).all();
+    return json6({ ok: true, collections: res?.results || [] });
+  } catch (err) {
+    console.error("COLLECTIONS LIST ERROR:", err);
+    return json6({ ok: false, error: "Server error." }, 500);
+  }
+}
+__name(onRequestGet3, "onRequestGet3");
+__name2(onRequestGet3, "onRequestGet");
+async function onRequestPost5({ request, env }) {
+  const auth = await requireAdmin5(request, env);
+  if (!auth.ok) return json6({ ok: false, error: auth.error }, auth.status);
+  let payload = {};
+  try {
+    payload = await request.json();
+  } catch {
+    return json6({ ok: false, error: "Invalid JSON body." }, 400);
+  }
+  const name = String(payload.name || "").trim();
+  if (!name) return json6({ ok: false, error: "Name is required." }, 400);
+  const id = String(payload.id || payload.slug || "").trim() || slugify2(name);
+  const badge = String(payload.badge || "").trim();
+  const tagline = String(payload.tagline || "").trim();
+  const description = String(payload.description || "").trim();
+  const sortOrder = payload.sort_order === "" || payload.sort_order === null || typeof payload.sort_order === "undefined" ? 0 : Number(payload.sort_order);
+  const isActive = payload.is_active === false || payload.is_active === 0 ? 0 : 1;
+  const specsJson = "[]";
+  const documentsJson = "[]";
+  const reviewsJson = "[]";
+  const shippingMd = "";
+  const isolatesJson = "[]";
+  const terpenesJson = "[]";
+  let imagesJson = "[]";
+  if (Array.isArray(payload.images)) {
+    const cleaned = payload.images.filter((x) => x && typeof x.url === "string" && x.url.trim()).map((x) => ({
+      url: String(x.url).trim(),
+      alt: String(x.alt || "").trim(),
+      isPrimary: Boolean(x.isPrimary)
+    }));
+    imagesJson = JSON.stringify(cleaned);
+  }
+  const createdAt = (/* @__PURE__ */ new Date()).toISOString();
+  const updatedAt = createdAt;
+  try {
+    await env.DB.prepare(
+      "INSERT INTO collections (id, name, badge, tagline, description, sort_order, is_active, specs_json, documents_json, reviews_json, shipping_md, isolates_json, terpenes_json, images_json, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    ).bind(
+      id,
+      name,
+      badge,
+      tagline,
+      description,
+      sortOrder,
+      isActive,
+      specsJson,
+      documentsJson,
+      reviewsJson,
+      shippingMd,
+      isolatesJson,
+      terpenesJson,
+      imagesJson,
+      createdAt,
+      updatedAt
+    ).run();
+    const row = await env.DB.prepare(
+      "SELECT id, name, tagline, description, badge, sort_order, is_active, specs_json, documents_json, reviews_json, shipping_md, isolates_json, terpenes_json, images_json, created_at, updated_at FROM collections WHERE id=?"
+    ).bind(id).first();
+    return json6({ ok: true, collection: row }, 201);
+  } catch (err) {
+    console.error("COLLECTION CREATE ERROR:", err);
+    const msg = String(err?.message || "").toLowerCase();
+    if (msg.includes("unique") || msg.includes("constraint")) {
+      return json6({ ok: false, error: "A collection with that Id/Slug already exists." }, 409);
+    }
+    if (msg.includes("no such column") && msg.includes("images_json")) {
+      return json6(
+        { ok: false, error: "DB is missing images_json. Run migration 0005_collections_images_column.sql." },
+        500
+      );
+    }
+    return json6({ ok: false, error: "Server error." }, 500);
+  }
+}
+__name(onRequestPost5, "onRequestPost5");
+__name2(onRequestPost5, "onRequestPost");
 var routes = [
   {
     routePath: "/api/collections/:id/profiles",
@@ -491,6 +971,20 @@ var routes = [
     modules: [onRequestPost3]
   },
   {
+    routePath: "/api/images/direct-upload",
+    mountPath: "/api/images",
+    method: "OPTIONS",
+    middlewares: [],
+    modules: [onRequestOptions]
+  },
+  {
+    routePath: "/api/images/direct-upload",
+    mountPath: "/api/images",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost4]
+  },
+  {
     routePath: "/api/collections/:id",
     mountPath: "/api/collections",
     method: "GET",
@@ -498,15 +992,48 @@ var routes = [
     modules: [onRequestGet2]
   },
   {
+    routePath: "/api/collections/:id",
+    mountPath: "/api/collections",
+    method: "OPTIONS",
+    middlewares: [],
+    modules: [onRequestOptions2]
+  },
+  {
+    routePath: "/api/collections/:id",
+    mountPath: "/api/collections",
+    method: "PUT",
+    middlewares: [],
+    modules: [onRequestPut]
+  },
+  {
     routePath: "/api/profiles/:slug",
     mountPath: "/api/profiles",
+    method: "",
+    middlewares: [],
+    modules: [onRequest2]
+  },
+  {
+    routePath: "/api/collections",
+    mountPath: "/api/collections",
     method: "GET",
     middlewares: [],
     modules: [onRequestGet3]
+  },
+  {
+    routePath: "/api/collections",
+    mountPath: "/api/collections",
+    method: "OPTIONS",
+    middlewares: [],
+    modules: [onRequestOptions3]
+  },
+  {
+    routePath: "/api/collections",
+    mountPath: "/api/collections",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost5]
   }
 ];
-
-// ../../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/path-to-regexp/dist.es2015/index.js
 function lexer(str) {
   var tokens = [];
   var i = 0;
@@ -591,6 +1118,7 @@ function lexer(str) {
   return tokens;
 }
 __name(lexer, "lexer");
+__name2(lexer, "lexer");
 function parse(str, options) {
   if (options === void 0) {
     options = {};
@@ -601,18 +1129,18 @@ function parse(str, options) {
   var key = 0;
   var i = 0;
   var path = "";
-  var tryConsume = /* @__PURE__ */ __name(function(type) {
+  var tryConsume = /* @__PURE__ */ __name2(function(type) {
     if (i < tokens.length && tokens[i].type === type)
       return tokens[i++].value;
   }, "tryConsume");
-  var mustConsume = /* @__PURE__ */ __name(function(type) {
+  var mustConsume = /* @__PURE__ */ __name2(function(type) {
     var value2 = tryConsume(type);
     if (value2 !== void 0)
       return value2;
     var _a2 = tokens[i], nextType = _a2.type, index = _a2.index;
     throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
   }, "mustConsume");
-  var consumeText = /* @__PURE__ */ __name(function() {
+  var consumeText = /* @__PURE__ */ __name2(function() {
     var result2 = "";
     var value2;
     while (value2 = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
@@ -620,7 +1148,7 @@ function parse(str, options) {
     }
     return result2;
   }, "consumeText");
-  var isSafe = /* @__PURE__ */ __name(function(value2) {
+  var isSafe = /* @__PURE__ */ __name2(function(value2) {
     for (var _i = 0, delimiter_1 = delimiter; _i < delimiter_1.length; _i++) {
       var char2 = delimiter_1[_i];
       if (value2.indexOf(char2) > -1)
@@ -628,7 +1156,7 @@ function parse(str, options) {
     }
     return false;
   }, "isSafe");
-  var safePattern = /* @__PURE__ */ __name(function(prefix2) {
+  var safePattern = /* @__PURE__ */ __name2(function(prefix2) {
     var prev = result[result.length - 1];
     var prevText = prefix2 || (prev && typeof prev === "string" ? prev : "");
     if (prev && !prevText) {
@@ -691,12 +1219,14 @@ function parse(str, options) {
   return result;
 }
 __name(parse, "parse");
+__name2(parse, "parse");
 function match(str, options) {
   var keys = [];
   var re = pathToRegexp(str, keys, options);
   return regexpToFunction(re, keys, options);
 }
 __name(match, "match");
+__name2(match, "match");
 function regexpToFunction(re, keys, options) {
   if (options === void 0) {
     options = {};
@@ -710,7 +1240,7 @@ function regexpToFunction(re, keys, options) {
       return false;
     var path = m[0], index = m.index;
     var params = /* @__PURE__ */ Object.create(null);
-    var _loop_1 = /* @__PURE__ */ __name(function(i2) {
+    var _loop_1 = /* @__PURE__ */ __name2(function(i2) {
       if (m[i2] === void 0)
         return "continue";
       var key = keys[i2 - 1];
@@ -729,14 +1259,17 @@ function regexpToFunction(re, keys, options) {
   };
 }
 __name(regexpToFunction, "regexpToFunction");
+__name2(regexpToFunction, "regexpToFunction");
 function escapeString(str) {
   return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1");
 }
 __name(escapeString, "escapeString");
+__name2(escapeString, "escapeString");
 function flags(options) {
   return options && options.sensitive ? "" : "i";
 }
 __name(flags, "flags");
+__name2(flags, "flags");
 function regexpToRegexp(path, keys) {
   if (!keys)
     return path;
@@ -757,6 +1290,7 @@ function regexpToRegexp(path, keys) {
   return path;
 }
 __name(regexpToRegexp, "regexpToRegexp");
+__name2(regexpToRegexp, "regexpToRegexp");
 function arrayToRegexp(paths, keys, options) {
   var parts = paths.map(function(path) {
     return pathToRegexp(path, keys, options).source;
@@ -764,10 +1298,12 @@ function arrayToRegexp(paths, keys, options) {
   return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
 }
 __name(arrayToRegexp, "arrayToRegexp");
+__name2(arrayToRegexp, "arrayToRegexp");
 function stringToRegexp(path, keys, options) {
   return tokensToRegexp(parse(path, options), keys, options);
 }
 __name(stringToRegexp, "stringToRegexp");
+__name2(stringToRegexp, "stringToRegexp");
 function tokensToRegexp(tokens, keys, options) {
   if (options === void 0) {
     options = {};
@@ -823,6 +1359,7 @@ function tokensToRegexp(tokens, keys, options) {
   return new RegExp(route, flags(options));
 }
 __name(tokensToRegexp, "tokensToRegexp");
+__name2(tokensToRegexp, "tokensToRegexp");
 function pathToRegexp(path, keys, options) {
   if (path instanceof RegExp)
     return regexpToRegexp(path, keys);
@@ -831,8 +1368,7 @@ function pathToRegexp(path, keys, options) {
   return stringToRegexp(path, keys, options);
 }
 __name(pathToRegexp, "pathToRegexp");
-
-// ../../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/pages-template-worker.ts
+__name2(pathToRegexp, "pathToRegexp");
 var escapeRegex = /[.+?^${}()|[\]\\]/g;
 function* executeRequest(request) {
   const requestPath = new URL(request.url).pathname;
@@ -883,13 +1419,14 @@ function* executeRequest(request) {
   }
 }
 __name(executeRequest, "executeRequest");
+__name2(executeRequest, "executeRequest");
 var pages_template_worker_default = {
   async fetch(originalRequest, env, workerContext) {
     let request = originalRequest;
     const handlerIterator = executeRequest(request);
     let data = {};
     let isFailOpen = false;
-    const next = /* @__PURE__ */ __name(async (input, init) => {
+    const next = /* @__PURE__ */ __name2(async (input, init) => {
       if (input !== void 0) {
         let url = input;
         if (typeof input === "string") {
@@ -916,7 +1453,7 @@ var pages_template_worker_default = {
           },
           env,
           waitUntil: workerContext.waitUntil.bind(workerContext),
-          passThroughOnException: /* @__PURE__ */ __name(() => {
+          passThroughOnException: /* @__PURE__ */ __name2(() => {
             isFailOpen = true;
           }, "passThroughOnException")
         };
@@ -944,16 +1481,14 @@ var pages_template_worker_default = {
     }
   }
 };
-var cloneResponse = /* @__PURE__ */ __name((response) => (
+var cloneResponse = /* @__PURE__ */ __name2((response) => (
   // https://fetch.spec.whatwg.org/#null-body-status
   new Response(
     [101, 204, 205, 304].includes(response.status) ? null : response.body,
     response
   )
 ), "cloneResponse");
-
-// ../../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
-var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } finally {
@@ -969,8 +1504,6 @@ var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
   }
 }, "drainBody");
 var middleware_ensure_req_body_drained_default = drainBody;
-
-// ../../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
 function reduceError(e) {
   return {
     name: e?.name,
@@ -980,7 +1513,8 @@ function reduceError(e) {
   };
 }
 __name(reduceError, "reduceError");
-var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+__name2(reduceError, "reduceError");
+var jsonError = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } catch (e) {
@@ -992,20 +1526,17 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
   }
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
-
-// ../.wrangler/tmp/bundle-CajQWp/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
 ];
 var middleware_insertion_facade_default = pages_template_worker_default;
-
-// ../../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/common.ts
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
   __facade_middleware__.push(...args.flat());
 }
 __name(__facade_register__, "__facade_register__");
+__name2(__facade_register__, "__facade_register__");
 function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   const [head, ...tail] = middlewareChain;
   const middlewareCtx = {
@@ -1017,6 +1548,7 @@ function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   return head(request, env, ctx, middlewareCtx);
 }
 __name(__facade_invokeChain__, "__facade_invokeChain__");
+__name2(__facade_invokeChain__, "__facade_invokeChain__");
 function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   return __facade_invokeChain__(request, env, ctx, dispatch, [
     ...__facade_middleware__,
@@ -1024,16 +1556,18 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   ]);
 }
 __name(__facade_invoke__, "__facade_invoke__");
-
-// ../.wrangler/tmp/bundle-CajQWp/middleware-loader.entry.ts
+__name2(__facade_invoke__, "__facade_invoke__");
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
+  static {
+    __name(this, "___Facade_ScheduledController__");
+  }
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
     this.cron = cron;
     this.#noRetry = noRetry;
   }
   static {
-    __name(this, "__Facade_ScheduledController__");
+    __name2(this, "__Facade_ScheduledController__");
   }
   #noRetry;
   noRetry() {
@@ -1050,7 +1584,7 @@ function wrapExportedHandler(worker) {
   for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__) {
     __facade_register__(middleware);
   }
-  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
+  const fetchDispatcher = /* @__PURE__ */ __name2(function(request, env, ctx) {
     if (worker.fetch === void 0) {
       throw new Error("Handler does not export a fetch() function.");
     }
@@ -1059,7 +1593,7 @@ function wrapExportedHandler(worker) {
   return {
     ...worker,
     fetch(request, env, ctx) {
-      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
+      const dispatcher = /* @__PURE__ */ __name2(function(type, init) {
         if (type === "scheduled" && worker.scheduled !== void 0) {
           const controller = new __Facade_ScheduledController__(
             Date.now(),
@@ -1075,6 +1609,7 @@ function wrapExportedHandler(worker) {
   };
 }
 __name(wrapExportedHandler, "wrapExportedHandler");
+__name2(wrapExportedHandler, "wrapExportedHandler");
 function wrapWorkerEntrypoint(klass) {
   if (__INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0) {
     return klass;
@@ -1083,7 +1618,7 @@ function wrapWorkerEntrypoint(klass) {
     __facade_register__(middleware);
   }
   return class extends klass {
-    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
+    #fetchDispatcher = /* @__PURE__ */ __name2((request, env, ctx) => {
       this.env = env;
       this.ctx = ctx;
       if (super.fetch === void 0) {
@@ -1091,7 +1626,7 @@ function wrapWorkerEntrypoint(klass) {
       }
       return super.fetch(request);
     }, "#fetchDispatcher");
-    #dispatcher = /* @__PURE__ */ __name((type, init) => {
+    #dispatcher = /* @__PURE__ */ __name2((type, init) => {
       if (type === "scheduled" && super.scheduled !== void 0) {
         const controller = new __Facade_ScheduledController__(
           Date.now(),
@@ -1114,6 +1649,7 @@ function wrapWorkerEntrypoint(klass) {
   };
 }
 __name(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
+__name2(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
 var WRAPPED_ENTRY;
 if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapExportedHandler(middleware_insertion_facade_default);
@@ -1121,8 +1657,178 @@ if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapWorkerEntrypoint(middleware_insertion_facade_default);
 }
 var middleware_loader_entry_default = WRAPPED_ENTRY;
-export {
-  __INTERNAL_WRANGLER_MIDDLEWARE__,
-  middleware_loader_entry_default as default
+
+// ../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
+var drainBody2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+  try {
+    return await middlewareCtx.next(request, env);
+  } finally {
+    try {
+      if (request.body !== null && !request.bodyUsed) {
+        const reader = request.body.getReader();
+        while (!(await reader.read()).done) {
+        }
+      }
+    } catch (e) {
+      console.error("Failed to drain the unused request body.", e);
+    }
+  }
+}, "drainBody");
+var middleware_ensure_req_body_drained_default2 = drainBody2;
+
+// ../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
+function reduceError2(e) {
+  return {
+    name: e?.name,
+    message: e?.message ?? String(e),
+    stack: e?.stack,
+    cause: e?.cause === void 0 ? void 0 : reduceError2(e.cause)
+  };
+}
+__name(reduceError2, "reduceError");
+var jsonError2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+  try {
+    return await middlewareCtx.next(request, env);
+  } catch (e) {
+    const error = reduceError2(e);
+    return Response.json(error, {
+      status: 500,
+      headers: { "MF-Experimental-Error-Stack": "true" }
+    });
+  }
+}, "jsonError");
+var middleware_miniflare3_json_error_default2 = jsonError2;
+
+// .wrangler/tmp/bundle-6eGxUS/middleware-insertion-facade.js
+var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
+  middleware_ensure_req_body_drained_default2,
+  middleware_miniflare3_json_error_default2
+];
+var middleware_insertion_facade_default2 = middleware_loader_entry_default;
+
+// ../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/common.ts
+var __facade_middleware__2 = [];
+function __facade_register__2(...args) {
+  __facade_middleware__2.push(...args.flat());
+}
+__name(__facade_register__2, "__facade_register__");
+function __facade_invokeChain__2(request, env, ctx, dispatch, middlewareChain) {
+  const [head, ...tail] = middlewareChain;
+  const middlewareCtx = {
+    dispatch,
+    next(newRequest, newEnv) {
+      return __facade_invokeChain__2(newRequest, newEnv, ctx, dispatch, tail);
+    }
+  };
+  return head(request, env, ctx, middlewareCtx);
+}
+__name(__facade_invokeChain__2, "__facade_invokeChain__");
+function __facade_invoke__2(request, env, ctx, dispatch, finalMiddleware) {
+  return __facade_invokeChain__2(request, env, ctx, dispatch, [
+    ...__facade_middleware__2,
+    finalMiddleware
+  ]);
+}
+__name(__facade_invoke__2, "__facade_invoke__");
+
+// .wrangler/tmp/bundle-6eGxUS/middleware-loader.entry.ts
+var __Facade_ScheduledController__2 = class ___Facade_ScheduledController__2 {
+  constructor(scheduledTime, cron, noRetry) {
+    this.scheduledTime = scheduledTime;
+    this.cron = cron;
+    this.#noRetry = noRetry;
+  }
+  static {
+    __name(this, "__Facade_ScheduledController__");
+  }
+  #noRetry;
+  noRetry() {
+    if (!(this instanceof ___Facade_ScheduledController__2)) {
+      throw new TypeError("Illegal invocation");
+    }
+    this.#noRetry();
+  }
 };
-//# sourceMappingURL=functionsWorker-0.8766213799384142.mjs.map
+function wrapExportedHandler2(worker) {
+  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
+    return worker;
+  }
+  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
+    __facade_register__2(middleware);
+  }
+  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
+    if (worker.fetch === void 0) {
+      throw new Error("Handler does not export a fetch() function.");
+    }
+    return worker.fetch(request, env, ctx);
+  }, "fetchDispatcher");
+  return {
+    ...worker,
+    fetch(request, env, ctx) {
+      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
+        if (type === "scheduled" && worker.scheduled !== void 0) {
+          const controller = new __Facade_ScheduledController__2(
+            Date.now(),
+            init.cron ?? "",
+            () => {
+            }
+          );
+          return worker.scheduled(controller, env, ctx);
+        }
+      }, "dispatcher");
+      return __facade_invoke__2(request, env, ctx, dispatcher, fetchDispatcher);
+    }
+  };
+}
+__name(wrapExportedHandler2, "wrapExportedHandler");
+function wrapWorkerEntrypoint2(klass) {
+  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
+    return klass;
+  }
+  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
+    __facade_register__2(middleware);
+  }
+  return class extends klass {
+    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
+      this.env = env;
+      this.ctx = ctx;
+      if (super.fetch === void 0) {
+        throw new Error("Entrypoint class does not define a fetch() function.");
+      }
+      return super.fetch(request);
+    }, "#fetchDispatcher");
+    #dispatcher = /* @__PURE__ */ __name((type, init) => {
+      if (type === "scheduled" && super.scheduled !== void 0) {
+        const controller = new __Facade_ScheduledController__2(
+          Date.now(),
+          init.cron ?? "",
+          () => {
+          }
+        );
+        return super.scheduled(controller);
+      }
+    }, "#dispatcher");
+    fetch(request) {
+      return __facade_invoke__2(
+        request,
+        this.env,
+        this.ctx,
+        this.#dispatcher,
+        this.#fetchDispatcher
+      );
+    }
+  };
+}
+__name(wrapWorkerEntrypoint2, "wrapWorkerEntrypoint");
+var WRAPPED_ENTRY2;
+if (typeof middleware_insertion_facade_default2 === "object") {
+  WRAPPED_ENTRY2 = wrapExportedHandler2(middleware_insertion_facade_default2);
+} else if (typeof middleware_insertion_facade_default2 === "function") {
+  WRAPPED_ENTRY2 = wrapWorkerEntrypoint2(middleware_insertion_facade_default2);
+}
+var middleware_loader_entry_default2 = WRAPPED_ENTRY2;
+export {
+  __INTERNAL_WRANGLER_MIDDLEWARE__2 as __INTERNAL_WRANGLER_MIDDLEWARE__,
+  middleware_loader_entry_default2 as default
+};
+//# sourceMappingURL=functionsWorker-0.9324063781548744.js.map

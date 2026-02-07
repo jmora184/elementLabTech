@@ -48,6 +48,19 @@ function parseJsonArray(text) {
   }
 }
 
+function cleanImagesArray(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((x) => x && typeof x.url === "string" && x.url.trim())
+    .map((x, idx) => ({
+      url: String(x.url).trim(),
+      alt: String(x.alt || "").trim(),
+      kind: String(x.kind || "gallery").trim() || "gallery",
+      sort_order:
+        x.sort_order === undefined || x.sort_order === null || x.sort_order === "" ? idx : Number(x.sort_order),
+    }));
+}
+
 export async function onRequest(context) {
   const { request, env, params } = context;
   const slug = params?.slug;
@@ -139,6 +152,8 @@ export async function onRequest(context) {
           ? existing.is_active
           : (body.is_active ? 1 : 0);
 
+      const images = body?.images !== undefined ? cleanImagesArray(body.images) : null;
+
       const ts = nowIso();
 
       await env.DB.prepare(
@@ -169,6 +184,28 @@ export async function onRequest(context) {
           slug
         )
         .run();
+
+      // Update images if client provided them (replace all existing rows)
+      if (images !== null) {
+        try {
+          await env.DB.prepare("DELETE FROM flavor_profile_images WHERE profile_id=?")
+            .bind(existing.id)
+            .run();
+
+          if (images.length) {
+            const stmt = env.DB.prepare(
+              "INSERT INTO flavor_profile_images (id, profile_id, url, alt, kind, sort_order, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
+            );
+            for (const img of images) {
+              await stmt
+                .bind(crypto.randomUUID(), existing.id, img.url, img.alt, img.kind, img.sort_order)
+                .run();
+            }
+          }
+        } catch (e) {
+          console.error("PROFILE IMAGES UPDATE ERROR:", e);
+        }
+      }
 
       const updated = await env.DB.prepare(
         "SELECT * FROM flavor_profiles WHERE slug=? LIMIT 1"

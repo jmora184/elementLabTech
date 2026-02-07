@@ -9,6 +9,8 @@ import bottleImg from "../../assets/bottle.png";
 import dt2 from "../../assets/dominant-terpenes-2.png";
 import dt3 from "../../assets/dominant-terpenes-3.png";
 
+import { uploadImageFile } from "../../utils/cloudflareImages";
+
 async function fetchJson(url, opts) {
   const res = await fetch(url, opts);
   const data = await res.json().catch(() => null);
@@ -102,6 +104,8 @@ export default function ProductPage() {
     flavor_aroma_csv: "",
     sort_order: "",
   });
+  const [addProfileImages, setAddProfileImages] = useState([]); // [{ url, alt, kind }]
+  const [addProfileImgBusy, setAddProfileImgBusy] = useState(false);
   const [addErr, setAddErr] = useState("");
   const [adding, setAdding] = useState(false);
 
@@ -117,6 +121,28 @@ export default function ProductPage() {
         setSelectedSlug(first);
         setExpandedSlug(first);
       }
+    }
+  }
+
+  async function uploadFilesToRows(files, { setRows, setBusy, setErr, metadata }) {
+    const list = Array.from(files || []).filter(Boolean);
+    if (!list.length) return;
+    setErr?.("");
+    setBusy?.(true);
+    try {
+      for (const file of list) {
+        const out = await uploadImageFile(file, { metadata });
+        if (!out?.url) throw new Error("Upload succeeded but no delivery URL was returned.");
+        setRows((prev) => {
+          const next = Array.isArray(prev) ? [...prev] : [];
+          next.push({ url: out.url, alt: "", kind: "gallery" });
+          return next;
+        });
+      }
+    } catch (e) {
+      setErr?.(e?.message || "Image upload failed.");
+    } finally {
+      setBusy?.(false);
     }
   }
 
@@ -145,6 +171,16 @@ export default function ProductPage() {
           .map((s) => s.trim())
           .filter(Boolean),
         sort_order: addForm.sort_order === "" ? undefined : Number(addForm.sort_order),
+        images: Array.isArray(addProfileImages)
+          ? addProfileImages
+              .filter((x) => x && typeof x.url === "string" && x.url.trim())
+              .map((x, idx) => ({
+                url: String(x.url).trim(),
+                alt: String(x.alt || "").trim(),
+                kind: String(x.kind || "gallery").trim() || "gallery",
+                sort_order: idx,
+              }))
+          : [],
       };
 
       const res = await fetchJson(`/api/collections/${encodeURIComponent(id)}/profiles`, {
@@ -173,6 +209,7 @@ export default function ProductPage() {
         flavor_aroma_csv: "",
         sort_order: "",
       });
+      setAddProfileImages([]);
     } catch (err) {
       setAddErr(err?.message || "Could not create profile.");
     } finally {
@@ -291,10 +328,20 @@ export default function ProductPage() {
   // Gallery: use DB images_json when available (R2 URLs), fallback to local placeholders
   const galleryImages = useMemo(() => {
     const rows = parseJsonArray(collection?.images_json, []);
-    const urls = rows.map((r) => String(r?.url || "")).filter(Boolean);
+    // Put the "primary" image first (while preserving order of the others)
+    const primaryIdx = rows.findIndex((r) => !!r?.isPrimary);
+    const ordered =
+      primaryIdx >= 0 ? [rows[primaryIdx], ...rows.filter((_, i) => i !== primaryIdx)] : rows;
+
+    const urls = ordered.map((r) => String(r?.url || "")).filter(Boolean);
     return urls.length ? urls : [bottleImg, dt2, dt3];
   }, [collection?.images_json]);
   const [activeImg, setActiveImg] = useState(0);
+
+  // Whenever the images change (or primary changes), show the primary image first
+  useEffect(() => {
+    setActiveImg(0);
+  }, [collection?.images_json]);
 
   // Variant-ish selections
   const hardcodedProfiles = useMemo(() => collection?.profiles ?? [], [collection?.profiles]);
@@ -314,6 +361,16 @@ export default function ProductPage() {
 
   // Flavor info: DB-backed when available; otherwise show the old placeholder
   const dbProfile = profileBundle?.profile || null;
+
+  const profileImages = useMemo(() => {
+    const rows = Array.isArray(profileBundle?.images) ? profileBundle.images : [];
+    const urls = rows.map((r) => String(r?.url || "")).filter(Boolean);
+    return urls.length ? urls : [dt2];
+  }, [profileBundle?.images]);
+  const [profileActiveImg, setProfileActiveImg] = useState(0);
+  useEffect(() => {
+    setProfileActiveImg(0);
+  }, [selectedSlug]);
 
   const flavorInfo = useMemo(() => {
     if (dbProfile) {
@@ -735,8 +792,28 @@ export default function ProductPage() {
                         {flavorInfo.flavorCategory ? ` (${flavorInfo.flavorCategory})` : ""}
                       </div>
 
-                      {/* Placeholder hero until DB images are wired */}
-                      <img src={dt2} alt={flavorInfo.name} className="pp-flavorHero" />
+                      {/* Flavor profile images */}
+                      <img
+                        src={profileImages[profileActiveImg] || dt2}
+                        alt={flavorInfo.name}
+                        className="pp-flavorHero"
+                      />
+
+                      {profileImages.length > 1 && (
+                        <div className="pp-thumbRow" style={{ marginTop: 10 }}>
+                          {profileImages.map((src, idx) => (
+                            <button
+                              key={src + idx}
+                              type="button"
+                              className={`pp-thumb ${idx === profileActiveImg ? "isActive" : ""}`}
+                              onClick={() => setProfileActiveImg(idx)}
+                              aria-label={`View profile image ${idx + 1}`}
+                            >
+                              <img src={src} alt="" />
+                            </button>
+                          ))}
+                        </div>
+                      )}
 
                       {loadingProfile && (
                         <div className="pp-muted" style={{ marginTop: 10 }}>
@@ -997,6 +1074,59 @@ export default function ProductPage() {
                             />
                           </label>
 
+                          <label className="pp-label" style={{ gridColumn: "1 / -1" }}>
+                            Upload images (optional)
+                            <input
+                              className="pp-input"
+                              type="file"
+                              multiple
+                              accept="image/*"
+                              disabled={addProfileImgBusy}
+                              onChange={async (e) => {
+                                const files = e.target.files;
+                                e.target.value = "";
+                                await uploadFilesToRows(files, {
+                                  setRows: setAddProfileImages,
+                                  setBusy: setAddProfileImgBusy,
+                                  setErr: setAddErr,
+                                  metadata: { purpose: "flavor_profile", collection_id: id, slug: addForm.slug || addForm.name },
+                                });
+                              }}
+                            />
+                            <div className="pp-muted" style={{ marginTop: 6 }}>
+                              Pick files from your device (or drag-select multiple). They’ll upload to Cloudflare Images.
+                            </div>
+
+                            {!!addProfileImages.length && (
+                              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 10 }}>
+                                {addProfileImages.map((img, idx) => (
+                                  <div key={idx} style={{ display: "grid", gap: 6, width: 160 }}>
+                                    <img
+                                      src={img.url}
+                                      alt={img.alt || ""}
+                                      style={{ width: "100%", height: 110, objectFit: "cover", borderRadius: 12, border: "1px solid rgba(255,255,255,0.12)" }}
+                                    />
+                                    <input
+                                      className="pp-input"
+                                      placeholder="Alt text"
+                                      value={img.alt || ""}
+                                      onChange={(e) =>
+                                        setAddProfileImages((p) => p.map((r, i) => (i === idx ? { ...r, alt: e.target.value } : r)))
+                                      }
+                                    />
+                                    <button
+                                      type="button"
+                                      className="pp-docBtn"
+                                      onClick={() => setAddProfileImages((p) => p.filter((_, i) => i !== idx))}
+                                    >
+                                      Remove
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </label>
+
                           <label className="pp-label">
                             Mood
                             <input
@@ -1060,6 +1190,7 @@ export default function ProductPage() {
                   open={showEdit}
                   onClose={() => setShowEdit(false)}
                   initialProfile={dbProfile}
+                  initialImages={Array.isArray(profileBundle?.images) ? profileBundle.images : []}
                   onSave={async (payload) => {
                     await saveProfileEdits(payload);
                     setShowEdit(false);
@@ -1527,6 +1658,43 @@ export default function ProductPage() {
             ) : (
               <div style={{ marginTop: 14 }}>
                 <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+                  {editTabKey === "Images" && (
+                    <div style={{ marginRight: "auto", display: "flex", gap: 10, alignItems: "center" }}>
+                      <label style={{ fontSize: 12, opacity: 0.85 }}>
+                        Upload images
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          disabled={editTabSaving}
+                          onChange={async (e) => {
+                            const files = Array.from(e.target.files || []);
+                            e.target.value = "";
+                            if (!files.length) return;
+                            setEditTabError("");
+                            try {
+                              for (const file of files) {
+                                const out = await uploadImageFile(file, { metadata: { purpose: "collection", collection_id: id } });
+                                if (!out?.url) throw new Error("Upload succeeded but no delivery URL was returned.");
+                                setEditRows((prev) => {
+                                  const next = Array.isArray(prev) ? [...prev] : [];
+                                  const hasPrimary = next.some((r) => !!r?.isPrimary);
+                                  next.push({ url: out.url, alt: "", isPrimary: !hasPrimary && next.length === 0 });
+                                  return next;
+                                });
+                              }
+                            } catch (ex) {
+                              setEditTabError(ex?.message || "Image upload failed.");
+                            }
+                          }}
+                          style={{ display: "block", marginTop: 6 }}
+                        />
+                      </label>
+                      <div style={{ fontSize: 12, opacity: 0.7 }}>
+                        (Uploads to Cloudflare Images and stores delivery URLs.)
+                      </div>
+                    </div>
+                  )}
                   <button
                     type="button"
                     onClick={addRow}

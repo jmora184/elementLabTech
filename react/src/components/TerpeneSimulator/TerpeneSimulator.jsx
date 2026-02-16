@@ -17,7 +17,7 @@ const AXES = [
 
 // NOTE: These are illustrative aroma vectors (0-100). You can swap these
 // to match your internal sensory data whenever you're ready.
-const ISOLATES = [
+const TERPENES = [
   {
     key: "limonene",
     name: "Limonene",
@@ -55,7 +55,7 @@ const ISOLATES = [
     },
   },
   {
-    key: "pinene",
+    key: "alpha_pinene",
     name: "α-Pinene",
     color: "#06b6d4",
     profile: {
@@ -70,6 +70,24 @@ const ISOLATES = [
       Pungent: 22,
       Pine: 95,
       Wood: 55,
+    },
+  },
+  {
+    key: "beta_pinene",
+    name: "β-Pinene",
+    color: "#0ea5e9",
+    profile: {
+      Fruity: 12,
+      Citrus: 16,
+      Acidic: 10,
+      Earthy: 24,
+      Floral: 8,
+      Spicy: 14,
+      Herbal: 26,
+      Tropical: 8,
+      Pungent: 18,
+      Pine: 88,
+      Wood: 48,
     },
   },
   {
@@ -198,13 +216,200 @@ const ISOLATES = [
       Wood: 10,
     },
   },
+  {
+    key: "farnesene",
+    name: "Farnesene",
+    color: "#f97316",
+    profile: {
+      Fruity: 55,
+      Citrus: 18,
+      Acidic: 10,
+      Earthy: 12,
+      Floral: 18,
+      Spicy: 10,
+      Herbal: 18,
+      Tropical: 35,
+      Pungent: 8,
+      Pine: 6,
+      Wood: 10,
+    },
+  },
+  {
+    key: "nerolidol",
+    name: "Nerolidol",
+    color: "#10b981",
+    profile: {
+      Fruity: 12,
+      Citrus: 6,
+      Acidic: 4,
+      Earthy: 35,
+      Floral: 22,
+      Spicy: 10,
+      Herbal: 20,
+      Tropical: 8,
+      Pungent: 8,
+      Pine: 6,
+      Wood: 40,
+    },
+  },
+  {
+    key: "terpineol",
+    name: "Terpineol",
+    color: "#8b5cf6",
+    profile: {
+      Fruity: 18,
+      Citrus: 12,
+      Acidic: 6,
+      Earthy: 10,
+      Floral: 55,
+      Spicy: 10,
+      Herbal: 20,
+      Tropical: 10,
+      Pungent: 6,
+      Pine: 18,
+      Wood: 10,
+    },
+  },
+  {
+    key: "borneol",
+    name: "Borneol",
+    color: "#14b8a6",
+    profile: {
+      Fruity: 6,
+      Citrus: 6,
+      Acidic: 4,
+      Earthy: 22,
+      Floral: 8,
+      Spicy: 18,
+      Herbal: 50,
+      Tropical: 4,
+      Pungent: 25,
+      Pine: 35,
+      Wood: 25,
+    },
+  },
+  {
+    key: "camphene",
+    name: "Camphene",
+    color: "#22c55e",
+    profile: {
+      Fruity: 6,
+      Citrus: 8,
+      Acidic: 4,
+      Earthy: 18,
+      Floral: 6,
+      Spicy: 12,
+      Herbal: 28,
+      Tropical: 4,
+      Pungent: 20,
+      Pine: 70,
+      Wood: 45,
+    },
+  },
+  {
+    key: "phellandrene",
+    name: "β-Phellandrene",
+    color: "#3b82f6",
+    profile: {
+      Fruity: 22,
+      Citrus: 30,
+      Acidic: 10,
+      Earthy: 10,
+      Floral: 10,
+      Spicy: 10,
+      Herbal: 18,
+      Tropical: 18,
+      Pungent: 12,
+      Pine: 45,
+      Wood: 15,
+    },
+  },
 ];
 
-const DEFAULT_BLEND = [
-  { key: "limonene", weight: 40 },
-  { key: "myrcene", weight: 30 },
-  { key: "pinene", weight: 20 },
-  { key: "linalool", weight: 10 },
+// Strain-inspired presets (illustrative). Real terpene profiles vary by batch/grower.
+// These presets are intended as starting points for aroma exploration only.
+const STRAIN_PRESETS = [
+  {
+    key: "og_kush",
+    name: "OG Kush",
+    description: "Earthy / pine / citrus (strain‑inspired)",
+    defaults: {
+      myrcene: 28,
+      caryophyllene: 20,
+      limonene: 16,
+      alpha_pinene: 10,
+      humulene: 8,
+      linalool: 6,
+      terpinolene: 4,
+      beta_pinene: 4,
+      borneol: 4,
+    },
+  },
+  {
+    key: "blue_dream",
+    name: "Blue Dream",
+    description: "Fruity / floral / sweet (strain‑inspired)",
+    defaults: {
+      myrcene: 22,
+      limonene: 18,
+      pinene: 0, // legacy compatibility (unused)
+      alpha_pinene: 12,
+      beta_pinene: 8,
+      terpinolene: 10,
+      ocimene: 10,
+      linalool: 8,
+      geraniol: 6,
+      farnesene: 6,
+    },
+  },
+  {
+    key: "gelato",
+    name: "Gelato",
+    description: "Sweet / citrus / creamy (strain‑inspired)",
+    defaults: {
+      caryophyllene: 22,
+      limonene: 18,
+      myrcene: 16,
+      linalool: 10,
+      humulene: 8,
+      ocimene: 8,
+      terpineol: 6,
+      geraniol: 6,
+      farnesene: 6,
+    },
+  },
+  {
+    key: "sour_diesel",
+    name: "Sour Diesel",
+    description: "Citrus / pungent / fuel (strain‑inspired)",
+    defaults: {
+      limonene: 26,
+      caryophyllene: 18,
+      myrcene: 14,
+      alpha_pinene: 10,
+      beta_pinene: 8,
+      humulene: 8,
+      terpinolene: 8,
+      borneol: 4,
+      camphene: 4,
+    },
+  },
+  {
+    key: "granddaddy_purple",
+    name: "Granddaddy Purple",
+    description: "Grape / floral / earthy (strain‑inspired)",
+    defaults: {
+      myrcene: 26,
+      linalool: 14,
+      caryophyllene: 14,
+      limonene: 10,
+      humulene: 8,
+      geraniol: 8,
+      terpineol: 8,
+      nerolidol: 6,
+      bisabolol: 6,
+    },
+  },
 ];
 
 function clamp01(n) {
@@ -212,73 +417,101 @@ function clamp01(n) {
   return Math.max(0, Math.min(1, n));
 }
 
-function computeBlend(selected) {
-  const total = selected.reduce((sum, s) => sum + (Number(s.weight) || 0), 0);
+function makeZeroWeights() {
+  const out = {};
+  for (const t of TERPENES) out[t.key] = 0;
+  return out;
+}
+
+function computeBlendFromWeights(weights) {
+  const total = Object.values(weights || {}).reduce((sum, n) => sum + (Number(n) || 0), 0);
   const denom = total <= 0 ? 1 : total;
 
   const out = {};
   for (const axis of AXES) out[axis] = 0;
 
-  for (const s of selected) {
-    const iso = ISOLATES.find((x) => x.key === s.key);
-    if (!iso) continue;
-    const w = (Number(s.weight) || 0) / denom;
+  for (const t of TERPENES) {
+    const amount = Number(weights?.[t.key]) || 0;
+    if (amount <= 0) continue;
+    const w = amount / denom;
     for (const axis of AXES) {
-      out[axis] += (iso.profile[axis] || 0) * w;
+      out[axis] += (t.profile?.[axis] || 0) * w;
     }
   }
 
   // Normalize to 0..1 for chart math.
   const out01 = {};
   for (const axis of AXES) out01[axis] = clamp01((out[axis] || 0) / 100);
-  return out01;
+  return { out01, total };
 }
 
-function getIsolate(key) {
-  return ISOLATES.find((x) => x.key === key);
+
+function safeNumber(n) {
+  const v = Number(n);
+  if (!Number.isFinite(v)) return 0;
+  return Math.max(0, v);
+}
+
+function normalizeWeightsTo100(weights) {
+  const total = Object.values(weights || {}).reduce((sum, n) => sum + (Number(n) || 0), 0);
+  if (total <= 0) return weights;
+  const factor = 100 / total;
+  const out = {};
+  for (const k of Object.keys(weights)) out[k] = Math.round((Number(weights[k]) || 0) * factor * 10) / 10;
+  return out;
 }
 
 export default function TerpeneSimulator() {
-  const [selected, setSelected] = useState(DEFAULT_BLEND);
-  const [pendingKey, setPendingKey] = useState(
-    ISOLATES.find((i) => !DEFAULT_BLEND.some((s) => s.key === i.key))?.key || ISOLATES[0].key
-  );
+  const [presetKey, setPresetKey] = useState("");
+  const [search, setSearch] = useState("");
+  const [weights, setWeights] = useState(() => makeZeroWeights());
 
-  const blend = useMemo(() => computeBlend(selected), [selected]);
+  const { out01: blend, total: totalParts } = useMemo(() => computeBlendFromWeights(weights), [weights]);
 
-  const usedKeys = new Set(selected.map((s) => s.key));
-  const available = ISOLATES.filter((i) => !usedKeys.has(i.key));
+  const nonZero = useMemo(() => {
+    return TERPENES
+      .map((t) => ({ ...t, amount: Number(weights?.[t.key]) || 0 }))
+      .filter((t) => t.amount > 0)
+      .sort((a, b) => b.amount - a.amount);
+  }, [weights]);
 
-  const totalWeight = selected.reduce((sum, s) => sum + (Number(s.weight) || 0), 0);
+  const topNotes = useMemo(() => {
+    const sorted = [...AXES].sort((a, b) => (blend[b] || 0) - (blend[a] || 0));
+    return sorted.slice(0, 3).map((axis) => ({ axis, v: blend[axis] || 0 }));
+  }, [blend]);
 
-  const onAdd = () => {
-    if (!pendingKey || usedKeys.has(pendingKey)) return;
-    setSelected((prev) => [...prev, { key: pendingKey, weight: 20 }]);
-    const next = available.find((i) => i.key !== pendingKey) || ISOLATES[0];
-    setPendingKey(next?.key || ISOLATES[0].key);
+  const filteredTerpenes = useMemo(() => {
+    const q = (search || "").trim().toLowerCase();
+    if (!q) return TERPENES;
+    return TERPENES.filter((t) => t.name.toLowerCase().includes(q) || t.key.toLowerCase().includes(q));
+  }, [search]);
+
+  const applyPreset = (nextKey) => {
+    setPresetKey(nextKey);
+    if (!nextKey) return;
+    const preset = STRAIN_PRESETS.find((p) => p.key === nextKey);
+    if (!preset) return;
+
+    const next = makeZeroWeights();
+    for (const [k, v] of Object.entries(preset.defaults || {})) {
+      if (Object.prototype.hasOwnProperty.call(next, k)) next[k] = safeNumber(v);
+    }
+    setWeights(next);
   };
 
-  const onRemove = (key) => {
-    setSelected((prev) => prev.filter((s) => s.key !== key));
+  const setAmount = (key, amount) => {
+    const next = safeNumber(amount);
+    setWeights((prev) => ({ ...prev, [key]: next }));
   };
 
-  const onWeight = (key, weight) => {
-    setSelected((prev) => prev.map((s) => (s.key === key ? { ...s, weight } : s)));
+  const onResetAll = () => {
+    setPresetKey("");
+    setSearch("");
+    setWeights(makeZeroWeights());
   };
 
-  const onReset = () => setSelected(DEFAULT_BLEND);
-
-  const onRandom = () => {
-    // A simple colorful shuffle: pick 3-6 isolates and random weights.
-    const count = 3 + Math.floor(Math.random() * 4);
-    const shuffled = [...ISOLATES].sort(() => Math.random() - 0.5).slice(0, count);
-    const weights = shuffled.map(() => 10 + Math.floor(Math.random() * 45));
-    setSelected(
-      shuffled.map((i, idx) => ({
-        key: i.key,
-        weight: weights[idx],
-      }))
-    );
+  const onNormalize = () => {
+    setWeights((prev) => normalizeWeightsTo100(prev));
   };
 
   return (
@@ -288,19 +521,19 @@ export default function TerpeneSimulator() {
           <div className="sim-badge">Interactive</div>
           <h2 className="sim-title">Terpene Blend Simulator</h2>
           <p className="sim-subtitle">
-            Mix isolates, adjust ratios, and watch the aroma fingerprint update in real time.
+            Choose a strain-inspired starting profile, then tweak any terpene on the master list.
           </p>
         </div>
 
         <div className="sim-grid">
           <div className="sim-panel sim-panel-left">
             <div className="sim-panelTop">
-              <h3 className="sim-panelTitle">Build your blend</h3>
+              <h3 className="sim-panelTitle">Start with a preset (optional)</h3>
               <div className="sim-actions">
-                <button type="button" className="sim-btn sim-btn-ghost" onClick={onRandom}>
-                  Randomize
+                <button type="button" className="sim-btn sim-btn-ghost" onClick={onNormalize} disabled={totalParts <= 0}>
+                  Normalize
                 </button>
-                <button type="button" className="sim-btn" onClick={onReset}>
+                <button type="button" className="sim-btn" onClick={onResetAll}>
                   Reset
                 </button>
               </div>
@@ -309,51 +542,52 @@ export default function TerpeneSimulator() {
             <div className="sim-addRow">
               <select
                 className="sim-select"
-                value={pendingKey}
-                onChange={(e) => setPendingKey(e.target.value)}
-                disabled={available.length === 0}
-                aria-label="Add isolate"
+                value={presetKey}
+                onChange={(e) => applyPreset(e.target.value)}
+                aria-label="Choose strain preset"
               >
-                {(available.length ? available : ISOLATES).map((i) => (
-                  <option key={i.key} value={i.key}>
-                    {i.name}
+                <option value="">Custom / No preset</option>
+                {STRAIN_PRESETS.map((p) => (
+                  <option key={p.key} value={p.key}>
+                    {p.name}
                   </option>
                 ))}
               </select>
-              <button
-                type="button"
-                className="sim-btn sim-btn-add"
-                onClick={onAdd}
-                disabled={available.length === 0 || usedKeys.has(pendingKey)}
-              >
-                Add
-              </button>
+              <div className="sim-presetNote" aria-label="Preset description">
+                {presetKey
+                  ? STRAIN_PRESETS.find((p) => p.key === presetKey)?.description
+                  : "Pick a starting profile, or build your own from zero."}
+              </div>
+            </div>
+
+            <div className="sim-searchRow">
+              <input
+                className="sim-select"
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search terpenes (e.g., limonene, pinene)..."
+                aria-label="Search terpenes"
+              />
             </div>
 
             <div className="sim-list">
-              {selected.map((s) => {
-                const iso = getIsolate(s.key);
-                const color = iso?.color || "#111";
-                const pct = totalWeight > 0 ? Math.round(((Number(s.weight) || 0) / totalWeight) * 100) : 0;
+              {filteredTerpenes.map((t) => {
+                const color = t.color || "#111";
+                const amount = Number(weights?.[t.key]) || 0;
+                const pct = totalParts > 0 ? Math.round((amount / totalParts) * 100) : 0;
+
                 return (
-                  <div key={s.key} className="sim-row" style={{ borderColor: color }}>
+                  <div key={t.key} className="sim-row" style={{ borderColor: color }}>
                     <div className="sim-rowHead">
                       <div className="sim-rowTitle">
                         <span className="sim-swatch" style={{ background: color }} aria-hidden="true" />
-                        <span>{iso?.name || s.key}</span>
+                        <span>{t.name}</span>
                       </div>
                       <div className="sim-rowMeta">
                         <span className="sim-chip" style={{ background: color }}>
                           {pct}%
                         </span>
-                        <button
-                          type="button"
-                          className="sim-iconBtn"
-                          onClick={() => onRemove(s.key)}
-                          aria-label={`Remove ${iso?.name || s.key}`}
-                        >
-                          ✕
-                        </button>
                       </div>
                     </div>
 
@@ -363,15 +597,22 @@ export default function TerpeneSimulator() {
                         type="range"
                         min={0}
                         max={100}
-                        step={1}
-                        value={Number(s.weight) || 0}
-                        onChange={(e) => onWeight(s.key, Number(e.target.value))}
+                        step={0.5}
+                        value={amount}
+                        onChange={(e) => setAmount(t.key, e.target.value)}
                         style={{ accentColor: color }}
-                        aria-label={`${iso?.name || s.key} weight`}
+                        aria-label={`${t.name} amount`}
                       />
-                      <div className="sim-weight" style={{ color }}>
-                        {Number(s.weight) || 0}
-                      </div>
+
+                      <input
+                        className="sim-weightInput"
+                        type="number"
+                        min={0}
+                        step={0.5}
+                        value={amount}
+                        onChange={(e) => setAmount(t.key, e.target.value)}
+                        aria-label={`${t.name} numeric amount`}
+                      />
                     </div>
                   </div>
                 );
@@ -381,12 +622,22 @@ export default function TerpeneSimulator() {
             <div className="sim-foot">
               <div className="sim-footLeft">
                 <div className="sim-miniTitle">Total parts</div>
-                <div className="sim-total">{totalWeight}</div>
+                <div className="sim-total">{Math.round(totalParts * 10) / 10}</div>
               </div>
               <div className="sim-footRight">
-                <div className="sim-miniTitle">Tip</div>
-                <div className="sim-tip">Try 60/30/10 for a crisp top note + smooth base.</div>
+                <div className="sim-miniTitle">Top notes</div>
+                <div className="sim-tip">
+                  {topNotes.map((n) => (
+                    <span key={n.axis} className="sim-noteChip">
+                      {n.axis}
+                    </span>
+                  ))}
+                </div>
               </div>
+            </div>
+
+            <div className="sim-disclaimer">
+              Presets are <strong>strain-inspired starting points</strong>. Real terpene profiles vary by grower, batch, and lab results.
             </div>
           </div>
 
@@ -396,17 +647,14 @@ export default function TerpeneSimulator() {
               <RadarSVG axes={AXES} values={blend} />
             </div>
             <div className="sim-legend">
-              {selected.slice(0, 6).map((s) => {
-                const iso = getIsolate(s.key);
-                const color = iso?.color || "#111";
-                return (
-                  <div key={s.key} className="sim-legendItem">
-                    <span className="sim-swatch" style={{ background: color }} aria-hidden="true" />
-                    <span className="sim-legendText">{iso?.name || s.key}</span>
-                  </div>
-                );
-              })}
-              {selected.length > 6 && <div className="sim-legendMore">+{selected.length - 6} more</div>}
+              {nonZero.slice(0, 6).map((t) => (
+                <div key={t.key} className="sim-legendItem">
+                  <span className="sim-swatch" style={{ background: t.color }} aria-hidden="true" />
+                  <span className="sim-legendText">{t.name}</span>
+                </div>
+              ))}
+              {nonZero.length === 0 && <div className="sim-legendMore">Add parts below to see contributors.</div>}
+              {nonZero.length > 6 && <div className="sim-legendMore">+{nonZero.length - 6} more</div>}
             </div>
           </div>
         </div>
@@ -442,121 +690,89 @@ function RadarSVG({ axes, values }) {
   });
 
   // Colorful axis labels (repeat palette as needed)
-  const labelPalette = [
-    "#22c55e",
-    "#f59e0b",
-    "#38bdf8",
-    "#a78bfa",
-    "#fb7185",
-    "#ef4444",
-    "#84cc16",
-    "#06b6d4",
-    "#e879f9",
-    "#f97316",
-    "#10b981",
-  ];
+  const labelPalette = ["#22c55e", "#f59e0b", "#38bdf8", "#a78bfa", "#fb7185", "#ef4444", "#84cc16"];
 
   return (
     <svg
-      className="sim-radar"
       viewBox={`0 0 ${size} ${size}`}
       width="100%"
       height="100%"
       role="img"
-      aria-label="Radar chart of the blended aroma profile"
+      aria-label="Aroma fingerprint radar chart"
     >
       <defs>
-        <linearGradient id="simGlow" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#22c55e" stopOpacity="0.95" />
-          <stop offset="0.33" stopColor="#38bdf8" stopOpacity="0.95" />
-          <stop offset="0.66" stopColor="#a78bfa" stopOpacity="0.95" />
-          <stop offset="1" stopColor="#fb7185" stopOpacity="0.95" />
-        </linearGradient>
-        <radialGradient id="simFill" cx="50%" cy="45%" r="70%">
-          <stop offset="0" stopColor="#38bdf8" stopOpacity="0.55" />
-          <stop offset="0.5" stopColor="#a78bfa" stopOpacity="0.35" />
-          <stop offset="1" stopColor="#fb7185" stopOpacity="0.18" />
+        <radialGradient id="simFill" cx="50%" cy="50%" r="60%">
+          <stop offset="0%" stopColor="rgba(34, 197, 94, 0.35)" />
+          <stop offset="60%" stopColor="rgba(56, 189, 248, 0.22)" />
+          <stop offset="100%" stopColor="rgba(167, 139, 250, 0.20)" />
         </radialGradient>
-        <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="10" stdDeviation="14" floodColor="#000" floodOpacity="0.18" />
+        <filter id="simGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
         </filter>
       </defs>
 
-      {/* Background glow */}
-      <circle cx={cx} cy={cy} r={r + 22} fill="url(#simFill)" opacity="0.25" />
-
-      {/* Grid rings */}
+      {/* Rings */}
       {Array.from({ length: rings }).map((_, idx) => {
         const rr = (r * (idx + 1)) / rings;
-        const ringPoints = axes
-          .map((_, i) => {
-            const a = -Math.PI / 2 + i * angleStep;
-            const x = cx + Math.cos(a) * rr;
-            const y = cy + Math.sin(a) * rr;
-            return `${x.toFixed(2)},${y.toFixed(2)}`;
-          })
-          .join(" ");
         return (
-          <polygon
+          <circle
             key={idx}
-            points={ringPoints}
+            cx={cx}
+            cy={cy}
+            r={rr}
             fill="none"
-            stroke="#e5e7eb"
-            strokeOpacity={0.9}
-            strokeWidth={1}
+            stroke="rgba(0,0,0,0.08)"
+            strokeWidth="1"
           />
         );
       })}
 
-      {/* Axes lines */}
-      {labelPoints.map((p, i) => (
-        <line
-          key={p.axis}
-          x1={cx}
-          y1={cy}
-          x2={cx + Math.cos(p.a) * r}
-          y2={cy + Math.sin(p.a) * r}
-          stroke="#e5e7eb"
-          strokeOpacity={0.9}
-          strokeWidth={1}
-        />
-      ))}
+      {/* Axes */}
+      {axes.map((axis, i) => {
+        const a = -Math.PI / 2 + i * angleStep;
+        const x = cx + Math.cos(a) * r;
+        const y = cy + Math.sin(a) * r;
+        return (
+          <line
+            key={axis}
+            x1={cx}
+            y1={cy}
+            x2={x}
+            y2={y}
+            stroke="rgba(0,0,0,0.10)"
+            strokeWidth="1"
+          />
+        );
+      })}
 
       {/* Blend polygon */}
-      <polygon
-        points={polygon}
-        fill="url(#simFill)"
-        stroke="url(#simGlow)"
-        strokeWidth={3}
-        filter="url(#softShadow)"
-      />
+      <polygon points={polygon} fill="url(#simFill)" stroke="rgba(17,17,17,0.35)" strokeWidth="2" filter="url(#simGlow)" />
 
-      {/* Vertex dots */}
-      {points.map((p, i) => (
-        <circle
-          key={p.axis}
-          cx={p.x}
-          cy={p.y}
-          r={5.5}
-          fill={labelPalette[i % labelPalette.length]}
-          opacity={0.95}
-        />
+      {/* Points */}
+      {points.map((p) => (
+        <circle key={p.axis} cx={p.x} cy={p.y} r={4.2} fill="rgba(17,17,17,0.55)" />
       ))}
 
       {/* Labels */}
-      {labelPoints.map((p, i) => {
-        const textAnchor = Math.abs(Math.cos(p.a)) < 0.15 ? "middle" : Math.cos(p.a) > 0 ? "start" : "end";
-        const dy = Math.sin(p.a) > 0.35 ? 16 : Math.sin(p.a) < -0.35 ? -6 : 6;
+      {labelPoints.map((lp, i) => {
+        const fill = labelPalette[i % labelPalette.length];
+        const anchor = Math.abs(Math.cos(lp.a)) < 0.2 ? "middle" : Math.cos(lp.a) > 0 ? "start" : "end";
+        const dy = Math.abs(Math.sin(lp.a)) < 0.2 ? 5 : lp.y > cy ? 12 : -6;
         return (
           <text
-            key={p.axis}
-            x={p.x}
-            y={p.y + dy}
-            textAnchor={textAnchor}
-            className="sim-axisLabel"
-            fill={labelPalette[i % labelPalette.length]}
+            key={lp.axis}
+            x={lp.x}
+            y={lp.y + dy}
+            textAnchor={anchor}
+            fontSize="12"
+            fontWeight="900"
+            fill={fill}
           >
-            {p.axis}
+            {lp.axis}
           </text>
         );
       })}

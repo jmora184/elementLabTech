@@ -393,6 +393,7 @@ export default function ProductPage() {
   useEffect(() => {
     setProfileActiveImg(0);
   }, [selectedSlug]);
+  const activeProfileSrc = profileImages[profileActiveImg] || dt2;
 
   const flavorInfo = useMemo(() => {
     if (dbProfile) {
@@ -850,11 +851,16 @@ export default function ProductPage() {
                       </div>
 
                       {/* Flavor profile images */}
-                      <img
-                        src={profileImages[profileActiveImg] || dt2}
-                        alt={flavorInfo.name}
-                        className="pp-flavorHero"
-                      />
+                      <div
+                        className="pp-flavorHeroWrap"
+                        style={{ "--hero-bg": `url("${activeProfileSrc}")` }}
+                      >
+                        <img
+                          src={activeProfileSrc}
+                          alt={flavorInfo.name}
+                          className="pp-flavorHero"
+                        />
+                      </div>
 
                       {profileImages.length > 1 && (
                         <div className="pp-thumbRow" style={{ marginTop: 10 }}>

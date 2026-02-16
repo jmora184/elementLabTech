@@ -137,10 +137,60 @@
 .sim-addRow {
   margin-top: 14px;
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
 
+
+.sim-searchRow {
+  margin-top: 10px;
+}
+
+.sim-presetNote {
+  display: flex;
+  align-items: center;
+  font-weight: 800;
+  font-size: 12px;
+  color: rgba(17, 17, 17, 0.74);
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px dashed rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.sim-weightInput {
+  width: 78px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  padding: 8px 10px;
+  font-weight: 900;
+  color: #111;
+  background: #fff;
+}
+
+.sim-disclaimer {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: rgba(17, 17, 17, 0.78);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.sim-noteChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.85);
+  font-weight: 900;
+  font-size: 12px;
+  margin-right: 8px;
+}
 .sim-select {
   border-radius: 14px;
   border: 1px solid rgba(0, 0, 0, 0.14);
@@ -155,6 +205,9 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-height: 440px;
+  overflow: auto;
+  padding-right: 4px;
 }
 
 .sim-row {
@@ -221,7 +274,7 @@
 .sim-sliderRow {
   margin-top: 10px;
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
   align-items: center;
 }

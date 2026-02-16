@@ -1,13 +1,8 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { terpeneCollections } from "../TerpeneShowcase/terpenesData";
 import "./ProductPage.css";
 import AdminEditProfileModal from "./AdminEditProfileModal";
 // Header is provided globally by SiteLayout.
-
-import bottleImg from "../../assets/bottle.png";
-import dt2 from "../../assets/dominant-terpenes-2.png";
-import dt3 from "../../assets/dominant-terpenes-3.png";
 
 import { uploadImageFile } from "../../utils/cloudflareImages";
 
@@ -53,7 +48,7 @@ async function deleteCollectionDocument(collectionId, docId) {
   return await fetchJson(`/api/collections/${cid}/documents/${did}`, { method: "DELETE" });
 }
 
-function Stars({ value = 4.8 }) {
+function Stars({ value = 0 }) {
   const full = Math.floor(value);
   const half = value - full >= 0.5;
   const stars = Array.from({ length: 5 }).map((_, i) => {
@@ -94,14 +89,9 @@ export default function ProductPage() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // Fallback: still supports hardcoded collections while we migrate the UI.
-  const hardcodedCollection = useMemo(
-    () => terpeneCollections.find((c) => c.id === id),
-    [id]
-  );
-
   // DB-backed collection + profiles (new)
   const [dbCollection, setDbCollection] = useState(null);
+  const [collectionLoaded, setCollectionLoaded] = useState(false);
   const [dbProfiles, setDbProfiles] = useState([]); // array of profile rows
   const [selectedSlug, setSelectedSlug] = useState("");
   const [expandedSlug, setExpandedSlug] = useState("");
@@ -285,6 +275,7 @@ export default function ProductPage() {
     async function load() {
       if (!id) return;
       setLoadingProfiles(true);
+      setCollectionLoaded(false);
       setDbCollection(null);
       setDbProfiles([]);
       setSelectedSlug("");
@@ -306,9 +297,9 @@ export default function ProductPage() {
         setSelectedSlug(first);
         setExpandedSlug(first);
       } catch (err) {
-        // DB not ready / not seeded / endpoint missing: fall back to hardcoded UI
-        console.warn("DB collection/profiles load failed, falling back to hardcoded:", err?.message || err);
+        console.warn("DB collection/profiles load failed:", err?.message || err);
       } finally {
+        if (alive) setCollectionLoaded(true);
         if (alive) setLoadingProfiles(false);
       }
     }
@@ -344,10 +335,10 @@ export default function ProductPage() {
     };
   }, [selectedSlug]);
 
-  // Use DB collection when present, otherwise fallback to hardcoded
-  const collection = dbCollection || hardcodedCollection;
+  // Use DB collection only
+  const collection = dbCollection;
 
-  // Gallery: use DB images_json when available (R2 URLs), fallback to local placeholders
+  // Gallery: use DB images_json when available (R2 URLs)
   const galleryImages = useMemo(() => {
     const rows = parseJsonArray(collection?.images_json, []);
     // Put the "primary" image first (while preserving order of the others)
@@ -356,7 +347,7 @@ export default function ProductPage() {
       primaryIdx >= 0 ? [rows[primaryIdx], ...rows.filter((_, i) => i !== primaryIdx)] : rows;
 
     const urls = ordered.map((r) => String(r?.url || "")).filter(Boolean);
-    return urls.length ? urls : [bottleImg, dt2, dt3];
+    return urls;
   }, [collection?.images_json]);
   const [activeImg, setActiveImg] = useState(0);
 
@@ -366,16 +357,7 @@ export default function ProductPage() {
   }, [collection?.images_json]);
 
   // Variant-ish selections
-  const hardcodedProfiles = useMemo(() => collection?.profiles ?? [], [collection?.profiles]);
-  const profileDisplayRows = dbProfiles.length
-    ? dbProfiles.map((p) => ({ slug: p.slug, label: p.name || p.slug }))
-    : hardcodedProfiles.map((name) => ({ slug: name, label: name })); // fallback uses name as slug too (until fully migrated)
-
-  // If we're in fallback mode, keep the previous behavior:
-  const [fallbackProfile, setFallbackProfile] = useState(hardcodedProfiles[0] ?? "");
-  useEffect(() => {
-    setFallbackProfile(hardcodedProfiles[0] ?? "");
-  }, [id, hardcodedProfiles]); // reset on route change
+  const profileDisplayRows = dbProfiles.map((p) => ({ slug: p.slug, label: p.name || p.slug }));
 
   // Tabs (middle column)
   const tabs = ["Details", "Specs", "Documents", "Reviews", "Shipping", "Isolates", "Terpenes"];
@@ -386,8 +368,7 @@ export default function ProductPage() {
 
   const profileImages = useMemo(() => {
     const rows = Array.isArray(profileBundle?.images) ? profileBundle.images : [];
-    const urls = rows.map((r) => String(r?.url || "")).filter(Boolean);
-    return urls.length ? urls : [dt2];
+    return rows.map((r) => String(r?.url || "")).filter(Boolean);
   }, [profileBundle?.images]);
   const [profileActiveImg, setProfileActiveImg] = useState(0);
   useEffect(() => {
@@ -440,18 +421,15 @@ export default function ProductPage() {
       };
     }
 
-    // Old placeholder (until all profiles are migrated)
     return {
-      intro:
-        "Matrix offers bold, trendy flavors. Beyond classic fruit notes, each profile delivers vivid bursts of flavor and aroma, crafted to elevate the palate and turn every experience into something extraordinary.",
-      flavorType: "Green Jelly Rancher",
-      flavorCategory: "Candy",
-      name: "Green Jelly Rancher",
-      description:
-        "Green Jelly Rancher explodes with a tangy, sour-sweet symphony. Zesty green apple and juicy melon mingle with candy-like notes, finishing with a bright, puckering sour kick that makes every sip lively and unforgettable.",
-      dominantTerpenes: ["Ethyl Maltol", "Geraniol", "Linalool", "Beta-Caryophyllene"],
-      flavorAroma: ["candy", "sweet", "sour", "green apple"],
-      mood: "Uplift Inspired",
+      intro: collection?.description || "",
+      flavorType: "",
+      flavorCategory: "",
+      name: "",
+      description: "",
+      dominantTerpenes: [],
+      flavorAroma: [],
+      mood: "",
     };
   }, [dbProfile, collection?.description]);
 
@@ -464,7 +442,7 @@ export default function ProductPage() {
   const [reviewForm, setReviewForm] = useState({ name: "", rating: 5, text: "" });
 
   const avgRating = useMemo(() => {
-    if (!reviews.length) return 4.8;
+    if (!reviews.length) return 0;
     const s = reviews.reduce((acc, r) => acc + (Number(r.rating) || 0), 0);
     return Math.round((s / reviews.length) * 10) / 10;
   }, [reviews]);
@@ -492,11 +470,11 @@ export default function ProductPage() {
   const terpenesRows = useMemo(() => parseJsonArray(collection?.terpenes_json, []), [collection?.terpenes_json]);
 
   const imagesReady = imageLoadState.total === 0 || imageLoadState.loaded >= imageLoadState.total;
-  const textReady = !!collection && !loadingProfiles && !loadingProfile;
+  const textReady = collectionLoaded && !loadingProfiles && !loadingProfile;
   const pageReady = imagesReady && textReady;
   const shippingText = useMemo(() => {
     const text = String(collection?.shipping_md || "").trim();
-    return text || "Fast, discreet shipping. Orders typically process in 1–2 business days.";
+    return text;
   }, [collection?.shipping_md]);
 
   if (!collection) {
@@ -777,7 +755,12 @@ export default function ProductPage() {
           {/* LEFT: Images (smaller column) */}
           <section className="pp-card pp-galleryCard" aria-label="Product images">
             <div className="pp-galleryMain">
-              <img src={galleryImages[activeImg]} className="pp-mainImg" />
+              {galleryImages.length > 0 && (
+                <img src={galleryImages[activeImg]} className="pp-mainImg" />
+              )}
+              {galleryImages.length === 0 && (
+                <div className="pp-muted" style={{ padding: 12 }}>No images yet.</div>
+              )}
             </div>
 
             <div className="pp-thumbRow" role="list" aria-label="Image thumbnails">
@@ -892,11 +875,13 @@ export default function ProductPage() {
                       </div>
 
                       {/* Flavor profile images */}
-                      <img
-                        src={profileImages[profileActiveImg] || dt2}
-                        alt={flavorInfo.name}
-                        className="pp-flavorHero"
-                      />
+                      {profileImages.length > 0 && (
+                        <img
+                          src={profileImages[profileActiveImg]}
+                          alt={flavorInfo.name}
+                          className="pp-flavorHero"
+                        />
+                      )}
 
                       {profileImages.length > 1 && (
                         <div className="pp-thumbRow" style={{ marginTop: 10 }}>
@@ -1035,19 +1020,15 @@ export default function ProductPage() {
 
                   <div className="pp-chipGrid">
                     {profileDisplayRows.map((p) => {
-                      const isActive = dbProfiles.length ? p.slug === selectedSlug : p.label === fallbackProfile;
+                      const isActive = p.slug === selectedSlug;
                       return (
                         <button
                           key={p.slug}
                           type="button"
                           className={`pp-chip ${isActive ? "isActive" : ""}`}
                           onClick={() => {
-                            if (dbProfiles.length) {
-                              setSelectedSlug(p.slug);
-                              setExpandedSlug((prev) => (prev === p.slug ? "" : p.slug));
-                            } else {
-                              setFallbackProfile(p.label);
-                            }
+                            setSelectedSlug(p.slug);
+                            setExpandedSlug((prev) => (prev === p.slug ? "" : p.slug));
                           }}
                           aria-label={`Select profile ${p.label}`}
                         >

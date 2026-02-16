@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { heroCopy, terpeneCollections } from "./terpenesData";
 import "./TerpeneShowcase.css";
-import bottleImg from "../../assets/bottle.png";
 import { useIsMobile } from "./useIsMobile";
 import { useNavigate } from "react-router-dom";
 import TerpeneSimulator from "../TerpeneSimulator/TerpeneSimulator";
@@ -13,11 +11,9 @@ export default function TerpeneShowcase({ HeroBanner }) {
 
   const addToCart = () => {};
 
-  // Load collections from DB (fallback to hardcoded if API/DB not ready)
+  // Load collections from DB (no mock fallback)
   const [dbCollections, setDbCollections] = useState(null); // null = loading/unknown
-  const displayedCollections = Array.isArray(dbCollections) && dbCollections.length
-    ? dbCollections
-    : terpeneCollections;
+  const displayedCollections = Array.isArray(dbCollections) ? dbCollections : [];
 
   // Current user (to show admin-only controls)
   const [me, setMe] = useState(null);
@@ -62,8 +58,7 @@ export default function TerpeneShowcase({ HeroBanner }) {
       const d = await fetchJson("/api/collections");
       setDbCollections(Array.isArray(d?.collections) ? d.collections : []);
     } catch (err) {
-      // Fall back to hardcoded without breaking homepage
-      console.warn("DB collections load failed, falling back to hardcoded:", err?.message || err);
+      console.warn("DB collections load failed:", err?.message || err);
       setDbCollections([]);
     }
   }
@@ -196,18 +191,19 @@ export default function TerpeneShowcase({ HeroBanner }) {
               </div> */}
               <div className="ts-desktopCardStack">
                 {displayedCollections.map((c, i) => {
-                  const baseIndex = i % terpeneCollections.length;
-                  const isOriginal = i < terpeneCollections.length;
-                  let cardClass = '';
-                  if (baseIndex === 0) cardClass = 'ts-card-lightblue';
-                  else if (baseIndex === 1) cardClass = 'ts-card-green';
-                  else if (baseIndex === 2) cardClass = 'ts-card-yellow';
-                  else if (baseIndex === 3) cardClass = 'ts-card-blue';
-                  else if (baseIndex === 4) cardClass = 'ts-card-orange';
+                  const cardClasses = [
+                    "ts-card-lightblue",
+                    "ts-card-green",
+                    "ts-card-yellow",
+                    "ts-card-blue",
+                    "ts-card-orange",
+                  ];
+                  const baseIndex = cardClasses.length ? i % cardClasses.length : 0;
+                  const cardClass = cardClasses[baseIndex] || "";
                   return (
                     <div
                       key={`${c.id}-${i}`}
-                      id={isOriginal ? `card-${c.id}` : undefined}
+                      id={c?.id ? `card-${c.id}` : undefined}
                     >
                       <CollectionCard
                         collection={c}
@@ -255,18 +251,19 @@ export default function TerpeneShowcase({ HeroBanner }) {
             </div> */}
             <div className="ts-mobileCardStack" style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
               {displayedCollections.map((c, i) => {
-                const baseIndex = i % terpeneCollections.length;
-                const isOriginal = i < terpeneCollections.length;
-                let cardClass = '';
-                if (baseIndex === 0) cardClass = 'ts-card-lightblue';
-                else if (baseIndex === 1) cardClass = 'ts-card-green';
-                else if (baseIndex === 2) cardClass = 'ts-card-yellow';
-                else if (baseIndex === 3) cardClass = 'ts-card-blue';
-                else if (baseIndex === 4) cardClass = 'ts-card-orange';
+                const cardClasses = [
+                  "ts-card-lightblue",
+                  "ts-card-green",
+                  "ts-card-yellow",
+                  "ts-card-blue",
+                  "ts-card-orange",
+                ];
+                const baseIndex = cardClasses.length ? i % cardClasses.length : 0;
+                const cardClass = cardClasses[baseIndex] || "";
                 return (
                   <div
                     key={`${c.id}-${i}`}
-                    id={isOriginal ? `card-${c.id}` : undefined}
+                    id={c?.id ? `card-${c.id}` : undefined}
                     style={{ width: '100%' }}
                   >
                     <CollectionCard
@@ -563,7 +560,7 @@ const inputStyle = {
 };
 
 function getCollectionImageUrl(collection) {
-  let cardImageSrc = bottleImg;
+  let cardImageSrc = "";
   try {
     const raw = collection?.images_json;
     const arr = Array.isArray(raw) ? raw : raw ? JSON.parse(raw) : [];
@@ -613,13 +610,15 @@ function CollectionCard({ collection, isMobile, cardClass, addToCart, cardIndex 
       <div className="ts-cardLeft">
         <div className="ts-badge" style={{ color: '#111', fontWeight: 900, paddingTop: '16px', textAlign: 'center', width: '100%' }}>{collection.badge}</div>
         <div className="ts-cardImgWrapper" style={{ position: 'relative', minHeight: '350px', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <img
-            className="ts-cardImg"
-            src={cardImageSrc}
-            alt={collection.name + " bottle"}
-            style={{ cursor: 'pointer', maxHeight: '100%', maxWidth: '90%', objectFit: 'contain', zIndex: 2, marginTop: '80px' }}
-            onClick={() => navigate(`/product/${collection.id}`)}
-          />
+          {cardImageSrc && (
+            <img
+              className="ts-cardImg"
+              src={cardImageSrc}
+              alt={collection.name + " bottle"}
+              style={{ cursor: 'pointer', maxHeight: '100%', maxWidth: '90%', objectFit: 'contain', zIndex: 2, marginTop: '80px' }}
+              onClick={() => navigate(`/product/${collection.id}`)}
+            />
+          )}
           <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 3 }}>
             <div
               className="ts-cardNameOverlay"

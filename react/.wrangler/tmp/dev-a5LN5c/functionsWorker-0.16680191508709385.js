@@ -1,7 +1,9 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
-// _lib/auth.js
+// .wrangler/tmp/pages-qxwyby/functionsWorker-0.16680191508709385.mjs
+var __defProp2 = Object.defineProperty;
+var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
 var encoder = new TextEncoder();
 function json(status, data, extraHeaders = {}) {
   const headers = new Headers({
@@ -11,10 +13,12 @@ function json(status, data, extraHeaders = {}) {
   return new Response(JSON.stringify(data), { status, headers });
 }
 __name(json, "json");
+__name2(json, "json");
 function normalizeEmail(email) {
   return String(email || "").trim().toLowerCase();
 }
 __name(normalizeEmail, "normalizeEmail");
+__name2(normalizeEmail, "normalizeEmail");
 function cookieOptions(opts = {}) {
   const defaults = {
     httpOnly: true,
@@ -27,6 +31,7 @@ function cookieOptions(opts = {}) {
   return { ...defaults, ...opts };
 }
 __name(cookieOptions, "cookieOptions");
+__name2(cookieOptions, "cookieOptions");
 function setCookie(headers, name, value, options = {}) {
   const opts = cookieOptions(options);
   const parts = [`${name}=${encodeURIComponent(value)}`];
@@ -39,6 +44,7 @@ function setCookie(headers, name, value, options = {}) {
   headers.append("Set-Cookie", parts.join("; "));
 }
 __name(setCookie, "setCookie");
+__name2(setCookie, "setCookie");
 function parseCookie(cookieHeader) {
   const out = {};
   const str = cookieHeader || "";
@@ -50,12 +56,14 @@ function parseCookie(cookieHeader) {
   return out;
 }
 __name(parseCookie, "parseCookie");
+__name2(parseCookie, "parseCookie");
 function randomToken(byteLen = 32) {
   const bytes = new Uint8Array(byteLen);
   crypto.getRandomValues(bytes);
   return [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 __name(randomToken, "randomToken");
+__name2(randomToken, "randomToken");
 var DEFAULT_PBKDF2_ITERS = 1e5;
 async function hashPassword(password, iters = DEFAULT_PBKDF2_ITERS) {
   const safeIters = Math.min(Number(iters) || DEFAULT_PBKDF2_ITERS, 1e5);
@@ -82,6 +90,7 @@ async function hashPassword(password, iters = DEFAULT_PBKDF2_ITERS) {
   return `pbkdf2$${safeIters}$${toHex(salt)}$${toHex(hash)}`;
 }
 __name(hashPassword, "hashPassword");
+__name2(hashPassword, "hashPassword");
 async function verifyPassword(password, stored) {
   try {
     const [alg, itersStr, saltHex, hashHex] = String(stored || "").split("$");
@@ -113,6 +122,7 @@ async function verifyPassword(password, stored) {
   }
 }
 __name(verifyPassword, "verifyPassword");
+__name2(verifyPassword, "verifyPassword");
 async function getUserFromSession(env, sessionToken) {
   if (!env?.DB || !sessionToken) return null;
   const row = await env.DB.prepare(
@@ -130,10 +140,12 @@ async function getUserFromSession(env, sessionToken) {
   return { id: row.id, email: row.email, role: row.role || "user" };
 }
 __name(getUserFromSession, "getUserFromSession");
+__name2(getUserFromSession, "getUserFromSession");
 function toHex(u8) {
   return [...u8].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 __name(toHex, "toHex");
+__name2(toHex, "toHex");
 function fromHex(hex) {
   const clean = String(hex || "").trim();
   const out = new Uint8Array(clean.length / 2);
@@ -143,6 +155,7 @@ function fromHex(hex) {
   return out;
 }
 __name(fromHex, "fromHex");
+__name2(fromHex, "fromHex");
 function timingSafeEqual(a, b) {
   if (a.length !== b.length) return false;
   let diff = 0;
@@ -150,8 +163,7 @@ function timingSafeEqual(a, b) {
   return diff === 0;
 }
 __name(timingSafeEqual, "timingSafeEqual");
-
-// api/collections/[id]/documents/[docId]/download.js
+__name2(timingSafeEqual, "timingSafeEqual");
 var CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,OPTIONS",
@@ -161,13 +173,15 @@ function withCors(headers = {}) {
   return { ...headers, ...CORS_HEADERS };
 }
 __name(withCors, "withCors");
+__name2(withCors, "withCors");
 function json2(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: withCors({ "Content-Type": "application/json", ...extraHeaders })
   });
 }
-__name(json2, "json");
+__name(json2, "json2");
+__name2(json2, "json");
 function safeJsonArray(text) {
   if (!text) return [];
   try {
@@ -178,6 +192,7 @@ function safeJsonArray(text) {
   }
 }
 __name(safeJsonArray, "safeJsonArray");
+__name2(safeJsonArray, "safeJsonArray");
 async function requireLoginIfConfigured(request, env) {
   if (String(env.DOCS_REQUIRE_LOGIN || "") !== "1") return { ok: true };
   const cookieHeader = request.headers.get("Cookie") || "";
@@ -188,10 +203,12 @@ async function requireLoginIfConfigured(request, env) {
   return { ok: true, user };
 }
 __name(requireLoginIfConfigured, "requireLoginIfConfigured");
+__name2(requireLoginIfConfigured, "requireLoginIfConfigured");
 async function onRequestOptions() {
   return new Response(null, { status: 204, headers: withCors() });
 }
 __name(onRequestOptions, "onRequestOptions");
+__name2(onRequestOptions, "onRequestOptions");
 async function onRequestGet({ request, env, params }) {
   const id = params?.id;
   const docId = params?.docId;
@@ -229,8 +246,7 @@ async function onRequestGet({ request, env, params }) {
   return new Response(obj.body, { status: 200, headers });
 }
 __name(onRequestGet, "onRequestGet");
-
-// api/collections/[id]/documents/upload.js
+__name2(onRequestGet, "onRequestGet");
 var CORS_HEADERS2 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST,OPTIONS",
@@ -242,7 +258,8 @@ function json3(body, status = 200, extraHeaders = {}) {
     headers: { "Content-Type": "application/json", ...CORS_HEADERS2, ...extraHeaders }
   });
 }
-__name(json3, "json");
+__name(json3, "json3");
+__name2(json3, "json");
 async function requireAdmin(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -253,6 +270,7 @@ async function requireAdmin(request, env) {
   return { ok: true, user };
 }
 __name(requireAdmin, "requireAdmin");
+__name2(requireAdmin, "requireAdmin");
 function safeJsonArray2(text) {
   if (!text) return [];
   if (Array.isArray(text)) return text;
@@ -263,16 +281,19 @@ function safeJsonArray2(text) {
     return [];
   }
 }
-__name(safeJsonArray2, "safeJsonArray");
+__name(safeJsonArray2, "safeJsonArray2");
+__name2(safeJsonArray2, "safeJsonArray");
 function sanitizeFileName(name) {
   const base = String(name || "document").replace(/[/\\?%*:|"<>]/g, "_");
   return base.length > 120 ? base.slice(0, 120) : base;
 }
 __name(sanitizeFileName, "sanitizeFileName");
+__name2(sanitizeFileName, "sanitizeFileName");
 async function onRequestOptions2() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS2 } });
 }
-__name(onRequestOptions2, "onRequestOptions");
+__name(onRequestOptions2, "onRequestOptions2");
+__name2(onRequestOptions2, "onRequestOptions");
 async function onRequestPost({ request, env, params }) {
   const id = params?.id;
   if (!id) return json3({ ok: false, error: "Missing collection id." }, 400);
@@ -357,8 +378,7 @@ async function onRequestPost({ request, env, params }) {
   });
 }
 __name(onRequestPost, "onRequestPost");
-
-// api/collections/[id]/documents/[docId].js
+__name2(onRequestPost, "onRequestPost");
 var CORS_HEADERS3 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "DELETE,OPTIONS",
@@ -370,7 +390,8 @@ function json4(body, status = 200, extraHeaders = {}) {
     headers: { "Content-Type": "application/json", ...CORS_HEADERS3, ...extraHeaders }
   });
 }
-__name(json4, "json");
+__name(json4, "json4");
+__name2(json4, "json");
 async function requireAdmin2(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -380,7 +401,8 @@ async function requireAdmin2(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin2, "requireAdmin");
+__name(requireAdmin2, "requireAdmin2");
+__name2(requireAdmin2, "requireAdmin");
 function safeJsonArray3(text) {
   if (!text) return [];
   try {
@@ -390,11 +412,13 @@ function safeJsonArray3(text) {
     return [];
   }
 }
-__name(safeJsonArray3, "safeJsonArray");
+__name(safeJsonArray3, "safeJsonArray3");
+__name2(safeJsonArray3, "safeJsonArray");
 async function onRequestOptions3() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS3 } });
 }
-__name(onRequestOptions3, "onRequestOptions");
+__name(onRequestOptions3, "onRequestOptions3");
+__name2(onRequestOptions3, "onRequestOptions");
 async function onRequestDelete({ request, env, params }) {
   const id = params?.id;
   const docId = params?.docId;
@@ -425,23 +449,25 @@ async function onRequestDelete({ request, env, params }) {
   return json4({ ok: true, deleted: { id: docId } });
 }
 __name(onRequestDelete, "onRequestDelete");
-
-// api/collections/[id]/profiles.js
+__name2(onRequestDelete, "onRequestDelete");
 function json5(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...extraHeaders }
   });
 }
-__name(json5, "json");
+__name(json5, "json5");
+__name2(json5, "json");
 function slugify(input) {
   return String(input || "").trim().toLowerCase().replace(/['"]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
 }
 __name(slugify, "slugify");
+__name2(slugify, "slugify");
 function nowIso() {
   return (/* @__PURE__ */ new Date()).toISOString();
 }
 __name(nowIso, "nowIso");
+__name2(nowIso, "nowIso");
 function cleanImagesArray(value) {
   if (!Array.isArray(value)) return [];
   return value.filter((x) => x && typeof x.url === "string" && x.url.trim()).map((x, idx) => ({
@@ -452,6 +478,7 @@ function cleanImagesArray(value) {
   }));
 }
 __name(cleanImagesArray, "cleanImagesArray");
+__name2(cleanImagesArray, "cleanImagesArray");
 async function requireAdmin3(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -461,7 +488,8 @@ async function requireAdmin3(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin3, "requireAdmin");
+__name(requireAdmin3, "requireAdmin3");
+__name2(requireAdmin3, "requireAdmin");
 async function onRequest(context) {
   const { request, env, params } = context;
   const id = params?.id;
@@ -554,8 +582,7 @@ async function onRequest(context) {
   return json5({ ok: false, error: "Method not allowed" }, 405);
 }
 __name(onRequest, "onRequest");
-
-// api/auth/login.js
+__name2(onRequest, "onRequest");
 var SESSION_COOKIE = "el_session";
 var SESSION_TTL_MS = 1e3 * 60 * 60 * 24 * 14;
 async function onRequestPost2(context) {
@@ -596,9 +623,8 @@ async function onRequestPost2(context) {
     return json(500, { ok: false, error: String(e?.message || e) });
   }
 }
-__name(onRequestPost2, "onRequestPost");
-
-// api/auth/logout.js
+__name(onRequestPost2, "onRequestPost2");
+__name2(onRequestPost2, "onRequestPost");
 var SESSION_COOKIE2 = "el_session";
 async function onRequestPost3(context) {
   const { request, env } = context;
@@ -615,9 +641,8 @@ async function onRequestPost3(context) {
   setCookie(headers, SESSION_COOKIE2, "", cookieOptions({ maxAge: 0 }));
   return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
 }
-__name(onRequestPost3, "onRequestPost");
-
-// api/auth/me.js
+__name(onRequestPost3, "onRequestPost3");
+__name2(onRequestPost3, "onRequestPost");
 var SESSION_COOKIE3 = "el_session";
 async function onRequestGet2(context) {
   const cookies = parseCookie(context.request.headers.get("Cookie"));
@@ -625,9 +650,8 @@ async function onRequestGet2(context) {
   const user = await getUserFromSession(context.env, token);
   return json(200, { ok: true, user: user || null });
 }
-__name(onRequestGet2, "onRequestGet");
-
-// api/auth/register.js
+__name(onRequestGet2, "onRequestGet2");
+__name2(onRequestGet2, "onRequestGet");
 async function onRequestPost4(context) {
   try {
     const { request, env } = context;
@@ -674,9 +698,8 @@ async function onRequestPost4(context) {
     return json(500, { ok: false, error: String(e?.message || e) });
   }
 }
-__name(onRequestPost4, "onRequestPost");
-
-// api/images/direct-upload.js
+__name(onRequestPost4, "onRequestPost4");
+__name2(onRequestPost4, "onRequestPost");
 var CORS_HEADERS4 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST,OPTIONS",
@@ -688,7 +711,8 @@ function json6(body, status = 200, extraHeaders = {}) {
     headers: { "Content-Type": "application/json", ...CORS_HEADERS4, ...extraHeaders }
   });
 }
-__name(json6, "json");
+__name(json6, "json6");
+__name2(json6, "json");
 async function requireAdmin4(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -698,11 +722,13 @@ async function requireAdmin4(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin4, "requireAdmin");
+__name(requireAdmin4, "requireAdmin4");
+__name2(requireAdmin4, "requireAdmin");
 async function onRequestOptions4() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS4 } });
 }
-__name(onRequestOptions4, "onRequestOptions");
+__name(onRequestOptions4, "onRequestOptions4");
+__name2(onRequestOptions4, "onRequestOptions");
 async function onRequestPost5({ request, env }) {
   const gate = await requireAdmin4(request, env);
   if (!gate.ok) return json6({ ok: false, error: gate.error }, gate.status);
@@ -749,9 +775,8 @@ async function onRequestPost5({ request, env }) {
   }
   return json6({ ok: true, id: data.result?.id, uploadURL: data.result?.uploadURL });
 }
-__name(onRequestPost5, "onRequestPost");
-
-// api/collections/[id].js
+__name(onRequestPost5, "onRequestPost5");
+__name2(onRequestPost5, "onRequestPost");
 var CORS_HEADERS5 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,PUT,OPTIONS",
@@ -763,7 +788,8 @@ function json7(body, status = 200, extraHeaders = {}) {
     headers: { "Content-Type": "application/json", ...CORS_HEADERS5, ...extraHeaders }
   });
 }
-__name(json7, "json");
+__name(json7, "json7");
+__name2(json7, "json");
 async function requireAdmin5(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -773,23 +799,27 @@ async function requireAdmin5(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin5, "requireAdmin");
+__name(requireAdmin5, "requireAdmin5");
+__name2(requireAdmin5, "requireAdmin");
 function toText(v) {
   if (v === null || typeof v === "undefined") return null;
   return String(v);
 }
 __name(toText, "toText");
+__name2(toText, "toText");
 function toNumber(v) {
   if (v === null || typeof v === "undefined" || v === "") return null;
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
 }
 __name(toNumber, "toNumber");
+__name2(toNumber, "toNumber");
 function toBool01(v) {
   if (v === null || typeof v === "undefined") return null;
   return v === true || v === 1 || v === "1" || v === "true" ? 1 : 0;
 }
 __name(toBool01, "toBool01");
+__name2(toBool01, "toBool01");
 function toJsonText(v) {
   if (v === null || typeof v === "undefined") return null;
   if (typeof v === "string") return v;
@@ -800,10 +830,12 @@ function toJsonText(v) {
   }
 }
 __name(toJsonText, "toJsonText");
+__name2(toJsonText, "toJsonText");
 async function onRequestOptions5() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS5 } });
 }
-__name(onRequestOptions5, "onRequestOptions");
+__name(onRequestOptions5, "onRequestOptions5");
+__name2(onRequestOptions5, "onRequestOptions");
 async function onRequestGet3({ env, params }) {
   const id = params?.id;
   if (!id) return json7({ ok: false, error: "Missing collection id." }, 400);
@@ -818,7 +850,8 @@ async function onRequestGet3({ env, params }) {
     return json7({ ok: false, error: "Server error." }, 500);
   }
 }
-__name(onRequestGet3, "onRequestGet");
+__name(onRequestGet3, "onRequestGet3");
+__name2(onRequestGet3, "onRequestGet");
 async function onRequestPut({ request, env, params }) {
   const id = params?.id;
   if (!id) return json7({ ok: false, error: "Missing collection id." }, 400);
@@ -851,6 +884,7 @@ async function onRequestPut({ request, env, params }) {
     binds.push(val);
   }
   __name(add, "add");
+  __name2(add, "add");
   add("name", name);
   add("tagline", tagline);
   add("description", description);
@@ -881,19 +915,20 @@ async function onRequestPut({ request, env, params }) {
   }
 }
 __name(onRequestPut, "onRequestPut");
-
-// api/profiles/[slug].js
+__name2(onRequestPut, "onRequestPut");
 function json8(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...extraHeaders }
   });
 }
-__name(json8, "json");
+__name(json8, "json8");
+__name2(json8, "json");
 function nowIso2() {
   return (/* @__PURE__ */ new Date()).toISOString();
 }
-__name(nowIso2, "nowIso");
+__name(nowIso2, "nowIso2");
+__name2(nowIso2, "nowIso");
 async function requireAdmin6(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -903,7 +938,8 @@ async function requireAdmin6(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin6, "requireAdmin");
+__name(requireAdmin6, "requireAdmin6");
+__name2(requireAdmin6, "requireAdmin");
 function asJsonTextArray(value) {
   if (Array.isArray(value)) {
     const arr = value.map((s) => String(s).trim()).filter(Boolean);
@@ -916,6 +952,7 @@ function asJsonTextArray(value) {
   return JSON.stringify([]);
 }
 __name(asJsonTextArray, "asJsonTextArray");
+__name2(asJsonTextArray, "asJsonTextArray");
 function parseJsonArray(text) {
   try {
     const v = JSON.parse(text || "[]");
@@ -925,6 +962,7 @@ function parseJsonArray(text) {
   }
 }
 __name(parseJsonArray, "parseJsonArray");
+__name2(parseJsonArray, "parseJsonArray");
 function cleanImagesArray2(value) {
   if (!Array.isArray(value)) return [];
   return value.filter((x) => x && typeof x.url === "string" && x.url.trim()).map((x, idx) => ({
@@ -934,7 +972,8 @@ function cleanImagesArray2(value) {
     sort_order: x.sort_order === void 0 || x.sort_order === null || x.sort_order === "" ? idx : Number(x.sort_order)
   }));
 }
-__name(cleanImagesArray2, "cleanImagesArray");
+__name(cleanImagesArray2, "cleanImagesArray2");
+__name2(cleanImagesArray2, "cleanImagesArray");
 async function onRequest2(context) {
   const { request, env, params } = context;
   const slug = params?.slug;
@@ -1056,9 +1095,8 @@ async function onRequest2(context) {
   }
   return json8({ ok: false, error: "Method not allowed" }, 405);
 }
-__name(onRequest2, "onRequest");
-
-// api/collections/index.js
+__name(onRequest2, "onRequest2");
+__name2(onRequest2, "onRequest");
 var CORS_HEADERS6 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
@@ -1070,11 +1108,13 @@ function json9(body, status = 200, extraHeaders = {}) {
     headers: { "Content-Type": "application/json", ...CORS_HEADERS6, ...extraHeaders }
   });
 }
-__name(json9, "json");
+__name(json9, "json9");
+__name2(json9, "json");
 function slugify2(input) {
   return String(input || "").trim().toLowerCase().replace(/['"]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
 }
-__name(slugify2, "slugify");
+__name(slugify2, "slugify2");
+__name2(slugify2, "slugify");
 async function requireAdmin7(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -1084,11 +1124,13 @@ async function requireAdmin7(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin7, "requireAdmin");
+__name(requireAdmin7, "requireAdmin7");
+__name2(requireAdmin7, "requireAdmin");
 async function onRequestOptions6() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS6 } });
 }
-__name(onRequestOptions6, "onRequestOptions");
+__name(onRequestOptions6, "onRequestOptions6");
+__name2(onRequestOptions6, "onRequestOptions");
 async function onRequestGet4({ env }) {
   try {
     const res = await env.DB.prepare(
@@ -1100,7 +1142,8 @@ async function onRequestGet4({ env }) {
     return json9({ ok: false, error: "Server error." }, 500);
   }
 }
-__name(onRequestGet4, "onRequestGet");
+__name(onRequestGet4, "onRequestGet4");
+__name2(onRequestGet4, "onRequestGet");
 async function onRequestPost6({ request, env }) {
   const auth = await requireAdmin7(request, env);
   if (!auth.ok) return json9({ ok: false, error: auth.error }, auth.status);
@@ -1175,9 +1218,8 @@ async function onRequestPost6({ request, env }) {
     return json9({ ok: false, error: "Server error." }, 500);
   }
 }
-__name(onRequestPost6, "onRequestPost");
-
-// ../.wrangler/tmp/pages-VSo0Lp/functionsRoutes-0.3321905652772048.mjs
+__name(onRequestPost6, "onRequestPost6");
+__name2(onRequestPost6, "onRequestPost");
 var routes = [
   {
     routePath: "/api/collections/:id/documents/:docId/download",
@@ -1320,8 +1362,6 @@ var routes = [
     modules: [onRequestPost6]
   }
 ];
-
-// ../../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/path-to-regexp/dist.es2015/index.js
 function lexer(str) {
   var tokens = [];
   var i = 0;
@@ -1406,6 +1446,7 @@ function lexer(str) {
   return tokens;
 }
 __name(lexer, "lexer");
+__name2(lexer, "lexer");
 function parse(str, options) {
   if (options === void 0) {
     options = {};
@@ -1416,18 +1457,18 @@ function parse(str, options) {
   var key = 0;
   var i = 0;
   var path = "";
-  var tryConsume = /* @__PURE__ */ __name(function(type) {
+  var tryConsume = /* @__PURE__ */ __name2(function(type) {
     if (i < tokens.length && tokens[i].type === type)
       return tokens[i++].value;
   }, "tryConsume");
-  var mustConsume = /* @__PURE__ */ __name(function(type) {
+  var mustConsume = /* @__PURE__ */ __name2(function(type) {
     var value2 = tryConsume(type);
     if (value2 !== void 0)
       return value2;
     var _a2 = tokens[i], nextType = _a2.type, index = _a2.index;
     throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
   }, "mustConsume");
-  var consumeText = /* @__PURE__ */ __name(function() {
+  var consumeText = /* @__PURE__ */ __name2(function() {
     var result2 = "";
     var value2;
     while (value2 = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
@@ -1435,7 +1476,7 @@ function parse(str, options) {
     }
     return result2;
   }, "consumeText");
-  var isSafe = /* @__PURE__ */ __name(function(value2) {
+  var isSafe = /* @__PURE__ */ __name2(function(value2) {
     for (var _i = 0, delimiter_1 = delimiter; _i < delimiter_1.length; _i++) {
       var char2 = delimiter_1[_i];
       if (value2.indexOf(char2) > -1)
@@ -1443,7 +1484,7 @@ function parse(str, options) {
     }
     return false;
   }, "isSafe");
-  var safePattern = /* @__PURE__ */ __name(function(prefix2) {
+  var safePattern = /* @__PURE__ */ __name2(function(prefix2) {
     var prev = result[result.length - 1];
     var prevText = prefix2 || (prev && typeof prev === "string" ? prev : "");
     if (prev && !prevText) {
@@ -1506,12 +1547,14 @@ function parse(str, options) {
   return result;
 }
 __name(parse, "parse");
+__name2(parse, "parse");
 function match(str, options) {
   var keys = [];
   var re = pathToRegexp(str, keys, options);
   return regexpToFunction(re, keys, options);
 }
 __name(match, "match");
+__name2(match, "match");
 function regexpToFunction(re, keys, options) {
   if (options === void 0) {
     options = {};
@@ -1525,7 +1568,7 @@ function regexpToFunction(re, keys, options) {
       return false;
     var path = m[0], index = m.index;
     var params = /* @__PURE__ */ Object.create(null);
-    var _loop_1 = /* @__PURE__ */ __name(function(i2) {
+    var _loop_1 = /* @__PURE__ */ __name2(function(i2) {
       if (m[i2] === void 0)
         return "continue";
       var key = keys[i2 - 1];
@@ -1544,14 +1587,17 @@ function regexpToFunction(re, keys, options) {
   };
 }
 __name(regexpToFunction, "regexpToFunction");
+__name2(regexpToFunction, "regexpToFunction");
 function escapeString(str) {
   return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1");
 }
 __name(escapeString, "escapeString");
+__name2(escapeString, "escapeString");
 function flags(options) {
   return options && options.sensitive ? "" : "i";
 }
 __name(flags, "flags");
+__name2(flags, "flags");
 function regexpToRegexp(path, keys) {
   if (!keys)
     return path;
@@ -1572,6 +1618,7 @@ function regexpToRegexp(path, keys) {
   return path;
 }
 __name(regexpToRegexp, "regexpToRegexp");
+__name2(regexpToRegexp, "regexpToRegexp");
 function arrayToRegexp(paths, keys, options) {
   var parts = paths.map(function(path) {
     return pathToRegexp(path, keys, options).source;
@@ -1579,10 +1626,12 @@ function arrayToRegexp(paths, keys, options) {
   return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
 }
 __name(arrayToRegexp, "arrayToRegexp");
+__name2(arrayToRegexp, "arrayToRegexp");
 function stringToRegexp(path, keys, options) {
   return tokensToRegexp(parse(path, options), keys, options);
 }
 __name(stringToRegexp, "stringToRegexp");
+__name2(stringToRegexp, "stringToRegexp");
 function tokensToRegexp(tokens, keys, options) {
   if (options === void 0) {
     options = {};
@@ -1638,6 +1687,7 @@ function tokensToRegexp(tokens, keys, options) {
   return new RegExp(route, flags(options));
 }
 __name(tokensToRegexp, "tokensToRegexp");
+__name2(tokensToRegexp, "tokensToRegexp");
 function pathToRegexp(path, keys, options) {
   if (path instanceof RegExp)
     return regexpToRegexp(path, keys);
@@ -1646,8 +1696,7 @@ function pathToRegexp(path, keys, options) {
   return stringToRegexp(path, keys, options);
 }
 __name(pathToRegexp, "pathToRegexp");
-
-// ../../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/pages-template-worker.ts
+__name2(pathToRegexp, "pathToRegexp");
 var escapeRegex = /[.+?^${}()|[\]\\]/g;
 function* executeRequest(request) {
   const requestPath = new URL(request.url).pathname;
@@ -1698,13 +1747,14 @@ function* executeRequest(request) {
   }
 }
 __name(executeRequest, "executeRequest");
+__name2(executeRequest, "executeRequest");
 var pages_template_worker_default = {
   async fetch(originalRequest, env, workerContext) {
     let request = originalRequest;
     const handlerIterator = executeRequest(request);
     let data = {};
     let isFailOpen = false;
-    const next = /* @__PURE__ */ __name(async (input, init) => {
+    const next = /* @__PURE__ */ __name2(async (input, init) => {
       if (input !== void 0) {
         let url = input;
         if (typeof input === "string") {
@@ -1731,7 +1781,7 @@ var pages_template_worker_default = {
           },
           env,
           waitUntil: workerContext.waitUntil.bind(workerContext),
-          passThroughOnException: /* @__PURE__ */ __name(() => {
+          passThroughOnException: /* @__PURE__ */ __name2(() => {
             isFailOpen = true;
           }, "passThroughOnException")
         };
@@ -1759,16 +1809,14 @@ var pages_template_worker_default = {
     }
   }
 };
-var cloneResponse = /* @__PURE__ */ __name((response) => (
+var cloneResponse = /* @__PURE__ */ __name2((response) => (
   // https://fetch.spec.whatwg.org/#null-body-status
   new Response(
     [101, 204, 205, 304].includes(response.status) ? null : response.body,
     response
   )
 ), "cloneResponse");
-
-// ../../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
-var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } finally {
@@ -1784,8 +1832,6 @@ var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
   }
 }, "drainBody");
 var middleware_ensure_req_body_drained_default = drainBody;
-
-// ../../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
 function reduceError(e) {
   return {
     name: e?.name,
@@ -1795,7 +1841,8 @@ function reduceError(e) {
   };
 }
 __name(reduceError, "reduceError");
-var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+__name2(reduceError, "reduceError");
+var jsonError = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } catch (e) {
@@ -1807,20 +1854,17 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
   }
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
-
-// ../.wrangler/tmp/bundle-Db5L50/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
 ];
 var middleware_insertion_facade_default = pages_template_worker_default;
-
-// ../../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/common.ts
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
   __facade_middleware__.push(...args.flat());
 }
 __name(__facade_register__, "__facade_register__");
+__name2(__facade_register__, "__facade_register__");
 function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   const [head, ...tail] = middlewareChain;
   const middlewareCtx = {
@@ -1832,6 +1876,7 @@ function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   return head(request, env, ctx, middlewareCtx);
 }
 __name(__facade_invokeChain__, "__facade_invokeChain__");
+__name2(__facade_invokeChain__, "__facade_invokeChain__");
 function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   return __facade_invokeChain__(request, env, ctx, dispatch, [
     ...__facade_middleware__,
@@ -1839,16 +1884,18 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   ]);
 }
 __name(__facade_invoke__, "__facade_invoke__");
-
-// ../.wrangler/tmp/bundle-Db5L50/middleware-loader.entry.ts
+__name2(__facade_invoke__, "__facade_invoke__");
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
+  static {
+    __name(this, "___Facade_ScheduledController__");
+  }
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
     this.cron = cron;
     this.#noRetry = noRetry;
   }
   static {
-    __name(this, "__Facade_ScheduledController__");
+    __name2(this, "__Facade_ScheduledController__");
   }
   #noRetry;
   noRetry() {
@@ -1865,7 +1912,7 @@ function wrapExportedHandler(worker) {
   for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__) {
     __facade_register__(middleware);
   }
-  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
+  const fetchDispatcher = /* @__PURE__ */ __name2(function(request, env, ctx) {
     if (worker.fetch === void 0) {
       throw new Error("Handler does not export a fetch() function.");
     }
@@ -1874,7 +1921,7 @@ function wrapExportedHandler(worker) {
   return {
     ...worker,
     fetch(request, env, ctx) {
-      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
+      const dispatcher = /* @__PURE__ */ __name2(function(type, init) {
         if (type === "scheduled" && worker.scheduled !== void 0) {
           const controller = new __Facade_ScheduledController__(
             Date.now(),
@@ -1890,6 +1937,7 @@ function wrapExportedHandler(worker) {
   };
 }
 __name(wrapExportedHandler, "wrapExportedHandler");
+__name2(wrapExportedHandler, "wrapExportedHandler");
 function wrapWorkerEntrypoint(klass) {
   if (__INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0) {
     return klass;
@@ -1898,7 +1946,7 @@ function wrapWorkerEntrypoint(klass) {
     __facade_register__(middleware);
   }
   return class extends klass {
-    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
+    #fetchDispatcher = /* @__PURE__ */ __name2((request, env, ctx) => {
       this.env = env;
       this.ctx = ctx;
       if (super.fetch === void 0) {
@@ -1906,7 +1954,7 @@ function wrapWorkerEntrypoint(klass) {
       }
       return super.fetch(request);
     }, "#fetchDispatcher");
-    #dispatcher = /* @__PURE__ */ __name((type, init) => {
+    #dispatcher = /* @__PURE__ */ __name2((type, init) => {
       if (type === "scheduled" && super.scheduled !== void 0) {
         const controller = new __Facade_ScheduledController__(
           Date.now(),
@@ -1929,6 +1977,7 @@ function wrapWorkerEntrypoint(klass) {
   };
 }
 __name(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
+__name2(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
 var WRAPPED_ENTRY;
 if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapExportedHandler(middleware_insertion_facade_default);
@@ -1936,8 +1985,178 @@ if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapWorkerEntrypoint(middleware_insertion_facade_default);
 }
 var middleware_loader_entry_default = WRAPPED_ENTRY;
-export {
-  __INTERNAL_WRANGLER_MIDDLEWARE__,
-  middleware_loader_entry_default as default
+
+// ../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
+var drainBody2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+  try {
+    return await middlewareCtx.next(request, env);
+  } finally {
+    try {
+      if (request.body !== null && !request.bodyUsed) {
+        const reader = request.body.getReader();
+        while (!(await reader.read()).done) {
+        }
+      }
+    } catch (e) {
+      console.error("Failed to drain the unused request body.", e);
+    }
+  }
+}, "drainBody");
+var middleware_ensure_req_body_drained_default2 = drainBody2;
+
+// ../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
+function reduceError2(e) {
+  return {
+    name: e?.name,
+    message: e?.message ?? String(e),
+    stack: e?.stack,
+    cause: e?.cause === void 0 ? void 0 : reduceError2(e.cause)
+  };
+}
+__name(reduceError2, "reduceError");
+var jsonError2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+  try {
+    return await middlewareCtx.next(request, env);
+  } catch (e) {
+    const error = reduceError2(e);
+    return Response.json(error, {
+      status: 500,
+      headers: { "MF-Experimental-Error-Stack": "true" }
+    });
+  }
+}, "jsonError");
+var middleware_miniflare3_json_error_default2 = jsonError2;
+
+// .wrangler/tmp/bundle-kl3wTg/middleware-insertion-facade.js
+var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
+  middleware_ensure_req_body_drained_default2,
+  middleware_miniflare3_json_error_default2
+];
+var middleware_insertion_facade_default2 = middleware_loader_entry_default;
+
+// ../../../../AppData/Local/npm-cache/_npx/32026684e21afda6/node_modules/wrangler/templates/middleware/common.ts
+var __facade_middleware__2 = [];
+function __facade_register__2(...args) {
+  __facade_middleware__2.push(...args.flat());
+}
+__name(__facade_register__2, "__facade_register__");
+function __facade_invokeChain__2(request, env, ctx, dispatch, middlewareChain) {
+  const [head, ...tail] = middlewareChain;
+  const middlewareCtx = {
+    dispatch,
+    next(newRequest, newEnv) {
+      return __facade_invokeChain__2(newRequest, newEnv, ctx, dispatch, tail);
+    }
+  };
+  return head(request, env, ctx, middlewareCtx);
+}
+__name(__facade_invokeChain__2, "__facade_invokeChain__");
+function __facade_invoke__2(request, env, ctx, dispatch, finalMiddleware) {
+  return __facade_invokeChain__2(request, env, ctx, dispatch, [
+    ...__facade_middleware__2,
+    finalMiddleware
+  ]);
+}
+__name(__facade_invoke__2, "__facade_invoke__");
+
+// .wrangler/tmp/bundle-kl3wTg/middleware-loader.entry.ts
+var __Facade_ScheduledController__2 = class ___Facade_ScheduledController__2 {
+  constructor(scheduledTime, cron, noRetry) {
+    this.scheduledTime = scheduledTime;
+    this.cron = cron;
+    this.#noRetry = noRetry;
+  }
+  static {
+    __name(this, "__Facade_ScheduledController__");
+  }
+  #noRetry;
+  noRetry() {
+    if (!(this instanceof ___Facade_ScheduledController__2)) {
+      throw new TypeError("Illegal invocation");
+    }
+    this.#noRetry();
+  }
 };
-//# sourceMappingURL=functionsWorker-0.5862231405068599.mjs.map
+function wrapExportedHandler2(worker) {
+  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
+    return worker;
+  }
+  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
+    __facade_register__2(middleware);
+  }
+  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
+    if (worker.fetch === void 0) {
+      throw new Error("Handler does not export a fetch() function.");
+    }
+    return worker.fetch(request, env, ctx);
+  }, "fetchDispatcher");
+  return {
+    ...worker,
+    fetch(request, env, ctx) {
+      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
+        if (type === "scheduled" && worker.scheduled !== void 0) {
+          const controller = new __Facade_ScheduledController__2(
+            Date.now(),
+            init.cron ?? "",
+            () => {
+            }
+          );
+          return worker.scheduled(controller, env, ctx);
+        }
+      }, "dispatcher");
+      return __facade_invoke__2(request, env, ctx, dispatcher, fetchDispatcher);
+    }
+  };
+}
+__name(wrapExportedHandler2, "wrapExportedHandler");
+function wrapWorkerEntrypoint2(klass) {
+  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
+    return klass;
+  }
+  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
+    __facade_register__2(middleware);
+  }
+  return class extends klass {
+    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
+      this.env = env;
+      this.ctx = ctx;
+      if (super.fetch === void 0) {
+        throw new Error("Entrypoint class does not define a fetch() function.");
+      }
+      return super.fetch(request);
+    }, "#fetchDispatcher");
+    #dispatcher = /* @__PURE__ */ __name((type, init) => {
+      if (type === "scheduled" && super.scheduled !== void 0) {
+        const controller = new __Facade_ScheduledController__2(
+          Date.now(),
+          init.cron ?? "",
+          () => {
+          }
+        );
+        return super.scheduled(controller);
+      }
+    }, "#dispatcher");
+    fetch(request) {
+      return __facade_invoke__2(
+        request,
+        this.env,
+        this.ctx,
+        this.#dispatcher,
+        this.#fetchDispatcher
+      );
+    }
+  };
+}
+__name(wrapWorkerEntrypoint2, "wrapWorkerEntrypoint");
+var WRAPPED_ENTRY2;
+if (typeof middleware_insertion_facade_default2 === "object") {
+  WRAPPED_ENTRY2 = wrapExportedHandler2(middleware_insertion_facade_default2);
+} else if (typeof middleware_insertion_facade_default2 === "function") {
+  WRAPPED_ENTRY2 = wrapWorkerEntrypoint2(middleware_insertion_facade_default2);
+}
+var middleware_loader_entry_default2 = WRAPPED_ENTRY2;
+export {
+  __INTERNAL_WRANGLER_MIDDLEWARE__2 as __INTERNAL_WRANGLER_MIDDLEWARE__,
+  middleware_loader_entry_default2 as default
+};
+//# sourceMappingURL=functionsWorker-0.16680191508709385.js.map

@@ -35,8 +35,6 @@ export default function TerpeneShowcase({ HeroBanner }) {
   const [addImages, setAddImages] = useState([]); // [{ url, alt, isPrimary }]
   const [addImgBusy, setAddImgBusy] = useState(false);
 
-  const [imageLoadState, setImageLoadState] = useState({ total: 0, loaded: 0 });
-
   async function fetchJson(url, opts) {
     const res = await fetch(url, { credentials: "include", ...opts });
     const text = await res.text();
@@ -74,46 +72,6 @@ export default function TerpeneShowcase({ HeroBanner }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    const urls = Array.from(
-      new Set(
-        (displayedCollections || [])
-          .map((c) => getCollectionImageUrl(c))
-          .filter(Boolean)
-      )
-    );
-
-    let canceled = false;
-    if (!urls.length) {
-      setImageLoadState({ total: 0, loaded: 0 });
-      return () => {
-        canceled = true;
-      };
-    }
-
-    setImageLoadState({ total: urls.length, loaded: 0 });
-
-    urls.forEach((src) => {
-      const img = new Image();
-      img.onload = img.onerror = () => {
-        if (canceled) return;
-        setImageLoadState((prev) => {
-          const nextLoaded = Math.min(prev.loaded + 1, urls.length);
-          return { total: urls.length, loaded: nextLoaded };
-        });
-      };
-      img.src = src;
-    });
-
-    return () => {
-      canceled = true;
-    };
-  }, [displayedCollections]);
-
-  const imagesReady = imageLoadState.total === 0 || imageLoadState.loaded >= imageLoadState.total;
-  const textReady = dbCollections !== null;
-  const pageReady = imagesReady && textReady;
-
   async function submitAddCollection() {
     setAddError("");
     setAddBusy(true);
@@ -129,7 +87,7 @@ export default function TerpeneShowcase({ HeroBanner }) {
         images: Array.isArray(addImages)
           ? addImages
               .filter((x) => x && typeof x.url === "string" && x.url.trim())
-              .map((x, idx) => ({
+              .map((x) => ({
                 url: String(x.url).trim(),
                 alt: String(x.alt || "").trim(),
                 isPrimary: !!x.isPrimary,
@@ -155,13 +113,7 @@ export default function TerpeneShowcase({ HeroBanner }) {
 
   return (
     <>
-      {!pageReady && (
-        <div className="ts-loadingOverlay" role="status" aria-live="polite" aria-busy="true">
-          <div className="ts-loader" />
-          <div className="ts-loadingText">Loading collections...</div>
-        </div>
-      )}
-      {/* Desktop content */}
+
       {!isMobile && (
         <>
           {HeroBanner && <HeroBanner />}
@@ -222,7 +174,6 @@ export default function TerpeneShowcase({ HeroBanner }) {
           </section>
         </>
       )}
-      {/* Mobile content */}
       {isMobile && (
         <section className="ts-mobileSection ts-mobileMessage">
           {HeroBanner && <HeroBanner />}
@@ -576,7 +527,7 @@ function getCollectionImageUrl(collection) {
   return cardImageSrc;
 }
 
-function CollectionCard({ collection, isMobile, cardClass, addToCart, cardIndex }) {
+function CollectionCard({ collection, isMobile, addToCart, cardIndex }) {
   const navigate = useNavigate();
   const cardImageSrc = getCollectionImageUrl(collection);
   const primaryLabel =

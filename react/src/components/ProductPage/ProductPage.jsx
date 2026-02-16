@@ -394,6 +394,38 @@ export default function ProductPage() {
     setProfileActiveImg(0);
   }, [selectedSlug]);
 
+  const [imageLoadState, setImageLoadState] = useState({ total: 0, loaded: 0 });
+
+  useEffect(() => {
+    const urls = Array.from(new Set([...galleryImages, ...profileImages].filter(Boolean)));
+    let canceled = false;
+
+    if (!urls.length) {
+      setImageLoadState({ total: 0, loaded: 0 });
+      return () => {
+        canceled = true;
+      };
+    }
+
+    setImageLoadState({ total: urls.length, loaded: 0 });
+
+    urls.forEach((src) => {
+      const img = new Image();
+      img.onload = img.onerror = () => {
+        if (canceled) return;
+        setImageLoadState((prev) => {
+          const nextLoaded = Math.min(prev.loaded + 1, urls.length);
+          return { total: urls.length, loaded: nextLoaded };
+        });
+      };
+      img.src = src;
+    });
+
+    return () => {
+      canceled = true;
+    };
+  }, [galleryImages, profileImages]);
+
   const flavorInfo = useMemo(() => {
     if (dbProfile) {
       return {
@@ -458,6 +490,10 @@ export default function ProductPage() {
   const documentsRows = useMemo(() => parseJsonArray(collection?.documents_json, []), [collection?.documents_json]);
   const isolatesRows = useMemo(() => parseJsonArray(collection?.isolates_json, []), [collection?.isolates_json]);
   const terpenesRows = useMemo(() => parseJsonArray(collection?.terpenes_json, []), [collection?.terpenes_json]);
+
+  const imagesReady = imageLoadState.total === 0 || imageLoadState.loaded >= imageLoadState.total;
+  const textReady = !!collection && !loadingProfiles && !loadingProfile;
+  const pageReady = imagesReady && textReady;
   const shippingText = useMemo(() => {
     const text = String(collection?.shipping_md || "").trim();
     return text || "Fast, discreet shipping. Orders typically process in 1–2 business days.";
@@ -730,6 +766,12 @@ export default function ProductPage() {
   return (
     <>
       <div className="pp-page">
+        {!pageReady && (
+          <div className="pp-loadingOverlay" role="status" aria-live="polite" aria-busy="true">
+            <div className="pp-loader" />
+            <div className="pp-loadingText">Loading product...</div>
+          </div>
+        )}
         <main className="pp-container">
           <div className="pp-topGrid">
           {/* LEFT: Images (smaller column) */}

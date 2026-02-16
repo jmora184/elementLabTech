@@ -7,6 +7,36 @@
   margin: 0 auto;
   align-items: stretch;
 }
+
+.ts-loadingOverlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.ts-loader{
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 4px solid rgba(15, 23, 42, 0.2);
+  border-top-color: #ef4444;
+  animation: ts-spin 0.9s linear infinite;
+}
+
+.ts-loadingText{
+  font-weight: 700;
+  color: #0f172a;
+}
+
+@keyframes ts-spin{
+  to{ transform: rotate(360deg); }
+}
 /* Cart icon button in header */
 .ts-cartIconBtn {
   background: none;

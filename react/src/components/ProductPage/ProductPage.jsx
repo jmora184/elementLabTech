@@ -768,6 +768,8 @@ export default function ProductPage() {
                 )}
 
               <div className="pp-collectionName">{collection.name}</div>
+              <br></br>
+                <div className="pp-muted">{collection.tagline}</div>
               {isAdmin && (
                 <button
                   type="button"
@@ -787,11 +789,6 @@ export default function ProductPage() {
                 </button>
               )}
               <div className="pp-body">{flavorInfo.intro}</div>
-              <br></br>
-              <div className="pp-muted">{collection.tagline}</div>
-              <div className="pp-galleryMeta">
-                <p className="pp-body">{collection.description}</p>
-              </div>
             </div>
           </section>
 

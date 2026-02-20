@@ -740,6 +740,18 @@
 
 /* Mobile nav */
 @media (max-width: 768px){
+  .ts-siteHeader{
+    height: var(--ts-header-h);
+  }
+
+  .ts-siteNav{
+    height: 100%;
+  }
+
+  .ts-miniHeader{
+    top: var(--ts-header-h);
+  }
+
   .ts-menuBtn{ display: inline-flex; }
   /* Hide the logo entirely on mobile to keep the header clean */
   .ts-logoLink{ display: none; }

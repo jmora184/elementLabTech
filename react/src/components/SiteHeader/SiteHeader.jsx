@@ -146,11 +146,12 @@ export default function SiteHeader({
             </button>
           </div>
 
-          <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}>
+          <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}  style={{ marginLeft: "2%" }}>
             {resolvedNavLinks.map((l) => (
               <a
                 key={l.id}
                 href={`/#${l.id}`}
+                 style={{ marginLeft: "-6%" }}
                 className="ts-siteNavLink"
                 onClick={(e) => {
                   e.preventDefault();
@@ -191,6 +192,7 @@ export default function SiteHeader({
                 <button
                   className="ts-authBtn"
                   type="button"
+                    style={{ marginLeft: "-5%" }}
                   onClick={() => {
                     setMenuOpen(false);
                     setMiniMenuOpen(false);

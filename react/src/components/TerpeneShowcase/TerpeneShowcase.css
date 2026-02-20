@@ -534,7 +534,7 @@
   padding: 10px 16px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 16px;
   position: relative;
 }
@@ -556,19 +556,23 @@
   align-items: center;
   justify-content: flex-end;
   gap: 18px;
-  flex: 0 1 auto;
+  flex: 0 0 auto;
 }
 
 /* Tighten the search sizing when used inside the header */
 .ts-siteNav .ts-headerJump{
   min-width: 360px;
   max-width: 420px;
+  flex: 0 0 auto;
 }
 
 .ts-logoLink{
   display: inline-flex;
   align-items: center;
   text-decoration: none;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .ts-siteLogo{
@@ -750,7 +754,9 @@
      Row 3: nav links (dropdown)
   */
   .ts-siteNav{
-    flex-wrap: wrap;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
     gap: 10px;
     padding: 8px 10px;
   }
@@ -758,32 +764,22 @@
   .ts-siteLogo{ height: 34px; }
 
   .ts-headerActions{
-    width: 100%;
+    display: flex;
     align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    position: relative;
+    justify-content: flex-end;
   }
 
   .ts-siteNav .ts-headerJump{
     min-width: 0;
     max-width: none;
-    /* Center the search input on mobile */
-    width: min(56vw, 260px);
-    flex: 0 1 auto;
+    width: auto;
+    flex: 0.45 1 auto;
     margin-left: 0;
-    margin-right: auto;
-    order: 1;
+    margin-right: 0;
   }
 
   .ts-headerActions .ts-menuBtn{
-    order: 2;
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-right: 0;
+    flex-shrink: 0;
   }
 
   .ts-siteNav .ts-select{
@@ -794,8 +790,9 @@
   .ts-navLinks{
     position: absolute;
     top: 100%;
-    left: 0;
-    right: 0;
+    left: -10px;
+    right: -10px;
+    width: calc(100% + 20px);
     display: none;
     flex-direction: column;
     align-items: stretch;

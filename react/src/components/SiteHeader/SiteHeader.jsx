@@ -112,8 +112,8 @@ export default function SiteHeader({
   return (
     <>
       <header className="ts-siteHeader">
-        <nav className="ts-siteNav" aria-label="Primary" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
-          <div className="ts-jump ts-headerJump" style={{ flex: '0 0 auto' }}>
+        <nav className="ts-siteNav" aria-label="Primary">
+          <div className="ts-jump ts-headerJump">
             <input
               id="collectionJump"
               className="ts-select ts-selectSearch"
@@ -130,7 +130,6 @@ export default function SiteHeader({
             className="ts-logoLink"
             aria-label="Element Labs Home"
             onClick={handleLogoClick}
-            style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}
           >
             <img src={logoSrc} alt="Element Labs Logo" className="ts-siteLogo" />
           </a>

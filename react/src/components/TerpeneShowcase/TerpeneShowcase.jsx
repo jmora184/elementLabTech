@@ -552,21 +552,20 @@ function CollectionCard({ collection, isMobile, addToCart, cardIndex }) {
       style={{
         minHeight: '500px',
         height: 'auto',
-        background: '#fff',
+        background: '#ffffff',
         color: '#111',
         boxShadow: '0 2px 18px rgba(0,0,0,0.08)',
         border: '1px solid #e5e7eb',
       }}
     >
-      <div className="ts-cardLeft">
-        <div className="ts-badge" style={{ color: '#111', fontWeight: 900, paddingTop: '16px', textAlign: 'center', width: '100%' }}>{collection.badge}</div>
-        <div className="ts-cardImgWrapper" style={{ position: 'relative', minHeight: '350px', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="ts-cardLeft" style={{ background: '#ffffff' }}>
+        <div className="ts-cardImgWrapper" style={{ position: 'relative', minHeight: '350px', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', backgroundColor: '#ffffff' }}>
           {cardImageSrc && (
             <img
               className="ts-cardImg"
               src={cardImageSrc}
               alt={collection.name + " bottle"}
-              style={{ cursor: 'pointer', maxHeight: '100%', maxWidth: '90%', objectFit: 'contain', zIndex: 2, marginTop: '80px' }}
+              style={{ cursor: 'pointer', maxHeight: '225%', maxWidth: '135%', objectFit: 'contain', zIndex: 2, marginTop: '80px' }}
               onClick={() => navigate(`/product/${collection.id}`)}
             />
           )}
@@ -574,16 +573,18 @@ function CollectionCard({ collection, isMobile, addToCart, cardIndex }) {
             <div
               className="ts-cardNameOverlay"
               style={{
-                background: '#fff',
+                background: 'transparent',
                 color: '#111',
                 fontWeight: 800,
                 fontSize: 18,
                 padding: '10px 12px 2px 12px',
-                borderTopLeftRadius: 16,
-                borderTopRightRadius: 16,
                 textAlign: 'center',
                 letterSpacing: '-0.01em',
                 boxSizing: 'border-box',
+                width: '100%',
+                wordWrap: 'break-word',
+                overflowWrap: 'break-word',
+                hyphens: 'auto',
               }}
             >
               {collection.name}
@@ -591,16 +592,18 @@ function CollectionCard({ collection, isMobile, addToCart, cardIndex }) {
             <div
               className="ts-cardTagline"
               style={{
-                background: '#fff',
+                background: 'transparent',
                 color: '#111',
                 fontWeight: 600,
                 fontSize: 15,
-                padding: '2px 12px 6px 12px',
+                padding: '2px 12px 0px 12px',
                 textAlign: 'center',
                 letterSpacing: '-0.01em',
                 boxSizing: 'border-box',
-                borderBottomLeftRadius: 12,
-                borderBottomRightRadius: 12,
+                width: '100%',
+                wordWrap: 'break-word',
+                overflowWrap: 'break-word',
+                hyphens: 'auto',
               }}
             >
               {collection.tagline}
@@ -658,8 +661,8 @@ function CollectionCard({ collection, isMobile, addToCart, cardIndex }) {
         <button
           className="ts-cta"
           style={isMobile
-            ? { width: '80%', margin: '-26px auto 0 auto', minWidth: 80, fontSize: 13, padding: '7px 12px', borderRadius: 10, background: 'linear-gradient(135deg, #111 0%, #000 100%)', color: '#fff', fontWeight: 700, border: '1px solid #000', boxShadow: '0 2px 8px rgba(0,0,0,0.18)', cursor: 'pointer', display: 'block', marginBottom: '18px' }
-            : { width: '100%', margin: '-22px auto 0 auto', minWidth: 120, fontSize: 16, padding: '10px 18px', borderRadius: 12, background: 'linear-gradient(135deg, #111 0%, #000 100%)', color: '#fff', fontWeight: 700, border: '1px solid #000', boxShadow: '0 2px 8px rgba(0,0,0,0.18)', cursor: 'pointer', display: 'block', marginBottom: '24px' }
+            ? { width: '80%', margin: '-26px auto 0 auto', minWidth: 80, fontSize: 13, padding: '7px 12px', borderRadius: 10, background: 'linear-gradient(135deg, #111 0%, #000 100%)', color: '#fff', fontWeight: 700, border: '1px solid #000', boxShadow: '0 2px 8px rgba(0,0,0,0.18)', cursor: 'pointer', display: 'block', marginBottom: '18px', zIndex: 10, position: 'relative' }
+            : { width: '100%', margin: '-22px auto 0 auto', minWidth: 120, fontSize: 16, padding: '10px 18px', borderRadius: 12, background: 'linear-gradient(135deg, #111 0%, #000 100%)', color: '#fff', fontWeight: 700, border: '1px solid #000', boxShadow: '0 2px 8px rgba(0,0,0,0.18)', cursor: 'pointer', display: 'block', marginBottom: '24px', zIndex: 10, position: 'relative' }
           }
           onClick={() => {
             const label = selectedType || primaryLabel;

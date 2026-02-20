@@ -10,8 +10,6 @@ import certificationBadges from "../../assets/marlalabels.png";
 export default function TerpeneShowcase({ HeroBanner }) {
   const isMobile = useIsMobile();
 
-  const addToCart = () => {};
-
   // Load collections from DB (no mock fallback)
   const [dbCollections, setDbCollections] = useState(null); // null = loading/unknown
   const displayedCollections = Array.isArray(dbCollections) ? dbCollections : [];
@@ -160,7 +158,6 @@ export default function TerpeneShowcase({ HeroBanner }) {
                     >
                       <CollectionCard
                         collection={c}
-                        addToCart={addToCart}
                         isMobile={false}
                         cardClass={cardClass}
                         cardIndex={baseIndex}
@@ -247,7 +244,6 @@ export default function TerpeneShowcase({ HeroBanner }) {
                   >
                     <CollectionCard
                       collection={c}
-                      addToCart={addToCart}
                       isMobile={true}
                       cardClass={cardClass}
                       cardIndex={baseIndex}
@@ -582,7 +578,7 @@ function getCollectionImageUrl(collection) {
   return cardImageSrc;
 }
 
-function CollectionCard({ collection, isMobile, addToCart, cardIndex }) {
+function CollectionCard({ collection, isMobile, cardIndex }) {
   const navigate = useNavigate();
   const cardImageSrc = getCollectionImageUrl(collection);
   const primaryLabel =
@@ -694,8 +690,8 @@ function CollectionCard({ collection, isMobile, addToCart, cardIndex }) {
                 padding: '6px 12px',
                 borderRadius: 999,
                 border: '1px solid #111',
-                background: '#fff',
-                color: '#000',
+                background: selectedType === primaryLabel ? '#111' : '#fff',
+                color: selectedType === primaryLabel ? '#fff' : '#000',
                 fontWeight: 700,
                 cursor: 'pointer',
               }}
@@ -710,8 +706,8 @@ function CollectionCard({ collection, isMobile, addToCart, cardIndex }) {
                 padding: '6px 12px',
                 borderRadius: 999,
                 border: '1px solid #111',
-                background: '#fff',
-                color: '#000',
+                background: selectedType === secondaryLabel ? '#111' : '#fff',
+                color: selectedType === secondaryLabel ? '#fff' : '#000',
                 fontWeight: 700,
                 cursor: 'pointer',
               }}
@@ -727,8 +723,9 @@ function CollectionCard({ collection, isMobile, addToCart, cardIndex }) {
             : { width: '100%', margin: '-22px auto 0 auto', minWidth: 120, fontSize: 16, padding: '10px 18px', borderRadius: 12, background: 'linear-gradient(135deg, #111 0%, #000 100%)', color: '#fff', fontWeight: 700, border: '1px solid #000', boxShadow: '0 2px 8px rgba(0,0,0,0.18)', cursor: 'pointer', display: 'block', marginBottom: '24px', zIndex: 10, position: 'relative' }
           }
           onClick={() => {
-            const label = selectedType || primaryLabel;
-            addToCart(`${collection.name} - ${label}`);
+            if (collection?.id) {
+              navigate(`/product/${collection.id}`);
+            }
           }}
         >
           {cardIndex === 3 ? "Explore HDT Botanicals" : "Explore Flavors"}

@@ -6,6 +6,8 @@ import AdminEditProfileModal from "./AdminEditProfileModal";
 
 import { uploadImageFile } from "../../utils/cloudflareImages";
 
+const MOBILE_PRODUCT_BREAKPOINT = 980;
+
 async function fetchJson(url, opts) {
   const res = await fetch(url, opts);
   const data = await res.json().catch(() => null);
@@ -124,6 +126,13 @@ export default function ProductPage() {
   // Checkout widget state
   const [selectedSize, setSelectedSize] = useState("2mL | 2g - $20");
   const [quantity, setQuantity] = useState(1);
+
+  const scrollToTopOnMobile = () => {
+    if (typeof window === "undefined") return;
+    if (window.innerWidth <= MOBILE_PRODUCT_BREAKPOINT) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   async function refreshProfiles() {
     if (!id) return;
@@ -995,6 +1004,7 @@ export default function ProductPage() {
                           onClick={() => {
                             setSelectedSlug(p.slug);
                             setExpandedSlug((prev) => (prev === p.slug ? "" : p.slug));
+                            scrollToTopOnMobile();
                           }}
                           aria-label={`Select profile ${p.label}`}
                         >

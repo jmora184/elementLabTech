@@ -5,7 +5,7 @@ import { useAuth } from "../../auth/AuthContext";
 // Reuse your existing header + mini-header styling so the look stays the same everywhere.
 import "../TerpeneShowcase/TerpeneShowcase.css";
 
-import elementLabsLogo from "../../assets/ElementLabsLogos.png";
+import elementLabsLogo from "../../assets/logoMarla2.png";
 
 const DEFAULT_NAV_LINKS = [
   { label: "Shop", id: "shop" },

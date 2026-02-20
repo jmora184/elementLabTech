@@ -1457,7 +1457,7 @@ export default function ProductPage() {
                 fontWeight: 700, 
                 letterSpacing: "0.05em", 
                 marginBottom: 0,
-                background: "linear-gradient(90deg, #065f46 0%, #047857 50%, #059669 100%)",
+                background: "linear-gradient(90deg, #24ab0f 0%, #24ab0f 50%, #24ab0f 100%)",
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
                 color: "transparent"
@@ -1574,7 +1574,7 @@ export default function ProductPage() {
                 className="pp-primaryBtn"
                 style={{
                   width: "100%",
-                  background: "linear-gradient(90deg, #065f46 0%, #047857 50%, #059669 100%)",
+                  background: "linear-gradient(90deg, #24ab0f 0%, #24ab0f 50%, #24ab0f 100%)",
                   border: "none",
                   display: "flex",
                   alignItems: "center",

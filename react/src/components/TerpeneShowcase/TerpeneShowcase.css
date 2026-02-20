@@ -746,6 +746,7 @@
 
   .ts-siteNav{
     height: 100%;
+    box-sizing: border-box;
   }
 
   .ts-miniHeader{
@@ -821,6 +822,19 @@
   .ts-siteNavLink{
     width: 100%;
     padding: 12px 12px;
+  }
+
+  /* Mobile-only offsets to keep dropdown alignment tweaks off desktop */
+  .ts-navLinks{
+    margin-left: 2%;
+  }
+
+  .ts-navLinks .ts-siteNavLink{
+    margin-left: -6%;
+  }
+
+  .ts-navLinks .ts-authBtn{
+    margin-left: -5%;
   }
 }
 

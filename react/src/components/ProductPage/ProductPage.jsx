@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./ProductPage.css";
 import AdminEditProfileModal from "./AdminEditProfileModal";
@@ -126,12 +126,11 @@ export default function ProductPage() {
   // Checkout widget state
   const [selectedSize, setSelectedSize] = useState("2mL | 2g - $20");
   const [quantity, setQuantity] = useState(1);
+  const detailsSectionRef = useRef(null);
 
   const scrollToTopOnMobile = () => {
     if (typeof window === "undefined") return;
-    if (window.innerWidth <= MOBILE_PRODUCT_BREAKPOINT) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    detailsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   async function refreshProfiles() {
@@ -802,7 +801,11 @@ export default function ProductPage() {
           </section>
 
           {/* MIDDLE: Details / Docs / Info (tabs) */}
-          <section className="pp-card pp-infoCard" aria-label="Details and information">
+          <section
+            ref={detailsSectionRef}
+            className="pp-card pp-infoCard"
+            aria-label="Details and information"
+          >
             <div className="pp-tabBar" role="tablist" aria-label="Product tabs">
               {tabs.map((t) => (
                 <button

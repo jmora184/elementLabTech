@@ -1464,11 +1464,7 @@ export default function ProductPage() {
               }}>
                 {collection.name}
               </div>
-              <div className="pp-buyTitle" style={{ marginBottom: 0 }}>{flavorInfo.flavorType}</div>
-              <div style={{ fontSize: 23, color: "var(--muted)", marginBottom: 16 }}>
-                {flavorInfo.intro}
-              </div>
-
+              <div className="pp-buyTitle" style={{ marginBottom: 0, color: "#fff" }}>{collection.tagline}</div>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 700, marginBottom: 6, color: "var(--muted)" }}>
                   Size

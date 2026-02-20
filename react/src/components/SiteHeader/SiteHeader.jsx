@@ -26,10 +26,8 @@ const DEFAULT_MINI_MENU_LEFT = [
   "Savory",
   "Desserts",
   "Fruits",
-  "Botanicals",
   "Treats",
   "Mixers",
-  "Sips & Bites",
   "Fresh Picks",
   "Zest",
   "Essentials",
@@ -38,14 +36,10 @@ const DEFAULT_MINI_MENU_LEFT = [
 const DEFAULT_MINI_MENU_RIGHT = [
   "Wildcard",
   "Flavor Experiments",
-  "Curiosities",
-  "Twist & Shout",
   "Rebel Flavors",
   "Bizarre & Brilliant",
   "Taste Adventures",
-  "Quirk & Perk",
   "Off the Map",
-  "WTF Flavors",
 ];
 
 /**
@@ -118,40 +112,39 @@ export default function SiteHeader({
   return (
     <>
       <header className="ts-siteHeader">
-        <nav className="ts-siteNav" aria-label="Primary">
-          <div className="ts-logoSearchCenter">
-            <a
-              href="/"
-              className="ts-logoLink"
-              aria-label="Element Labs Home"
-              onClick={handleLogoClick}
+        <nav className="ts-siteNav" aria-label="Primary" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
+          <div className="ts-jump ts-headerJump" style={{ flex: '0 0 auto' }}>
+            <input
+              id="collectionJump"
+              className="ts-select ts-selectSearch"
+              type="text"
+              value={value}
+              onChange={handleSearchChange}
+              placeholder={searchPlaceholder}
+              aria-label={searchPlaceholder}
+            />
+          </div>
+
+          <a
+            href="/"
+            className="ts-logoLink"
+            aria-label="Element Labs Home"
+            onClick={handleLogoClick}
+            style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}
+          >
+            <img src={logoSrc} alt="Element Labs Logo" className="ts-siteLogo" />
+          </a>
+
+          <div className="ts-headerActions">
+            <button
+              className="ts-menuBtn"
+              type="button"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((v) => !v)}
             >
-              <img src={logoSrc} alt="Element Labs Logo" className="ts-siteLogo" />
-            </a>
-
-            <div className="ts-headerActions">
-              <div className="ts-jump ts-headerJump">
-                <input
-                  id="collectionJump"
-                  className="ts-select ts-selectSearch"
-                  type="text"
-                  value={value}
-                  onChange={handleSearchChange}
-                  placeholder={searchPlaceholder}
-                  aria-label={searchPlaceholder}
-                />
-              </div>
-
-              <button
-                className="ts-menuBtn"
-                type="button"
-                aria-label={menuOpen ? "Close menu" : "Open menu"}
-                aria-expanded={menuOpen}
-                onClick={() => setMenuOpen((v) => !v)}
-              >
-                ☰
-              </button>
-            </div>
+              ☰
+            </button>
           </div>
 
           <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}>

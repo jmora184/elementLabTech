@@ -4,6 +4,7 @@ import { useIsMobile } from "./useIsMobile";
 import { useNavigate } from "react-router-dom";
 import TerpeneSimulator from "../TerpeneSimulator/TerpeneSimulator";
 import { uploadImageFile } from "../../utils/cloudflareImages";
+import certificationBadges from "../../assets/marlalabels.png";
 // Header is provided globally by SiteLayout.
 
 export default function TerpeneShowcase({ HeroBanner }) {
@@ -168,6 +169,33 @@ export default function TerpeneShowcase({ HeroBanner }) {
                   );
                 })}
               </div>
+              {/* Certifications Banner */}
+              <div style={{ width: '100%', maxWidth: '1200px', margin: '60px auto 0', padding: '0 20px' }}>
+                <hr style={{ border: 'none', borderTop: '1px solid rgba(0,0,0,0.1)', margin: '0' }} />
+              </div>
+              <div style={{ 
+                width: '100%',
+                background: 'linear-gradient(135deg, rgba(183, 248, 183, 0.15) 0%, rgba(110, 231, 183, 0.1) 50%, rgba(209, 247, 196, 0.15) 100%)',
+                padding: '50px 20px',
+                margin: '40px 0'
+              }}>
+                <div style={{
+                  maxWidth: '1200px',
+                  margin: '0 auto',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}>
+                  <img 
+                    src={certificationBadges} 
+                    alt="Certifications: Non GMO, ISO 9001, Food Grade, OU Kosher, FSSC22000, Natural Ingredients, Botanical Derived" 
+                    style={{ width: '100%', maxWidth: '1000px', height: 'auto' }}
+                  />
+                </div>
+              </div>
+              <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto 40px', padding: '0 20px' }}>
+                <hr style={{ border: 'none', borderTop: '1px solid rgba(0,0,0,0.1)', margin: '0' }} />
+              </div>
               {/* Terpene Simulator section (desktop) */}
               <TerpeneSimulator />
             </div>
@@ -227,6 +255,33 @@ export default function TerpeneShowcase({ HeroBanner }) {
                   </div>
                 );
               })}
+            </div>
+            {/* Certifications Banner */}
+            <div style={{ width: '100%', margin: '40px 0 0', padding: '0 10px' }}>
+              <hr style={{ border: 'none', borderTop: '1px solid rgba(0,0,0,0.1)', margin: '0' }} />
+            </div>
+            <div style={{ 
+              width: '100%',
+              background: 'linear-gradient(135deg, rgba(183, 248, 183, 0.15) 0%, rgba(110, 231, 183, 0.1) 50%, rgba(209, 247, 196, 0.15) 100%)',
+              padding: '40px 15px',
+              margin: '30px 0'
+            }}>
+              <div style={{
+                maxWidth: '700px',
+                margin: '0 auto',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <img 
+                  src={certificationBadges} 
+                  alt="Certifications: Non GMO, ISO 9001, Food Grade, OU Kosher, FSSC22000, Natural Ingredients, Botanical Derived" 
+                  style={{ width: '100%', maxWidth: '600px', height: 'auto' }}
+                />
+              </div>
+            </div>
+            <div style={{ width: '100%', margin: '0 0 30px', padding: '0 10px' }}>
+              <hr style={{ border: 'none', borderTop: '1px solid rgba(0,0,0,0.1)', margin: '0' }} />
             </div>
             {/* Terpene Simulator section (mobile) */}
             <TerpeneSimulator />
@@ -537,7 +592,7 @@ function CollectionCard({ collection, isMobile, addToCart, cardIndex }) {
       ? "Best Sellers"
       : cardIndex === 3
       ? "True to Plant"
-      : "Strains";
+      : "Desserts";
   const secondaryLabel =
     cardIndex === 0
       ? "Request Samples"
@@ -545,27 +600,34 @@ function CollectionCard({ collection, isMobile, addToCart, cardIndex }) {
       ? "Formulators Choice"
       : cardIndex === 3
       ? "Full Spectrum"
-      : "Crossovers";
+      : "Candy";
   const [selectedType, setSelectedType] = useState(cardIndex === 1 ? "" : primaryLabel);
   return (
     <article className="ts-card"
       style={{
         minHeight: '500px',
         height: 'auto',
-        background: '#ffffff',
+        background: isMobile ? 'transparent' : '#ffffff',
         color: '#111',
-        boxShadow: '0 2px 18px rgba(0,0,0,0.08)',
-        border: '1px solid #e5e7eb',
+        boxShadow: isMobile ? 'none' : '0 2px 18px rgba(0,0,0,0.08)',
+        border: isMobile ? 'none' : '1px solid #e5e7eb',
       }}
     >
-      <div className="ts-cardLeft" style={{ background: '#ffffff' }}>
-        <div className="ts-cardImgWrapper" style={{ position: 'relative', minHeight: '350px', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', backgroundColor: '#ffffff' }}>
+      <div className="ts-cardLeft" style={{ background: isMobile ? 'transparent' : '#ffffff' }}>
+        <div className="ts-cardImgWrapper" style={{ position: 'relative', minHeight: '350px', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', backgroundColor: isMobile ? 'transparent' : '#ffffff' }}>
           {cardImageSrc && (
             <img
               className="ts-cardImg"
               src={cardImageSrc}
               alt={collection.name + " bottle"}
-              style={{ cursor: 'pointer', maxHeight: '225%', maxWidth: '135%', objectFit: 'contain', zIndex: 2, marginTop: '80px' }}
+              style={{ 
+                cursor: 'pointer', 
+                maxHeight: isMobile ? '300%' : '225%', 
+                maxWidth: isMobile ? '180%' : '135%', 
+                objectFit: 'contain', 
+                zIndex: 2, 
+                marginTop: '80px' 
+              }}
               onClick={() => navigate(`/product/${collection.id}`)}
             />
           )}

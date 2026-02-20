@@ -121,6 +121,10 @@ export default function ProductPage() {
   const [addErr, setAddErr] = useState("");
   const [adding, setAdding] = useState(false);
 
+  // Checkout widget state
+  const [selectedSize, setSelectedSize] = useState("2mL | 2g - $20");
+  const [quantity, setQuantity] = useState(1);
+
   async function refreshProfiles() {
     if (!id) return;
     const list = await fetchJson(`/api/collections/${encodeURIComponent(id)}/profiles`);
@@ -839,31 +843,6 @@ export default function ProductPage() {
                         {flavorInfo.flavorCategory ? ` (${flavorInfo.flavorCategory})` : ""}
                       </div>
 
-                      {/* Flavor profile images */}
-                      {profileImages.length > 0 && (
-                        <img
-                          src={profileImages[profileActiveImg]}
-                          alt={flavorInfo.name}
-                          className="pp-flavorHero"
-                        />
-                      )}
-
-                      {profileImages.length > 1 && (
-                        <div className="pp-thumbRow" style={{ marginTop: 10 }}>
-                          {profileImages.map((src, idx) => (
-                            <button
-                              key={src + idx}
-                              type="button"
-                              className={`pp-thumb ${idx === profileActiveImg ? "isActive" : ""}`}
-                              onClick={() => setProfileActiveImg(idx)}
-                              aria-label={`View profile image ${idx + 1}`}
-                            >
-                              <img src={src} alt="" />
-                            </button>
-                          ))}
-                        </div>
-                      )}
-
                       {loadingProfile && (
                         <div className="pp-muted" style={{ marginTop: 10 }}>
                           Loading profile…
@@ -875,6 +854,7 @@ export default function ProductPage() {
                           <table className="pp-flavorTable">
                             <thead>
                               <tr>
+                                <th>Description</th>
                                 <th>
                                   <span className="pp-thWithIcon">
                                     <span className="pp-thIcon" aria-hidden="true">
@@ -899,7 +879,6 @@ export default function ProductPage() {
                                     Natural flavor
                                   </span>
                                 </th>
-                                <th>Description under Flavor Name</th>
                                 <th>Dominant terpenes</th>
                                 <th>Flavor and aroma</th>
                                 <th>Mood</th>
@@ -907,12 +886,12 @@ export default function ProductPage() {
                             </thead>
                             <tbody>
                               <tr>
+                                <td className="pp-tdDesc" data-label="Description">
+                                  {flavorInfo.description}
+                                </td>
                                 <td className="pp-tdStrong" data-label="Natural flavor">
                                   {flavorInfo.flavorType}
                                   {flavorInfo.flavorCategory ? ` (${flavorInfo.flavorCategory})` : ""}
-                                </td>
-                                <td className="pp-tdDesc" data-label="Description under Flavor Name">
-                                  {flavorInfo.description}
                                 </td>
                                 <td data-label="Dominant terpenes">
                                   <div className="pp-cellList">
@@ -940,6 +919,31 @@ export default function ProductPage() {
                           </table>
                         </div>
                       </div>
+
+                      {/* Flavor profile images */}
+                      {profileImages.length > 0 && (
+                        <img
+                          src={profileImages[profileActiveImg]}
+                          alt={flavorInfo.name}
+                          className="pp-flavorHero"
+                        />
+                      )}
+
+                      {profileImages.length > 1 && (
+                        <div className="pp-thumbRow" style={{ marginTop: 10 }}>
+                          {profileImages.map((src, idx) => (
+                            <button
+                              key={src + idx}
+                              type="button"
+                              className={`pp-thumb ${idx === profileActiveImg ? "isActive" : ""}`}
+                              onClick={() => setProfileActiveImg(idx)}
+                              aria-label={`View profile image ${idx + 1}`}
+                            >
+                              <img src={src} alt="" />
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -1442,6 +1446,151 @@ export default function ProductPage() {
                   )}
                 </>
               )}
+            </div>
+          </section>
+
+          {/* RIGHT: Checkout widget */}
+          <section className="pp-card pp-buyCard" aria-label="Purchase options">
+            <div className="pp-buySticky">
+              <div style={{ 
+                fontSize: 26, 
+                fontWeight: 700, 
+                letterSpacing: "0.05em", 
+                marginBottom: 0,
+                background: "linear-gradient(90deg, #065f46 0%, #047857 50%, #059669 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent"
+              }}>
+                {collection.name}
+              </div>
+              <div className="pp-buyTitle" style={{ marginBottom: 0 }}>{flavorInfo.flavorType}</div>
+              <div style={{ fontSize: 23, color: "var(--muted)", marginBottom: 16 }}>
+                {flavorInfo.intro}
+              </div>
+
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, marginBottom: 6, color: "var(--muted)" }}>
+                  Size
+                </label>
+                <select
+                  value={selectedSize}
+                  onChange={(e) => setSelectedSize(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "14px 16px",
+                    borderRadius: 12,
+                    border: "1px solid var(--border)",
+                    background: "var(--surface-2)",
+                    color: "var(--text)",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    outline: "none",
+                  }}
+                >
+                  <option value="2mL | 2g - $20">2mL | 2g - $20</option>
+                  <option value="5mL | 4.2g - $35">5mL | 4.2g - $35</option>
+                  <option value="24mL | 20g - $125">24mL | 20g - $125</option>
+                  <option value="60mL | 50g | 2oz - $276">60mL | 50g | 2oz - $276</option>
+                  <option value="111mL | 100g | 4oz - $418">111mL | 100g | 4oz - $418</option>
+                  <option value="556mL | 500g | 19.9oz - $1897">556mL | 500g | 19.9oz - $1897</option>
+                  <option value="1kg | 39.8oz - $2,999">1kg | 39.8oz - $2,999</option>
+                </select>
+              </div>
+
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, marginBottom: 6, color: "var(--muted)" }}>
+                  Quantity
+                </label>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 12,
+                      border: "1px solid var(--border)",
+                      background: "var(--surface-2)",
+                      color: "var(--text)",
+                      fontSize: 20,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    −
+                  </button>
+                  <select
+                    value={quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    style={{
+                      flex: 1,
+                      padding: "12px 8px",
+                      paddingLeft: "16px",
+                      borderRadius: 12,
+                      border: "1px solid var(--border)",
+                      background: "var(--surface-2)",
+                      color: "var(--text)",
+                      fontSize: 16,
+                      fontWeight: 700,
+                      textAlign: "center",
+                      cursor: "pointer",
+                      outline: "none",
+                    }}
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                      <option key={n} value={n}>{n}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((prev) => Math.min(10, prev + 1))}
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 12,
+                      border: "1px solid var(--border)",
+                      background: "var(--surface-2)",
+                      color: "var(--text)",
+                      fontSize: 20,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className="pp-primaryBtn"
+                style={{
+                  width: "100%",
+                  background: "linear-gradient(90deg, #065f46 0%, #047857 50%, #059669 100%)",
+                  border: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                  fontSize: 16,
+                }}
+                onClick={() => {
+                  alert(`Added ${quantity} × ${selectedSize} to cart!`);
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.4 5.6M17 13l1.4 5.6M9 21a1 1 0 100-2 1 1 0 000 2zm9 0a1 1 0 100-2 1 1 0 000 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Add to cart
+              </button>
             </div>
           </section>
         </div>

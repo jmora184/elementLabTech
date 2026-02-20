@@ -19,9 +19,9 @@ export default function App() {
             element={
               <>
                 <TerpeneShowcase HeroBanner={HeroMotion} />
-                <section id="contact" style={{ padding: 80 }}>
+                <section id="contact" style={{ padding: 80, textAlign: 'center' }}>
                   <h2>Contact</h2>
-                  <p>Drop your real contact form or CTA section here.</p>
+                  <p style={{ fontSize: '18px', marginTop: '20px' }}>info@elementlab.shop</p>
                 </section>
               </>
             }

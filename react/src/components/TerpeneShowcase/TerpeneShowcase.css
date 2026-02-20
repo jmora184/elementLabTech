@@ -759,6 +759,7 @@
 
   .ts-headerActions{
     width: 100%;
+    align-items: center;
     justify-content: center;
     flex-wrap: wrap;
     gap: 8px;
@@ -780,6 +781,8 @@
     order: 2;
     position: absolute;
     right: 0;
+    top: 50%;
+    transform: translateY(-50%);
     margin-right: 0;
   }
 

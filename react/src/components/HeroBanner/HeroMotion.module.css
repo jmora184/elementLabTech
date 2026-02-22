@@ -9,8 +9,8 @@
   position: relative;
   overflow: hidden;
   border-radius: 0;
-  min-height: 100%;
-  height: 100%;
+  min-height: clamp(275px, 41vh, 446px);
+  height: clamp(275px, 41vh, 446px);
   background-image:
     linear-gradient(90deg, rgba(0,0,0,.62), rgba(0,0,0,.18)),
     var(--bg);
@@ -150,6 +150,11 @@
 }
 
 @media (max-width: 640px){
+  .hero{
+    min-height: 341px;
+    height: 341px;
+  }
+
   .titleBreak{
     display: block;
   }

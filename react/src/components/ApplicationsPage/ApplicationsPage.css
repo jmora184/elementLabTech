@@ -1,0 +1,114 @@
+.ap-section {
+  padding: 80px 24px;
+  text-align: left;
+}
+
+.ap-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.ap-topLogoWrap {
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: center;
+}
+
+.ap-topLogo {
+  display: block;
+  width: min(120px, 35vw);
+  height: auto;
+}
+
+.ap-header {
+  margin-bottom: 28px;
+}
+
+.ap-title {
+  margin: 0;
+  font-size: 36px;
+  line-height: 1.1;
+}
+
+.ap-subtitle {
+  margin: 16px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  opacity: 0.92;
+}
+
+.ap-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.ap-card {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(6px);
+}
+
+.ap-imageWrap {
+  width: 160px;
+  height: 160px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.ap-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ap-kicker {
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  font-size: 13px;
+  opacity: 0.75;
+  text-transform: uppercase;
+}
+
+.ap-headline {
+  margin: 6px 0 0;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.ap-body {
+  margin: 10px 0 0;
+  font-size: 16px;
+  line-height: 1.7;
+  opacity: 0.92;
+}
+
+@media (max-width: 720px) {
+  .ap-section {
+    padding: 60px 18px;
+  }
+
+  .ap-card {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    text-align: left;
+  }
+
+  .ap-imageWrap {
+    width: 180px;
+    height: 180px;
+  }
+
+  .ap-kicker {
+    margin-top: 6px;
+  }
+}

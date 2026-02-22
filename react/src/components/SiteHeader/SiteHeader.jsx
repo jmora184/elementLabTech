@@ -5,10 +5,9 @@ import { useAuth } from "../../auth/AuthContext";
 // Reuse your existing header + mini-header styling so the look stays the same everywhere.
 import "../TerpeneShowcase/TerpeneShowcase.css";
 
-import elementLabsLogo from "../../assets/logoMarla2.png";
+import elementLabsLogo from "../../assets/newnewlogo.png";
 
 const DEFAULT_NAV_LINKS = [
-  { label: "Shop", id: "shop" },
   { label: "Applications", id: "applications" },
   { label: "Q&A", id: "q-and-a" },
   { label: "Contact Sales", id: "contact-sales"},
@@ -17,7 +16,7 @@ const DEFAULT_NAV_LINKS = [
 const DEFAULT_MINI_LINKS = [
   { label: "Trending Now", id: "trending-now" },
   { label: "Best Sellers", id: "best-sellers" },
-  { label: "Signature Blends", id: "signature-blends" },
+  { label: "Sample Sets", id: "signature-blends" },
   { label: "Isolates", id: "isolates" },
    { label: "Carriers", id: "carriers" },
 ];
@@ -30,10 +29,10 @@ const DEFAULT_MINI_MENU_LEFT = [
   "Mixers",
   "Fresh Picks",
   "Zest",
-  "Essentials",
 ];
 
 const DEFAULT_MINI_MENU_RIGHT = [
+  "Essentials",
   "Wildcard",
   "Flavor Experiments",
   "Rebel Flavors",
@@ -41,6 +40,33 @@ const DEFAULT_MINI_MENU_RIGHT = [
   "Taste Adventures",
   "Off the Map",
 ];
+
+const MINI_MENU_ROUTES = {
+  Savory: "/product/matrix-collection?profile=rosemary-olive",
+  Desserts: "/product/matrix-collection?profile=pistachio-baklava",
+  Fruits: "/product/fruity-fusion-forward?profile=blueberry-burst",
+  Treats: "/product/matrix-collection?profile=cotton-candy",
+  Mixers: "/product/matrix-collection?profile=mojito",
+  "Fresh Picks": "/product/matrix-collection?profile=cucumber-mint",
+  Zest: "/product/fruity-fusion-forward?profile=lime-note",
+  Wildcard: "/product/matrix-collection?profile=strawberry-nesiquik",
+  "Wild Card": "/product/matrix-collection?profile=strawberry-nesiquik",
+  "Flavor Experiments": "/product/matrix-collection?profile=19",
+  "Rebel Flavors": "/product/matrix-collection?profile=tajin",
+  "Bizarre & Brilliant": "/product/fruity-fusion-forward?profile=charrd-coconut",
+  "Bizarre and Brilliant": "/product/fruity-fusion-forward?profile=charrd-coconut",
+  "Taste Adventures": "/product/matrix-collection?profile=black-sesame-honey",
+  "Taste Adventure": "/product/matrix-collection?profile=black-sesame-honey",
+  "Off the Map": "/product/matrix-collection?profile=charred-coconut",
+};
+
+const MINI_LINK_ROUTES = {
+  "trending-now": "/product/matrix-collection?profile=tres-leches",
+  "best-sellers": "/product/matrix-collection?profile=hawiiana-snow-cone",
+  "signature-blends": "/samples",
+  "isolates": "/isolates",
+  "carriers": "/carriers",
+};
 
 /**
  * Shared Site Header (+ mini header)
@@ -107,6 +133,14 @@ export default function SiteHeader({
     if (typeof onSearchChange === "function") {
       onSearchChange(e);
     }
+  };
+
+  const handleMiniMenuItemClick = (label) => {
+    const route = MINI_MENU_ROUTES[label];
+    if (!route) return;
+    setMenuOpen(false);
+    setMiniMenuOpen(false);
+    navigate(route);
   };
 
   return (
@@ -215,7 +249,7 @@ export default function SiteHeader({
               aria-controls="mini-menu-panel"
               onClick={() => setMiniMenuOpen((v) => !v)}
             >
-              ☰ All
+              ☰ Flavor Archive
             </button>
 
             {miniMenuOpen && (
@@ -223,14 +257,24 @@ export default function SiteHeader({
                 <div className="ts-miniMenuGrid">
                   <div className="ts-miniMenuCol">
                     {miniMenuLeft.map((label) => (
-                      <button key={label} type="button" className="ts-miniMenuItem">
+                      <button
+                        key={label}
+                        type="button"
+                        className="ts-miniMenuItem"
+                        onClick={() => handleMiniMenuItemClick(label)}
+                      >
                         {label}
                       </button>
                     ))}
                   </div>
                   <div className="ts-miniMenuCol">
                     {miniMenuRight.map((label) => (
-                      <button key={label} type="button" className="ts-miniMenuItem">
+                      <button
+                        key={label}
+                        type="button"
+                        className="ts-miniMenuItem"
+                        onClick={() => handleMiniMenuItemClick(label)}
+                      >
                         {label}
                       </button>
                     ))}
@@ -248,6 +292,13 @@ export default function SiteHeader({
                 className="ts-miniLink"
                 onClick={(e) => {
                   e.preventDefault();
+                  const route = MINI_LINK_ROUTES[l.id];
+                  if (route) {
+                    setMenuOpen(false);
+                    setMiniMenuOpen(false);
+                    navigate(route);
+                    return;
+                  }
                   goToSection(l.id);
                 }}
               >

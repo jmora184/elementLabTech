@@ -35,6 +35,21 @@ export default function SiteLayout() {
   };
 
   const handleNavToSection = (sectionId) => {
+    if (sectionId === "applications") {
+      navigate("/applications");
+      return;
+    }
+
+    if (sectionId === "q-and-a") {
+      navigate("/contact");
+      return;
+    }
+
+    if (sectionId === "contact-sales") {
+      navigate("/contact");
+      return;
+    }
+
     scrollToHomeTarget(() => {
       const el = document.getElementById(sectionId);
       el?.scrollIntoView({ behavior: "smooth", block: "start" });

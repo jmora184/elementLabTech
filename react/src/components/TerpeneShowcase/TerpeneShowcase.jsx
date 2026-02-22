@@ -580,6 +580,7 @@ function getCollectionImageUrl(collection) {
 
 function CollectionCard({ collection, isMobile, cardIndex }) {
   const navigate = useNavigate();
+  const productPath = String(collection?.productPath || `/product/${collection?.id || ""}`);
   const cardImageSrc = getCollectionImageUrl(collection);
   const primaryLabel =
     cardIndex === 0
@@ -593,7 +594,7 @@ function CollectionCard({ collection, isMobile, cardIndex }) {
     cardIndex === 0
       ? "Request Samples"
       : cardIndex === 2
-      ? "Formulators Choice"
+      ? "Formulator's Choice"
       : cardIndex === 3
       ? "Full Spectrum"
       : "Candy";
@@ -624,7 +625,7 @@ function CollectionCard({ collection, isMobile, cardIndex }) {
                 zIndex: 2, 
                 marginTop: '80px' 
               }}
-              onClick={() => navigate(`/product/${collection.id}`)}
+              onClick={() => navigate(productPath)}
             />
           )}
           <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 3 }}>
@@ -671,7 +672,7 @@ function CollectionCard({ collection, isMobile, cardIndex }) {
           <div
             style={{
               position: 'absolute',
-              top: 110,
+              top: 70,
               left: '50%',
               transform: 'translateX(-50%)',
               width: '100%',
@@ -723,12 +724,12 @@ function CollectionCard({ collection, isMobile, cardIndex }) {
             : { width: '100%', margin: '-22px auto 0 auto', minWidth: 120, fontSize: 16, padding: '10px 18px', borderRadius: 12, background: 'linear-gradient(135deg, #111 0%, #000 100%)', color: '#fff', fontWeight: 700, border: '1px solid #000', boxShadow: '0 2px 8px rgba(0,0,0,0.18)', cursor: 'pointer', display: 'block', marginBottom: '24px', zIndex: 10, position: 'relative' }
           }
           onClick={() => {
-            if (collection?.id) {
-              navigate(`/product/${collection.id}`);
+            if (productPath && productPath !== "/product/") {
+              navigate(productPath);
             }
           }}
         >
-          {cardIndex === 3 ? "Explore HDT Botanicals" : "Explore Flavors"}
+              Explore Flavors
         </button>
       </div>
       {/* No flavor profiles shown here */}

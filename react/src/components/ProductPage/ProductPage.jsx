@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import "./ProductPage.css";
 import AdminEditProfileModal from "./AdminEditProfileModal";
 // Header is provided globally by SiteLayout.
@@ -90,6 +90,8 @@ export default function ProductPage() {
   const [editText, setEditText] = useState(""); // textarea for Shipping
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const requestedProfileSlug = (searchParams.get("profile") || "").trim();
 
   // DB-backed collection + profiles (new)
   const [dbCollection, setDbCollection] = useState(null);
@@ -124,7 +126,7 @@ export default function ProductPage() {
   const [adding, setAdding] = useState(false);
 
   // Checkout widget state
-  const [selectedSize, setSelectedSize] = useState("2mL | 2g - $20");
+  const [selectedSize, setSelectedSize] = useState("2mL | 1.84 g - $20");
   const [quantity, setQuantity] = useState(1);
   const detailsSectionRef = useRef(null);
 
@@ -305,9 +307,13 @@ export default function ProductPage() {
         const profiles = Array.isArray(list?.profiles) ? list.profiles : [];
         setDbProfiles(profiles);
 
-        const first = profiles[0]?.slug || "";
-        setSelectedSlug(first);
-        setExpandedSlug(first);
+        const preferred =
+          requestedProfileSlug && profiles.find((p) => p.slug === requestedProfileSlug)
+            ? requestedProfileSlug
+            : profiles[0]?.slug || "";
+
+        setSelectedSlug(preferred);
+        setExpandedSlug(preferred);
       } catch (err) {
         console.warn("DB collection/profiles load failed:", err?.message || err);
       } finally {
@@ -322,7 +328,15 @@ export default function ProductPage() {
     return () => {
       alive = false;
     };
-  }, [id]);
+  }, [id, requestedProfileSlug]);
+
+  useEffect(() => {
+    if (!requestedProfileSlug || !dbProfiles.length) return;
+    const match = dbProfiles.find((p) => p.slug === requestedProfileSlug);
+    if (!match) return;
+    setSelectedSlug(match.slug);
+    setExpandedSlug(match.slug);
+  }, [requestedProfileSlug, dbProfiles]);
 
   // Load the selected profile details bundle
   useEffect(() => {
@@ -420,6 +434,8 @@ export default function ProductPage() {
   }, [collection?.reviews_json]);
 
   const [reviewForm, setReviewForm] = useState({ name: "", rating: 5, text: "" });
+  const [contactForm, setContactForm] = useState({ firstName: "", lastName: "", message: "" });
+  const [contactNotice, setContactNotice] = useState("");
 
   const avgRating = useMemo(() => {
     if (!reviews.length) return 0;
@@ -441,6 +457,33 @@ export default function ProductPage() {
     setReviews(next);
         setReviewForm({ name: "", rating: 5, text: "" });
     setTab("Reviews");
+  };
+
+  const submitContactRequest = (e, sourceTab) => {
+    e.preventDefault();
+    const firstName = String(contactForm.firstName || "").trim();
+    const lastName = String(contactForm.lastName || "").trim();
+    const message = String(contactForm.message || "").trim();
+
+    if (!firstName || !lastName || !message) {
+      setContactNotice("Please fill in First Name, Last Name, and Message.");
+      return;
+    }
+
+    const subject = `Contact Request - ${collection?.name || "Product"} (${sourceTab})`;
+    const body = [
+      `Collection: ${collection?.name || ""}`,
+      `Tab: ${sourceTab}`,
+      `First Name: ${firstName}`,
+      `Last Name: ${lastName}`,
+      "",
+      "Message:",
+      message,
+    ].join("\n");
+
+    window.location.href = `mailto:info@elementlab.shop?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setContactNotice("Your email app was opened with a prefilled message to info@elementlab.shop.");
+    setContactForm({ firstName: "", lastName: "", message: "" });
   };
 
   // Collection-level tab content from DB
@@ -899,8 +942,7 @@ export default function ProductPage() {
                                   {flavorInfo.description}
                                 </td>
                                 <td className="pp-tdStrong" data-label="Natural flavor">
-                                  {flavorInfo.flavorType}
-                                  {flavorInfo.flavorCategory ? ` (${flavorInfo.flavorCategory})` : ""}
+                                  {flavorInfo.flavorCategory || ""}
                                 </td>
                                 <td data-label="Dominant terpenes">
                                   <div className="pp-cellList">
@@ -1287,9 +1329,50 @@ export default function ProductPage() {
                         })}
                       </tbody>
                     </table>
-                  ) : (
-                    <p className="pp-muted">No specs have been added yet.</p>
-                  )}
+                  ) : null}
+
+                  <form className="pp-reviewForm" onSubmit={(e) => submitContactRequest(e, "Specs")}> 
+                    <h3 style={{ margin: "0 0 10px", fontSize: 16 }}>Contact Request</h3>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                      <label className="pp-label" style={{ marginTop: 0 }}>
+                        First Name
+                        <input
+                          className="pp-input"
+                          value={contactForm.firstName}
+                          onChange={(e) => setContactForm((p) => ({ ...p, firstName: e.target.value }))}
+                          placeholder="First name"
+                          required
+                        />
+                      </label>
+
+                      <label className="pp-label" style={{ marginTop: 0 }}>
+                        Last Name
+                        <input
+                          className="pp-input"
+                          value={contactForm.lastName}
+                          onChange={(e) => setContactForm((p) => ({ ...p, lastName: e.target.value }))}
+                          placeholder="Last name"
+                          required
+                        />
+                      </label>
+                    </div>
+
+                    <label className="pp-label">
+                      Message
+                      <textarea
+                        className="pp-input pp-textarea"
+                        value={contactForm.message}
+                        onChange={(e) => setContactForm((p) => ({ ...p, message: e.target.value }))}
+                        placeholder="How can we help?"
+                        required
+                      />
+                    </label>
+
+                    <button type="submit" className="pp-primaryBtn">
+                      Send
+                    </button>
+                    {contactNotice ? <p className="pp-muted" style={{ marginTop: 10 }}>{contactNotice}</p> : null}
+                  </form>
                 </>
               )}
 
@@ -1315,9 +1398,50 @@ export default function ProductPage() {
                         );
                       })}
                     </div>
-                  ) : (
-                    <p className="pp-muted">No documents have been added yet.</p>
-                  )}
+                  ) : null}
+
+                  <form className="pp-reviewForm" onSubmit={(e) => submitContactRequest(e, "Documents")}> 
+                    <h3 style={{ margin: "0 0 10px", fontSize: 16 }}>Contact Request</h3>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                      <label className="pp-label" style={{ marginTop: 0 }}>
+                        First Name
+                        <input
+                          className="pp-input"
+                          value={contactForm.firstName}
+                          onChange={(e) => setContactForm((p) => ({ ...p, firstName: e.target.value }))}
+                          placeholder="First name"
+                          required
+                        />
+                      </label>
+
+                      <label className="pp-label" style={{ marginTop: 0 }}>
+                        Last Name
+                        <input
+                          className="pp-input"
+                          value={contactForm.lastName}
+                          onChange={(e) => setContactForm((p) => ({ ...p, lastName: e.target.value }))}
+                          placeholder="Last name"
+                          required
+                        />
+                      </label>
+                    </div>
+
+                    <label className="pp-label">
+                      Message
+                      <textarea
+                        className="pp-input pp-textarea"
+                        value={contactForm.message}
+                        onChange={(e) => setContactForm((p) => ({ ...p, message: e.target.value }))}
+                        placeholder="How can we help?"
+                        required
+                      />
+                    </label>
+
+                    <button type="submit" className="pp-primaryBtn">
+                      Send
+                    </button>
+                    {contactNotice ? <p className="pp-muted" style={{ marginTop: 10 }}>{contactNotice}</p> : null}
+                  </form>
                 </>
               )}
 
@@ -1467,14 +1591,11 @@ export default function ProductPage() {
                 fontWeight: 700, 
                 letterSpacing: "0.05em", 
                 marginBottom: 0,
-                background: "linear-gradient(90deg, #24ab0f 0%, #24ab0f 50%, #24ab0f 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                color: "transparent"
+                color: "var(--accent)"
               }}>
                 {collection.name}
               </div>
-              <div className="pp-buyTitle" style={{ marginBottom: 0, color: "#fff" }}>{collection.tagline}</div>
+              <div className="pp-buyTitle" style={{ marginBottom: 0, color: "#fff" }}>Flavor Choice</div>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 700, marginBottom: 6, color: "var(--muted)" }}>
                   Size
@@ -1495,7 +1616,7 @@ export default function ProductPage() {
                     outline: "none",
                   }}
                 >
-                  <option value="2mL | 2g - $20">2mL | 2g - $20</option>
+                  <option value="2mL | 1.84 g - $20">2mL | 1.84 g - $20</option>
                   <option value="5mL | 4.2g - $35">5mL | 4.2g - $35</option>
                   <option value="24mL | 20g - $125">24mL | 20g - $125</option>
                   <option value="60mL | 50g | 2oz - $276">60mL | 50g | 2oz - $276</option>
@@ -1580,7 +1701,7 @@ export default function ProductPage() {
                 className="pp-primaryBtn"
                 style={{
                   width: "100%",
-                  background: "linear-gradient(90deg, #24ab0f 0%, #24ab0f 50%, #24ab0f 100%)",
+                  background: "var(--accent)",
                   border: "none",
                   display: "flex",
                   alignItems: "center",

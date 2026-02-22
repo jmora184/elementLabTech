@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./HeroMotion.module.css";
 import backgroundImg from "../../assets/background.png";
+import chemPicImg from "../../assets/chemPic.avif";
+import chemPic3Img from "../../assets/chempic3.jpg";
+import chemPic5Img from "../../assets/chempic5.jpg";
 
 /**
  * HeroMotion
@@ -51,8 +54,7 @@ export default function HeroMotion() {
           { text: "Drinks", href: "#drinks" },
           { text: "Wild Card", href: "#wild-card" },
         ],
-        bgImage:
-          "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=2000&q=60",
+        bgImage: chemPicImg,
       },
       {
         eyebrow: "",
@@ -62,8 +64,7 @@ export default function HeroMotion() {
           { text: "Adjust Intensity", href: "#adjust-intensity" },
           { text: "Formulator Tools", href: "#formulator-tools" },
         ],
-        bgImage:
-          "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=2000&q=60",
+        bgImage: chemPic3Img,
       },
       {
         eyebrow: "",
@@ -74,8 +75,7 @@ export default function HeroMotion() {
           { text: "SDS's", href: "#sds" },
           { text: "Request List of Ingrediants", href: "#request-ingredients" },
         ],
-        bgImage:
-          "https://images.unsplash.com/photo-1554475901-4538ddfbccc2?auto=format&fit=crop&w=2000&q=60",
+        bgImage: chemPic5Img,
       },
     ],
     []
@@ -134,7 +134,7 @@ export default function HeroMotion() {
           <h1 className={styles.title}>{s.title}</h1>
           <p className={styles.body}>{s.body}</p>
           <div className={styles.actions}>
-            {(s.ctas ?? [{ text: s.ctaText, href: s.ctaHref }]).map((cta, i) => (
+            {s.ctas.map((cta, i) => (
               <a
                 key={`${cta.text}-${i}`}
                 className={i === 0 ? styles.primaryBtn : styles.ghostBtn}

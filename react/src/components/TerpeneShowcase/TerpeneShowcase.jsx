@@ -12,7 +12,15 @@ export default function TerpeneShowcase({ HeroBanner }) {
 
   // Load collections from DB (no mock fallback)
   const [dbCollections, setDbCollections] = useState(null); // null = loading/unknown
-  const displayedCollections = Array.isArray(dbCollections) ? dbCollections : [];
+  const displayedCollections = Array.isArray(dbCollections)
+    ? dbCollections.filter((collection) => {
+        const id = String(collection?.id || "").toLowerCase();
+        const name = String(collection?.name || "").toLowerCase();
+        const productPath = String(collection?.productPath || "").toLowerCase();
+        const isIsolateOrCarrier = /isolate|carrier/.test(id) || /isolate|carrier/.test(name) || /isolate|carrier/.test(productPath);
+        return !isIsolateOrCarrier;
+      })
+    : [];
 
   // Current user (to show admin-only controls)
   const [me, setMe] = useState(null);

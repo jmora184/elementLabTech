@@ -57,7 +57,7 @@
   position: absolute;
   top: -4px;
   right: -4px;
-  background: #ec4899;
+  background: #ef4444;
   color: #fff;
   border-radius: 50%;
   font-size: 12px;
@@ -519,7 +519,7 @@
 /* ---------- Header / Nav ---------- */
 .ts-siteHeader{
   width: 100%;
-  background: linear-gradient(135deg, #0b0d17 0%, #0f172a 55%, #0b3d91 100%);
+  background: #000;
   z-index: 9999;
   position: fixed;
   top: 0;
@@ -588,8 +588,8 @@
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  border: 1px solid rgba(138, 180, 255, 0.35);
-  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.7);
   color: #e6edf6;
   cursor: pointer;
   font-size: 20px;
@@ -619,7 +619,7 @@
 
 .ts-siteNavLink:hover,
 .ts-siteNavLink:focus{
-  background: rgba(11, 61, 145, 0.35);
+  background: rgba(255, 255, 255, 0.16);
   color: #ffffff;
 }
 
@@ -754,8 +754,12 @@
   }
 
   .ts-menuBtn{ display: inline-flex; }
-  /* Hide the logo entirely on mobile to keep the header clean */
-  .ts-logoLink{ display: none; }
+  .ts-logoLink{
+    display: inline-flex;
+    left: 56%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
   .ts-logoSearchCenter{
     width: 100%;
     justify-content: center;
@@ -784,9 +788,9 @@
 
   .ts-siteNav .ts-headerJump{
     min-width: 0;
-    max-width: none;
-    width: auto;
-    flex: 0.45 1 auto;
+    max-width: 118px;
+    width: 108px;
+    flex: 0 0 108px;
     margin-left: 0;
     margin-right: 0;
   }
@@ -796,9 +800,17 @@
   }
 
   .ts-siteNav .ts-select{
-    height: 34px;
-    font-size: 13px;
+    height: 26px;
+    font-size: 9px;
+    padding-left: 7px;
+    padding-right: 7px;
   }
+
+  .ts-siteNav .ts-select::placeholder{
+    color: transparent;
+  }
+
+  .ts-siteLogo{ height: 28px; }
 
   .ts-navLinks{
     position: absolute;
@@ -811,9 +823,9 @@
     align-items: stretch;
     gap: 6px;
     padding: 10px 12px 14px;
-    background: #0b0d17;
-    border-top: 1px solid rgba(138, 180, 255, 0.18);
-    border-bottom: 1px solid rgba(138, 180, 255, 0.18);
+    background: #000;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
     z-index: 9999;
   }
 
@@ -836,6 +848,23 @@
   .ts-navLinks .ts-authBtn{
     margin-left: -5%;
   }
+}
+
+@media (max-width: 420px){
+  .ts-siteNav .ts-headerJump{
+    max-width: 96px;
+    width: 96px;
+    flex-basis: 96px;
+  }
+
+  .ts-siteNav .ts-select{
+    height: 28px;
+    font-size: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .ts-siteLogo{ height: 24px; }
 }
 
 /* Mini header mobile tweaks */

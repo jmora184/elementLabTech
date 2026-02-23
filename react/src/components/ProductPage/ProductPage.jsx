@@ -5,6 +5,7 @@ import AdminEditProfileModal from "./AdminEditProfileModal";
 // Header is provided globally by SiteLayout.
 
 import { uploadImageFile } from "../../utils/cloudflareImages";
+import { addCartItem } from "../../utils/cart";
 
 const MOBILE_PRODUCT_BREAKPOINT = 980;
 
@@ -1595,7 +1596,9 @@ export default function ProductPage() {
               }}>
                 {collection.name}
               </div>
-              <div className="pp-buyTitle" style={{ marginBottom: 0, color: "#fff" }}>Flavor Choice</div>
+              <div className="pp-buyTitle" style={{ marginBottom: 0, color: "#fff" }}>
+                {flavorInfo?.name || "Flavor Choice"}
+              </div>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ display: "block", fontSize: 12, fontWeight: 700, marginBottom: 6, color: "var(--muted)" }}>
                   Size
@@ -1710,6 +1713,14 @@ export default function ProductPage() {
                   fontSize: 16,
                 }}
                 onClick={() => {
+                  addCartItem({
+                    productId: String(collection?.id || id || ""),
+                    collectionName: String(collection?.name || "Product"),
+                    profileSlug: String(selectedSlug || ""),
+                    profileName: String(flavorInfo?.name || selectedSlug || ""),
+                    size: String(selectedSize || ""),
+                    quantity,
+                  });
                   alert(`Added ${quantity} × ${selectedSize} to cart!`);
                 }}
               >

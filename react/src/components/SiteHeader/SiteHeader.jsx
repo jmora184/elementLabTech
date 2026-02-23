@@ -1,11 +1,13 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
+import { getCartCount } from "../../utils/cart";
 
 // Reuse your existing header + mini-header styling so the look stays the same everywhere.
 import "../TerpeneShowcase/TerpeneShowcase.css";
 
 import elementLabsLogo from "../../assets/newnewlogo.png";
+import cartIcon from "../../assets/cart.svg";
 
 const DEFAULT_NAV_LINKS = [
   { label: "Applications", id: "applications" },
@@ -87,6 +89,7 @@ export default function SiteHeader({
   miniMenuRight = DEFAULT_MINI_MENU_RIGHT,
   onNavToSection,
   onLogoClick,
+  onCartClick,
 }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -97,6 +100,23 @@ export default function SiteHeader({
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [miniMenuOpen, setMiniMenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(() => getCartCount());
+
+  useEffect(() => {
+    const handleCartUpdated = (event) => {
+      const detailCount = Number(event?.detail?.count);
+      if (Number.isFinite(detailCount)) {
+        setCartCount(detailCount);
+        return;
+      }
+      setCartCount(getCartCount());
+    };
+
+    window.addEventListener("el-cart-updated", handleCartUpdated);
+    return () => {
+      window.removeEventListener("el-cart-updated", handleCartUpdated);
+    };
+  }, []);
 
   const resolvedNavLinks = useMemo(() => navLinks ?? DEFAULT_NAV_LINKS, [navLinks]);
   const resolvedMiniLinks = useMemo(() => miniLinks ?? DEFAULT_MINI_LINKS, [miniLinks]);
@@ -143,6 +163,16 @@ export default function SiteHeader({
     navigate(route);
   };
 
+  const handleCartButtonClick = () => {
+    setMenuOpen(false);
+    setMiniMenuOpen(false);
+    if (typeof onCartClick === "function") {
+      onCartClick();
+      return;
+    }
+    navigate("/cart");
+  };
+
   return (
     <>
       <header className="ts-siteHeader">
@@ -182,17 +212,29 @@ export default function SiteHeader({
 
           <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}>
             {resolvedNavLinks.map((l) => (
-              <a
-                key={l.id}
-                href={`/#${l.id}`}
-                className="ts-siteNavLink"
-                onClick={(e) => {
-                  e.preventDefault();
-                  goToSection(l.id);
-                }}
-              >
-                {l.label}
-              </a>
+              <React.Fragment key={l.id}>
+                <a
+                  href={`/#${l.id}`}
+                  className="ts-siteNavLink"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    goToSection(l.id);
+                  }}
+                >
+                  {l.label}
+                </a>
+                {l.id === "contact-sales" ? (
+                  <button
+                    className="ts-cartIconBtn"
+                    type="button"
+                    aria-label={`Cart with ${cartCount} item${cartCount === 1 ? "" : "s"}`}
+                    onClick={handleCartButtonClick}
+                  >
+                    <img src={cartIcon} alt="Cart" />
+                    {cartCount > 0 ? <span>{cartCount}</span> : null}
+                  </button>
+                ) : null}
+              </React.Fragment>
             ))}
             <div className="ts-authArea">
               {user ? (

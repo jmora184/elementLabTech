@@ -148,7 +148,7 @@
   margin-top: 10px;
   font-weight: 800;
   font-size: 18px;
-  background: linear-gradient(90deg, #24ab0f 0%, #24ab0f 50%, #24ab0f 100%);
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 50%, var(--accent) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

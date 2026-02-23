@@ -45,7 +45,7 @@ function pickIsolateCollection(collections = []) {
 
 const TABS = ["Details", "Specs", "Applications"];
 
-export default function IsolatesShowcase({ HeroBanner }) {
+export default function IsolatesShowcase() {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
 
@@ -320,40 +320,31 @@ export default function IsolatesShowcase({ HeroBanner }) {
 
   if (loading) {
     return (
-      <>
-        {HeroBanner && <HeroBanner />}
-        <div className="pp-page">
-          <main className="pp-container">
-            <div className="pp-muted">Loading isolates…</div>
-          </main>
-        </div>
-      </>
+      <div className="pp-page">
+        <main className="pp-container">
+          <div className="pp-muted">Loading isolates…</div>
+        </main>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <>
-        {HeroBanner && <HeroBanner />}
-        <div className="pp-page">
-          <main className="pp-container">
-            <div className="pp-muted">{error}</div>
-          </main>
-        </div>
-      </>
+      <div className="pp-page">
+        <main className="pp-container">
+          <div className="pp-muted">{error}</div>
+        </main>
+      </div>
     );
   }
 
   if (!selectedProfile) {
     return (
-      <>
-        {HeroBanner && <HeroBanner />}
-        <div className="pp-page">
-          <main className="pp-container">
-            <div className="pp-muted">No isolate profiles found for this collection.</div>
-          </main>
-        </div>
-      </>
+      <div className="pp-page">
+        <main className="pp-container">
+          <div className="pp-muted">No isolate profiles found for this collection.</div>
+        </main>
+      </div>
     );
   }
 
@@ -361,8 +352,6 @@ export default function IsolatesShowcase({ HeroBanner }) {
 
   return (
     <>
-      {HeroBanner && <HeroBanner />}
-
       <div className="pp-page">
         <main className="pp-container">
           <div className="pp-topGrid">

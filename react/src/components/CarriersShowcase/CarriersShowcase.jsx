@@ -45,7 +45,7 @@ function pickCarrierCollection(collections = []) {
 
 const TABS = ["Details", "Specs", "Applications"];
 
-export default function CarriersShowcase({ HeroBanner }) {
+export default function CarriersShowcase() {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
 
@@ -320,40 +320,31 @@ export default function CarriersShowcase({ HeroBanner }) {
 
   if (loading) {
     return (
-      <>
-        {HeroBanner && <HeroBanner />}
-        <div className="pp-page">
-          <main className="pp-container">
-            <div className="pp-muted">Loading carriers…</div>
-          </main>
-        </div>
-      </>
+      <div className="pp-page">
+        <main className="pp-container">
+          <div className="pp-muted">Loading carriers…</div>
+        </main>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <>
-        {HeroBanner && <HeroBanner />}
-        <div className="pp-page">
-          <main className="pp-container">
-            <div className="pp-muted">{error}</div>
-          </main>
-        </div>
-      </>
+      <div className="pp-page">
+        <main className="pp-container">
+          <div className="pp-muted">{error}</div>
+        </main>
+      </div>
     );
   }
 
   if (!selectedProfile) {
     return (
-      <>
-        {HeroBanner && <HeroBanner />}
-        <div className="pp-page">
-          <main className="pp-container">
-            <div className="pp-muted">No carrier profiles found for this collection.</div>
-          </main>
-        </div>
-      </>
+      <div className="pp-page">
+        <main className="pp-container">
+          <div className="pp-muted">No carrier profiles found for this collection.</div>
+        </main>
+      </div>
     );
   }
 
@@ -361,8 +352,6 @@ export default function CarriersShowcase({ HeroBanner }) {
 
   return (
     <>
-      {HeroBanner && <HeroBanner />}
-
       <div className="pp-page">
         <main className="pp-container">
           <div className="pp-topGrid">

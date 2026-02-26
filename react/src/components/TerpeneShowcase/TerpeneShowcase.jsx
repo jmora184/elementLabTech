@@ -596,7 +596,7 @@ function CollectionCard({ collection, isMobile, cardIndex }) {
       : cardIndex === 2
       ? "Best Sellers"
       : cardIndex === 3
-      ? "True to Plant"
+      ? "Native"
       : "Desserts";
   const secondaryLabel =
     cardIndex === 0
@@ -604,7 +604,7 @@ function CollectionCard({ collection, isMobile, cardIndex }) {
       : cardIndex === 2
       ? "Formulator's Choice"
       : cardIndex === 3
-      ? "Full Spectrum"
+      ? "Premium"
       : "Candy";
   const [selectedType, setSelectedType] = useState(cardIndex === 1 ? "" : primaryLabel);
   return (

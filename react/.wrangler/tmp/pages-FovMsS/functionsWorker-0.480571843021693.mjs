@@ -1433,7 +1433,7 @@ async function onRequestPost7({ request, env }) {
 }
 __name(onRequestPost7, "onRequestPost");
 
-// ../.wrangler/tmp/pages-thgpKu/functionsRoutes-0.7661792961740825.mjs
+// ../.wrangler/tmp/pages-FovMsS/functionsRoutes-0.024185010421395647.mjs
 var routes = [
   {
     routePath: "/api/collections/:id/documents/:docId/download",
@@ -2092,7 +2092,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// ../.wrangler/tmp/bundle-soDqP4/middleware-insertion-facade.js
+// ../.wrangler/tmp/bundle-v1vAbB/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -2124,7 +2124,7 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// ../.wrangler/tmp/bundle-soDqP4/middleware-loader.entry.ts
+// ../.wrangler/tmp/bundle-v1vAbB/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
@@ -2224,4 +2224,4 @@ export {
   __INTERNAL_WRANGLER_MIDDLEWARE__,
   middleware_loader_entry_default as default
 };
-//# sourceMappingURL=functionsWorker-0.4772389658323044.mjs.map
+//# sourceMappingURL=functionsWorker-0.480571843021693.mjs.map

@@ -9,8 +9,9 @@ export default function ContactPage() {
     message: "",
   });
   const [notice, setNotice] = useState("");
+  const [sending, setSending] = useState(false);
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     const firstName = String(form.firstName || "").trim();
     const lastName = String(form.lastName || "").trim();
@@ -22,19 +23,29 @@ export default function ContactPage() {
       return;
     }
 
-    const subject = `Contact Request - ${firstName} ${lastName}`;
-    const body = [
-      `First Name: ${firstName}`,
-      `Last Name: ${lastName}`,
-      `Email: ${email}`,
-      "",
-      "Message:",
-      message,
-    ].join("\n");
+    setSending(true);
+    setNotice("");
 
-    window.location.href = `mailto:info@elementlab.shop?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setNotice("Your email app was opened with a prefilled message to info@elementlab.shop.");
-    setForm({ firstName: "", lastName: "", email: "", message: "" });
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName, lastName, email, message }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        setNotice(data?.error || "We couldn't send your message. Please try again.");
+        return;
+      }
+
+      setNotice("Thanks! Your message was sent.");
+      setForm({ firstName: "", lastName: "", email: "", message: "" });
+    } catch {
+      setNotice("We couldn't send your message. Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -98,6 +109,7 @@ export default function ContactPage() {
 
         <button
           type="submit"
+          disabled={sending}
           style={{
             marginTop: 14,
             background: "#fc3d21",
@@ -106,10 +118,11 @@ export default function ContactPage() {
             borderRadius: 10,
             padding: "12px 18px",
             fontWeight: 800,
-            cursor: "pointer",
+            cursor: sending ? "not-allowed" : "pointer",
+            opacity: sending ? 0.7 : 1,
           }}
         >
-          Send
+          {sending ? "Sending..." : "Send"}
         </button>
 
         {notice ? <p style={{ marginTop: 10 }}>{notice}</p> : null}

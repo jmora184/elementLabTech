@@ -13,6 +13,18 @@ The React Compiler is enabled on this template. See [this documentation](https:/
 
 Note: This will impact Vite dev & build performances.
 
+## Contact Form Email (Server-Side)
+
+The Contact form now submits to `POST /api/contact` (Cloudflare Pages Function), which sends email via Resend.
+
+Set these environment variables in Cloudflare Pages / Wrangler:
+
+- `RESEND_API_KEY` (required, secret)
+- `CONTACT_TO_EMAIL` (optional, defaults to `info@elementlab.shop`)
+- `CONTACT_FROM_EMAIL` (optional, defaults to `onboarding@resend.dev`)
+
+For production sending, use a verified sender address for `CONTACT_FROM_EMAIL` in your Resend account.
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

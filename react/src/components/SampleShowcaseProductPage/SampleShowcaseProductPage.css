@@ -1,0 +1,479 @@
+/* SampleShowcaseProductPage.css
+   Premium sample kit product view that matches the project's rounded/gradient aesthetic.
+*/
+
+.ssp-page{
+  padding-top: 0;
+  padding-bottom: 56px;
+  background: #fff;
+}
+
+.ssp-wrap{
+  max-width: var(--ts-max);
+  margin: 0 auto;
+  padding: 8px 16px 0;
+}
+
+.ssp-loading{
+  padding: 40px 0;
+  font-weight: 900;
+  color: rgba(15,23,42,0.72);
+}
+
+.ssp-errorTitle{
+  font-size: 26px;
+  font-weight: 950;
+  letter-spacing: -0.03em;
+}
+
+.ssp-errorMsg{
+  margin-top: 10px;
+  color: rgba(15,23,42,0.70);
+  font-weight: 650;
+}
+
+.ssp-back{
+  display: inline-flex;
+  margin-top: 16px;
+  font-weight: 900;
+  text-decoration: none;
+  color: #6d28d9;
+}
+
+.ssp-crumbs{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-weight: 850;
+  font-size: 13px;
+  color: rgba(15,23,42,0.72);
+}
+
+.ssp-crumbs a{
+  text-decoration: none;
+  color: #6d28d9;
+}
+
+.ssp-crumbSep{ opacity: 0.55; }
+
+.ssp-hero{
+  margin-top: 0;
+  border-radius: 26px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.10);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+}
+
+@media (max-width: 980px){
+  .ssp-hero{ grid-template-columns: 1fr; }
+}
+
+.ssp-heroLeft{
+  padding: 22px;
+}
+
+.ssp-kicker{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.08);
+  font-weight: 950;
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.ssp-title{
+  margin: 14px 0 8px;
+  font-size: clamp(34px, 4vw, 52px);
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  color: #0f172a;
+}
+
+.ssp-tagline{
+  font-weight: 900;
+  color: #e272bd;
+  margin-top: 6px;
+}
+
+.ssp-desc{
+  margin-top: 12px;
+  margin-bottom: 0;
+  font-weight: 650;
+  color: rgba(15,23,42,0.78);
+  line-height: 1.65;
+  max-width: 58ch;
+}
+
+.ssp-heroBadges{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.ssp-badge{
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(237,233,254,0.75);
+  border: 1px solid rgba(124,58,237,0.20);
+  font-weight: 900;
+  font-size: 13px;
+  color: #111;
+}
+
+.ssp-actions{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.ssp-primary{
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 12px 16px;
+  background: #7c3aed;
+  color: #fff;
+  font-weight: 950;
+  box-shadow: 0 12px 32px rgba(124,58,237,0.30);
+}
+
+.ssp-secondary{
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 12px 16px;
+  background: rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.10);
+  color: rgba(15,23,42,0.85);
+  font-weight: 950;
+}
+
+.ssp-heroRight{
+  background:
+    radial-gradient(320px 220px at 40% 20%, rgba(124,58,237,0.18), rgba(255,255,255,0) 70%),
+    radial-gradient(320px 220px at 70% 60%, rgba(34,197,94,0.16), rgba(255,255,255,0) 70%),
+    linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  border-left: 1px solid rgba(0,0,0,0.06);
+}
+
+@media (max-width: 980px){
+  .ssp-heroRight{ border-left: 0; border-top: 1px solid rgba(0,0,0,0.06); }
+}
+
+.ssp-heroImg{
+  width: 100%;
+  max-width: 420px;
+  height: 360px;
+  object-fit: contain;
+  transform: scale(1.05);
+}
+
+.ssp-heroImgFallback{
+  width: 100%;
+  max-width: 420px;
+  height: 360px;
+  border-radius: 22px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background:
+    radial-gradient(240px 160px at 40% 30%, rgba(124,58,237,0.22), rgba(255,255,255,0) 70%),
+    radial-gradient(240px 160px at 70% 70%, rgba(34,197,94,0.20), rgba(255,255,255,0) 70%),
+    linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0));
+}
+
+.ssp-body{
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+@media (max-width: 980px){
+  .ssp-body{ grid-template-columns: 1fr; }
+}
+
+.ssp-side{
+  position: sticky;
+  top: calc(var(--ts-header-h) + var(--ts-mini-h) + 18px);
+}
+
+@media (max-width: 980px){
+  .ssp-side{ position: static; }
+}
+
+.ssp-sideCard{
+  border-radius: 22px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.08);
+  padding: 16px;
+}
+
+.ssp-sideTitle{
+  font-weight: 950;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.ssp-sideList{
+  display: grid;
+  gap: 8px;
+}
+
+.ssp-sideItem{
+  text-decoration: none;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 10px;
+  border-radius: 16px;
+  background: rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.06);
+  color: rgba(15,23,42,0.88);
+  font-weight: 850;
+}
+
+.ssp-sideItem:hover{ filter: brightness(1.01); }
+
+.ssp-sideNum{
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 950;
+  background: rgba(124,58,237,0.16);
+  border: 1px solid rgba(124,58,237,0.28);
+  color: #4c1d95;
+}
+
+.ssp-sideName{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ssp-sideNote{
+  margin-top: 10px;
+  font-weight: 650;
+  color: rgba(15,23,42,0.66);
+  line-height: 1.55;
+  font-size: 13px;
+}
+
+.ssp-main{
+  min-width: 0;
+}
+
+.ssp-sectionHeader{
+  padding: 12px 0 8px;
+}
+
+.ssp-sectionTitle{
+  font-weight: 950;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.ssp-sectionSub{
+  margin-top: 4px;
+  color: rgba(15,23,42,0.70);
+  font-weight: 650;
+}
+
+.ssp-profileGrid{
+  display: grid;
+  gap: 12px;
+}
+
+.ssp-empty{
+  border-radius: 22px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.08);
+  padding: 18px;
+  font-weight: 750;
+  color: rgba(15,23,42,0.70);
+}
+
+.ssp-profileCard{
+  border-radius: 22px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.ssp-profileHeader{
+  width: 100%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 14px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+}
+
+.ssp-profileHeader:focus-visible{
+  outline: 3px solid rgba(124,58,237,0.35);
+  outline-offset: 2px;
+}
+
+.ssp-profileLeft{
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+.ssp-profileIndex{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 950;
+  background: rgba(186,230,253,0.70);
+  border: 1px solid rgba(2,132,199,0.20);
+  color: #0c4a6e;
+  flex: 0 0 auto;
+}
+
+.ssp-profileName{
+  font-weight: 950;
+  letter-spacing: -0.01em;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #0f172a;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.7);
+}
+
+.ssp-profileMeta{
+  margin-top: 2px;
+  font-weight: 700;
+  font-size: 13px;
+  color: rgba(15,23,42,0.66);
+}
+
+.ssp-profileChevron{
+  font-size: 22px;
+  font-weight: 950;
+  color: rgba(15,23,42,0.68);
+}
+
+.ssp-profileBody{
+  border-top: 1px solid rgba(0,0,0,0.06);
+  padding: 14px;
+}
+
+.ssp-profileBodyInner{
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 14px;
+  align-items: start;
+}
+
+@media (max-width: 720px){
+  .ssp-profileBodyInner{ grid-template-columns: 1fr; }
+}
+
+.ssp-profileDesc{
+  margin: 0 0 10px;
+  font-weight: 650;
+  color: rgba(15,23,42,0.78);
+  line-height: 1.65;
+}
+
+.ssp-row{
+  margin-top: 10px;
+}
+
+.ssp-rowLabel{
+  font-weight: 950;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(15,23,42,0.74);
+}
+
+.ssp-rowValue{
+  margin-top: 6px;
+  font-weight: 800;
+  color: rgba(15,23,42,0.86);
+}
+
+.ssp-chipRow{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ssp-chip{
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(0,0,0,0.08);
+  font-weight: 850;
+  font-size: 13px;
+  color: #111;
+}
+
+.ssp-chipAlt{
+  background: rgba(209,250,229,0.80);
+  border-color: rgba(34,197,94,0.24);
+  color: #14532d;
+}
+
+.ssp-profileMedia{
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.90);
+  overflow: hidden;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ssp-profileImg{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ssp-profileImgFallback{
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(220px 140px at 30% 30%, rgba(124,58,237,0.20), rgba(255,255,255,0) 70%),
+    radial-gradient(220px 140px at 70% 70%, rgba(34,197,94,0.18), rgba(255,255,255,0) 70%),
+    linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0));
+}

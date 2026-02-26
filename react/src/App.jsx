@@ -1,6 +1,7 @@
 import "./App.css";
 import TerpeneShowcase from "./components/TerpeneShowcase/TerpeneShowcase";
 import SampleShowcase from "./components/SampleShowcase/SampleShowcase";
+import SampleShowcaseProductPage from "./components/SampleShowcaseProductPage/SampleShowcaseProductPage";
 import IsolatesShowcase from "./components/IsolatesShowcase/IsolatesShowcase";
 import CarriersShowcase from "./components/CarriersShowcase/CarriersShowcase";
 import ApplicationsPage from "./components/ApplicationsPage/ApplicationsPage";
@@ -40,7 +41,8 @@ export default function App() {
               </>
             }
           />
-          <Route path="/samples" element={<SampleShowcase HeroBanner={HeroMotion} />} />
+          <Route path="/samples" element={<SampleShowcase />} />
+          <Route path="/samples/:id" element={<SampleShowcaseProductPage />} />
           <Route path="/isolates" element={<IsolatesShowcase HeroBanner={HeroMotion} />} />
           <Route path="/carriers" element={<CarriersShowcase HeroBanner={HeroMotion} />} />
           <Route path="/applications" element={<ApplicationsPage />} />

@@ -1,0 +1,357 @@
+/* SampleShowcase.css
+   Keeps the project's bold/clean aesthetic while giving sample kits a more premium layout.
+   This file intentionally piggybacks on TerpeneShowcase.css variables.
+*/
+
+.ss-page{
+  padding-top: 0;
+  background: #fff;
+}
+
+.ss-hero{
+  padding: 56px 16px 28px;
+  background:
+    radial-gradient(900px 320px at 18% 0%, rgba(124,58,237,0.18), rgba(255,255,255,0) 70%),
+    radial-gradient(700px 280px at 70% 10%, rgba(34,197,94,0.18), rgba(255,255,255,0) 70%),
+    linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0));
+  margin-top: 0;
+}
+
+.ss-heroInner{
+  max-width: var(--ts-max);
+  margin: 0 auto;
+}
+
+.ss-heroCopy{
+  max-width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.ss-kicker{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: rgba(15,23,42,0.78);
+  background: rgba(255,255,255,0.9);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 999px;
+  padding: 8px 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.ss-title{
+  margin: 16px 0 10px;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  font-size: clamp(34px, 4.2vw, 54px);
+  color: #0f172a;
+}
+
+.ss-subtitle{
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: rgba(15,23,42,0.82);
+  font-weight: 600;
+}
+
+.ss-miniRow{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  justify-content: center;
+}
+
+.ss-pill{
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(0,0,0,0.08);
+  font-weight: 800;
+  font-size: 13px;
+  color: rgba(15,23,42,0.80);
+}
+
+.ss-section{
+  padding: 10px 16px 54px;
+}
+
+.ss-inner{
+  max-width: var(--ts-max);
+  margin: 0 auto;
+}
+
+.ss-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+@media (max-width: 960px){
+  .ss-grid{ grid-template-columns: 1fr; }
+}
+
+.ss-card{
+  appearance: none;
+  border: 0;
+  width: 100%;
+  text-align: left;
+  border-radius: 22px;
+  padding: 0;
+  cursor: pointer;
+  color: #0f172a;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.10);
+  border: 1px solid rgba(0,0,0,0.08);
+  overflow: hidden;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+  background: #fff;
+}
+
+.ss-card:focus-visible{
+  outline: 3px solid rgba(124,58,237,0.35);
+  outline-offset: 2px;
+}
+
+.ss-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.14);
+}
+
+.ss-card--v1{ background: linear-gradient(135deg, #ffffff 0%, rgba(224,231,255,0.65) 100%); }
+.ss-card--v2{ background: linear-gradient(135deg, #ffffff 0%, rgba(209,250,229,0.65) 100%); }
+.ss-card--v3{ background: linear-gradient(135deg, #ffffff 0%, rgba(254,240,138,0.50) 100%); }
+.ss-card--v4{ background: linear-gradient(135deg, #ffffff 0%, rgba(186,230,253,0.60) 100%); }
+
+.ss-cardTop{
+  padding: 18px 18px 0;
+}
+
+.ss-cardBadge{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-size: 11px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.ss-cardName{
+  margin-top: 12px;
+  font-weight: 950;
+  letter-spacing: -0.03em;
+  font-size: 24px;
+}
+
+.ss-cardVibe{
+  margin-top: 6px;
+  font-weight: 800;
+  font-size: 13px;
+  color: rgba(15,23,42,0.72);
+}
+
+.ss-cardBody{
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 16px;
+  padding: 16px 18px 18px;
+  align-items: stretch;
+}
+
+@media (max-width: 520px){
+  .ss-cardBody{ grid-template-columns: 1fr; }
+}
+
+.ss-cardMedia{
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.9);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 170px;
+}
+
+.ss-cardImg{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1.15);
+}
+
+.ss-cardImgFallback{
+  width: 100%;
+  height: 100%;
+  min-height: 170px;
+  background:
+    radial-gradient(180px 120px at 40% 30%, rgba(124,58,237,0.22), rgba(255,255,255,0) 70%),
+    radial-gradient(180px 120px at 70% 60%, rgba(34,197,94,0.20), rgba(255,255,255,0) 70%),
+    linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0));
+}
+
+.ss-cardRight{
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ss-cardSub{
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: rgba(15,23,42,0.76);
+}
+
+.ss-chipWrap{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ss-chip{
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(0,0,0,0.08);
+  font-weight: 800;
+  font-size: 13px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ss-muted{
+  font-weight: 700;
+  color: rgba(15,23,42,0.58);
+  font-size: 14px;
+}
+
+.ss-cardFooter{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.ss-meta{
+  font-weight: 700;
+  font-size: 13px;
+  color: rgba(15,23,42,0.62);
+}
+
+.ss-action{
+  font-weight: 950;
+  font-size: 14px;
+  color: #6d28d9;
+}
+
+.ss-how{
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 960px){
+  .ss-how{ grid-template-columns: 1fr; }
+}
+
+.ss-howCard{
+  border-radius: 22px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #fff;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.08);
+  padding: 18px;
+}
+
+.ss-howCardAlt{
+  background: linear-gradient(135deg, rgba(237,233,254,0.9), rgba(209,250,229,0.7));
+}
+
+.ss-howTitle{
+  font-weight: 950;
+  letter-spacing: -0.02em;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.ss-howSteps{
+  display: grid;
+  gap: 12px;
+}
+
+.ss-step{
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.ss-stepNum{
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 950;
+  background: rgba(124,58,237,0.16);
+  border: 1px solid rgba(124,58,237,0.28);
+  color: #4c1d95;
+}
+
+.ss-stepLabel{
+  font-weight: 950;
+}
+
+.ss-stepDesc{
+  font-weight: 650;
+  color: rgba(15,23,42,0.70);
+  margin-top: 2px;
+  line-height: 1.5;
+}
+
+.ss-howText{
+  color: rgba(15,23,42,0.78);
+  font-weight: 650;
+  line-height: 1.6;
+}
+
+.ss-cta{
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-weight: 950;
+  color: #fff;
+  background: #7c3aed;
+  padding: 12px 16px;
+  border-radius: 999px;
+  box-shadow: 0 12px 32px rgba(124,58,237,0.30);
+}
+
+.ss-cta:hover{ filter: brightness(1.02); }

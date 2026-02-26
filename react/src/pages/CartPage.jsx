@@ -81,6 +81,17 @@ export default function CartPage() {
             <button className="el-authBtn" type="button" onClick={() => clearCart()}>
               Clear cart
             </button>
+            <button
+              className="el-authBtn"
+              type="button"
+              style={{ marginTop: 12, background: '#7c3aed', color: '#fff', fontWeight: 700 }}
+              onClick={() => {
+                // TODO: Implement checkout logic or navigation
+                alert('Checkout coming soon!');
+              }}
+            >
+              Checkout
+            </button>
           </>
         )}
       </div>

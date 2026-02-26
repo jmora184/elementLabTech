@@ -1,3 +1,4 @@
+
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import "./ProductPage.css";
@@ -98,6 +99,11 @@ export default function ProductPage() {
   const [dbCollection, setDbCollection] = useState(null);
   const [collectionLoaded, setCollectionLoaded] = useState(false);
   const [dbProfiles, setDbProfiles] = useState([]); // array of profile rows
+  const [sampleProfiles, setSampleProfiles] = useState([]); // curated picks (max 5)
+  const [loadingSampleProfiles, setLoadingSampleProfiles] = useState(false);
+  const [sampleProfileIdToAdd, setSampleProfileIdToAdd] = useState("");
+  const [sampleProfileBusy, setSampleProfileBusy] = useState(false);
+  const [sampleProfileErr, setSampleProfileErr] = useState("");
   const [selectedSlug, setSelectedSlug] = useState("");
   const [expandedSlug, setExpandedSlug] = useState("");
   const [profileBundle, setProfileBundle] = useState(null); // { profile, images, documents }
@@ -148,6 +154,47 @@ export default function ProductPage() {
         setSelectedSlug(first);
         setExpandedSlug(first);
       }
+    }
+  }
+
+  async function refreshSampleProfiles() {
+    if (!id) return;
+    const out = await fetchJson(`/api/collections/${encodeURIComponent(id)}/sample-profiles`);
+    setSampleProfiles(Array.isArray(out?.sampleProfiles) ? out.sampleProfiles : []);
+  }
+
+  async function addSampleProfile() {
+    if (!id || !sampleProfileIdToAdd) return;
+    setSampleProfileErr("");
+    setSampleProfileBusy(true);
+    try {
+      await fetchJson(`/api/collections/${encodeURIComponent(id)}/sample-profiles`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ profile_id: sampleProfileIdToAdd }),
+      });
+      await refreshSampleProfiles();
+    } catch (err) {
+      setSampleProfileErr(err?.message || "Could not add sample profile.");
+    } finally {
+      setSampleProfileBusy(false);
+    }
+  }
+
+  async function removeSampleProfile(profileId) {
+    if (!id || !profileId) return;
+    setSampleProfileErr("");
+    setSampleProfileBusy(true);
+    try {
+      await fetchJson(
+        `/api/collections/${encodeURIComponent(id)}/sample-profiles/${encodeURIComponent(profileId)}`,
+        { method: "DELETE" }
+      );
+      await refreshSampleProfiles();
+    } catch (err) {
+      setSampleProfileErr(err?.message || "Could not remove sample profile.");
+    } finally {
+      setSampleProfileBusy(false);
     }
   }
 
@@ -293,6 +340,9 @@ export default function ProductPage() {
       setCollectionLoaded(false);
       setDbCollection(null);
       setDbProfiles([]);
+      setSampleProfiles([]);
+      setSampleProfileIdToAdd("");
+      setSampleProfileErr("");
       setSelectedSlug("");
       setExpandedSlug("");
       setProfileBundle(null);
@@ -307,6 +357,18 @@ export default function ProductPage() {
 
         const profiles = Array.isArray(list?.profiles) ? list.profiles : [];
         setDbProfiles(profiles);
+
+        setLoadingSampleProfiles(true);
+        try {
+          const sampleList = await fetchJson(`/api/collections/${encodeURIComponent(id)}/sample-profiles`);
+          if (!alive) return;
+          setSampleProfiles(Array.isArray(sampleList?.sampleProfiles) ? sampleList.sampleProfiles : []);
+        } catch {
+          if (!alive) return;
+          setSampleProfiles([]);
+        } finally {
+          if (alive) setLoadingSampleProfiles(false);
+        }
 
         const preferred =
           requestedProfileSlug && profiles.find((p) => p.slug === requestedProfileSlug)
@@ -385,6 +447,21 @@ export default function ProductPage() {
 
   // Variant-ish selections
   const profileDisplayRows = dbProfiles.map((p) => ({ slug: p.slug, label: p.name || p.slug }));
+  const availableSampleProfileOptions = useMemo(() => {
+    const selected = new Set(sampleProfiles.map((sp) => String(sp?.profile_id || "")));
+    return dbProfiles.filter((p) => !selected.has(String(p?.id || "")));
+  }, [dbProfiles, sampleProfiles]);
+
+  useEffect(() => {
+    if (!availableSampleProfileOptions.length) {
+      setSampleProfileIdToAdd("");
+      return;
+    }
+    const stillValid = availableSampleProfileOptions.some((p) => String(p?.id || "") === sampleProfileIdToAdd);
+    if (!stillValid) {
+      setSampleProfileIdToAdd(String(availableSampleProfileOptions[0]?.id || ""));
+    }
+  }, [availableSampleProfileOptions, sampleProfileIdToAdd]);
 
   // Tabs (middle column)
   const tabs = ["Details", "Specs", "Documents", "Reviews", "Shipping", "Isolates", "Terpenes"];
@@ -1059,6 +1136,8 @@ export default function ProductPage() {
                       );
                     })}
                   </div>
+
+
 
 
                   {/* Admin Add Profile Modal */}

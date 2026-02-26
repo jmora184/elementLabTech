@@ -12,6 +12,8 @@ import cartIcon from "../../assets/cart.svg";
 const DEFAULT_NAV_LINKS = [
   { label: "Applications", id: "applications" },
   { label: "Q&A", id: "q-and-a" },
+  { label: "FAQ", id: "faq", placeholder: true },
+  { label: "Blog", id: "blog", placeholder: true },
   { label: "Contact Sales", id: "contact-sales"},
 ];
 
@@ -218,6 +220,7 @@ export default function SiteHeader({
                   className="ts-siteNavLink"
                   onClick={(e) => {
                     e.preventDefault();
+                    if (l.placeholder) return;
                     goToSection(l.id);
                   }}
                 >

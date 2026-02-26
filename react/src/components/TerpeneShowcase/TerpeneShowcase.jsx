@@ -4,7 +4,7 @@ import { useIsMobile } from "./useIsMobile";
 import { useNavigate } from "react-router-dom";
 import TerpeneSimulator from "../TerpeneSimulator/TerpeneSimulator";
 import { uploadImageFile } from "../../utils/cloudflareImages";
-import certificationBadges from "../../assets/marlalabels.png";
+import certificationBadges from "../../assets/marlalabelsUpdate.png";
 // Header is provided globally by SiteLayout.
 
 export default function TerpeneShowcase({ HeroBanner }) {
@@ -194,7 +194,7 @@ export default function TerpeneShowcase({ HeroBanner }) {
                   <img 
                     src={certificationBadges} 
                     alt="Certifications: Non GMO, ISO 9001, Food Grade, OU Kosher, FSSC22000, Natural Ingredients, Botanical Derived" 
-                    style={{ width: '100%', maxWidth: '1000px', height: 'auto' }}
+                    style={{ width: '100%', maxWidth: '1288px', height: 'auto' }}
                   />
                 </div>
               </div>
@@ -280,7 +280,7 @@ export default function TerpeneShowcase({ HeroBanner }) {
                 <img 
                   src={certificationBadges} 
                   alt="Certifications: Non GMO, ISO 9001, Food Grade, OU Kosher, FSSC22000, Natural Ingredients, Botanical Derived" 
-                  style={{ width: '100%', maxWidth: '600px', height: 'auto' }}
+                  style={{ width: '100%', maxWidth: '782px', height: 'auto' }}
                 />
               </div>
             </div>

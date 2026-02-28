@@ -280,14 +280,15 @@ export default function TerpeneShowcase({ HeroBanner }) {
               margin: '30px 0'
             }}>
               <div style={{
-                maxWidth: '700px',
+                maxWidth: '1200px',
                 margin: '0 auto',
                 display: 'flex',
+                flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center'
               }}>
-                  <div style={{ color: 'black', fontSize: 22, fontWeight: 500, textAlign: 'center', marginBottom: 14, width: '100%' }}>
-                    Recognized for formulation consistency and technical integrity, our natural fragrance and flavor systems are trusted worldwide.
+                  <div style={{ color: 'black', fontSize: 24, fontWeight: 700, textAlign: 'center', marginBottom: 0, width: '75%', margin: '0 auto' }}>
+                    Recognized for formulation consistency and technical integrity, our natural fragrance and flavor systems are trusted by leading brands across global markets.
                   </div>
                 <img 
                   src={certificationBadges} 

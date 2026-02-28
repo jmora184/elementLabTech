@@ -145,7 +145,7 @@ export default function FAQPage() {
     lineHeight: 1.35,
     opacity: 0.9,
     maxWidth: 980,
-    textAlign: "left",
+    textAlign: "center",
   };
 
   return (

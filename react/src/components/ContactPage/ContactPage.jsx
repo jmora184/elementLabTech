@@ -5,6 +5,8 @@ export default function ContactPage() {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
+    company: "",
+    phone: "",
     email: "",
     message: "",
   });
@@ -15,10 +17,12 @@ export default function ContactPage() {
     e.preventDefault();
     const firstName = String(form.firstName || "").trim();
     const lastName = String(form.lastName || "").trim();
+    const company = String(form.company || "").trim();
+    const phone = String(form.phone || "").trim();
     const email = String(form.email || "").trim();
     const message = String(form.message || "").trim();
 
-    if (!firstName || !lastName || !email || !message) {
+    if (!firstName || !lastName || !company || !phone || !email || !message) {
       setNotice("Please complete all fields before sending.");
       return;
     }
@@ -30,7 +34,7 @@ export default function ContactPage() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, lastName, email, message }),
+        body: JSON.stringify({ firstName, lastName, company, phone, email, message }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -40,7 +44,7 @@ export default function ContactPage() {
       }
 
       setNotice("Thanks! Your message was sent.");
-      setForm({ firstName: "", lastName: "", email: "", message: "" });
+      setForm({ firstName: "", lastName: "", company: "", phone: "", email: "", message: "" });
     } catch {
       setNotice("We couldn't send your message. Please try again.");
     } finally {
@@ -64,7 +68,15 @@ export default function ContactPage() {
       <h1 style={{ margin: 0, fontSize: "36px", lineHeight: 1.1 }}>Contact</h1>
 
       <form onSubmit={onSubmit} style={{ margin: "24px auto 0", maxWidth: 760, textAlign: "left" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 12,
+            gridTemplateRows: "auto auto",
+            ...(window.innerWidth < 600 ? { gridTemplateColumns: "1fr" } : {}),
+          }}
+        >
           <label style={{ display: "flex", flexDirection: "column", gap: 6, fontWeight: 700 }}>
             First Name
             <input
@@ -82,6 +94,29 @@ export default function ContactPage() {
               onChange={(e) => setForm((p) => ({ ...p, lastName: e.target.value }))}
               required
               style={{ padding: "12px 14px", borderRadius: 10, border: "1px solid #d1d5db", fontSize: 15 }}
+            />
+          </label>
+
+          <label style={{ display: "flex", flexDirection: "column", gap: 6, fontWeight: 700 }}>
+            Company Name
+            <input
+              value={form.company}
+              onChange={(e) => setForm((p) => ({ ...p, company: e.target.value }))}
+              required
+              style={{ padding: "12px 14px", borderRadius: 10, border: "1px solid #d1d5db", fontSize: 15 }}
+            />
+          </label>
+
+          <label style={{ display: "flex", flexDirection: "column", gap: 6, fontWeight: 700 }}>
+            Phone
+            <input
+              type="tel"
+              value={form.phone}
+              onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))}
+              required
+              style={{ padding: "12px 14px", borderRadius: 10, border: "1px solid #d1d5db", fontSize: 15 }}
+              pattern="[0-9\-\+\s\(\)]*"
+              placeholder="e.g. (555) 123-4567"
             />
           </label>
         </div>

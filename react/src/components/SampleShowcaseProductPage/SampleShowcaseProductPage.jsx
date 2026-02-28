@@ -134,6 +134,7 @@ export default function SampleShowcaseProductPage() {
           <Link to="/samples" style={{ color: '#7c3aed', textDecoration: 'none' }}>Samples</Link>
           <span className="ssp-crumbSep" style={{ margin: '0 10px' }}>/</span>
           <span>{collection.name}</span>
+          <span style={{ color: '#111' }}>{collection.name}</span>
         </div>
 
         <section className="ssp-hero">

@@ -36,29 +36,30 @@ export default function SampleShowcase({ HeroBanner }) {
       {
         id: "sample-set-amplify",
         collectionId: "fruity-fusion-forward",
-        name: "Amplify Sample",
-        tagline: "5 Flavor Profiles",
+        name: "Amplify Samples",
+        collectionName: "Fruit Collection",
+        tagline: "2mL × 10 Flavors ",
         vibe: "Fruity • Bright • Loud",
       },
       {
         id: "sample-set-matrix",
         collectionId: "matrix-collection",
         name: "Matrix Sample",
-        tagline: "5 Flavor Profiles",
+        tagline: "2mL × 10 Flavors",
         vibe: "Complex • Layered • Modern",
       },
       {
         id: "sample-set-benchmark",
         collectionId: "test",
         name: "Benchmark Sample",
-        tagline: "5 Flavor Profiles",
+        tagline: "2mL × 10 Flavors",
         vibe: "Classic • Balanced • Reliable",
       },
       {
         id: "sample-set-emerald",
         collectionId: "emerald-cut",
         name: "Emerald Sample",
-        tagline: "5 Flavor Profiles",
+        tagline: "2mL × 10 Flavors",
         vibe: "Fresh • Clean • Elevated",
       },
     ];
@@ -72,6 +73,7 @@ export default function SampleShowcase({ HeroBanner }) {
         tagline: d.tagline,
         vibe: d.vibe,
         collectionId: d.collectionId,
+        collectionName: d.collectionName,
       };
     });
   }, [dbCollections]);
@@ -84,6 +86,9 @@ export default function SampleShowcase({ HeroBanner }) {
         <div className="ss-heroInner">
           <div className="ss-heroCopy">
             <div className="ss-kicker">Sample Kits</div>
+            <div className="ss-topline" style={{ fontSize: 18, fontWeight: 500, marginBottom: 10, color: '#000' }}>
+              Explore. Evaluate. Formulate. Ten high-impact profiles in one streamlined kit.
+            </div>
             <h1 className="ss-title">Explore our curated flavor sample sets.</h1>
             <p className="ss-subtitle">
               Each kit includes <strong>5 hand-picked profiles</strong> designed to help you quickly identify the right
@@ -197,7 +202,14 @@ function SampleCollectionCard({ collection, variantIndex = 0 }) {
     >
       <div className="ss-cardTop">
         <div className="ss-cardBadge">{collection.tagline || "Sample Kit"}</div>
-        <div className="ss-cardName">{collection.name}</div>
+        <div className="ss-cardName">
+          {collection.name}
+          {collection.collectionName && (
+            <span style={{ fontSize: '0.85em', color: '#555', fontWeight: 400, marginLeft: 6 }}>
+              ({collection.collectionName})
+            </span>
+          )}
+        </div>
         <div className="ss-cardVibe">{collection.vibe || ""}</div>
       </div>
 

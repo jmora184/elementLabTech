@@ -1,0 +1,9 @@
+-- Migration: Create blog_posts table
+CREATE TABLE blog_posts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    message TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    image_url TEXT,
+    attachment_url TEXT
+);

@@ -15,6 +15,9 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AccountPage from "./pages/AccountPage";
 import CartPage from "./pages/CartPage";
+import QnAPage from "./pages/QnAPage";
+import CustomizePage from "./pages/CustomizePage";
+import BlogPage from "./pages/BlogPage";
 
 export default function App() {
   return (
@@ -47,11 +50,14 @@ export default function App() {
           <Route path="/carriers" element={<CarriersShowcase HeroBanner={HeroMotion} />} />
           <Route path="/applications" element={<ApplicationsPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/qna" element={<QnAPage />} />
+          <Route path="/customize" element={<CustomizePage />} />
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/account" element={<AccountPage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/blog" element={<BlogPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -560,16 +560,7 @@ export default function TerpeneSimulator() {
               </div>
             </div>
 
-            <div className="sim-searchRow">
-              <input
-                className="sim-select"
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search terpenes (e.g., limonene, pinene)..."
-                aria-label="Search terpenes"
-              />
-            </div>
+            {/* Search terpene input removed as requested */}
 
             <div className="sim-list">
               {filteredTerpenes.map((t) => {

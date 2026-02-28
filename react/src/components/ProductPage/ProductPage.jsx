@@ -1698,13 +1698,24 @@ export default function ProductPage() {
                     outline: "none",
                   }}
                 >
-                  <option value="2mL | 1.84 g - $20">2mL | 1.84 g - $20</option>
-                  <option value="5mL | 4.2g - $35">5mL | 4.2g - $35</option>
-                  <option value="24mL | 20g - $125">24mL | 20g - $125</option>
-                  <option value="60mL | 50g | 2oz - $276">60mL | 50g | 2oz - $276</option>
-                  <option value="111mL | 100g | 4oz - $418">111mL | 100g | 4oz - $418</option>
-                  <option value="556mL | 500g | 19.9oz - $1897">556mL | 500g | 19.9oz - $1897</option>
-                  <option value="1kg | 39.8oz - $2,999">1kg | 39.8oz - $2,999</option>
+                  {(() => {
+                    const baseSizes = [
+                      { label: "2mL | 1.84 g", price: 20 },
+                      { label: "5mL | 4.2g", price: 35 },
+                      { label: "24mL | 20g", price: 125 },
+                      { label: "60mL | 50g | 2oz", price: 276 },
+                      { label: "111mL | 100g | 4oz", price: 418 },
+                      { label: "556mL | 500g | 19.9oz", price: 1897 },
+                      { label: "1kg | 39.8oz", price: 2999 },
+                    ];
+                    const isEmeraldCut = (collection?.name || "").toLowerCase().includes("emerald cut");
+                    return baseSizes.map(({ label, price }) => {
+                      const finalPrice = isEmeraldCut ? price + 4 : price;
+                      return (
+                        <option key={label} value={`${label} - $${finalPrice}`}>{`${label} - $${finalPrice}`}</option>
+                      );
+                    });
+                  })()}
                 </select>
               </div>
 

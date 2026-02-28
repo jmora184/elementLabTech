@@ -202,7 +202,9 @@ export default function TerpeneShowcase({ HeroBanner }) {
                 <hr style={{ border: 'none', borderTop: '1px solid rgba(0,0,0,0.1)', margin: '0' }} />
               </div>
               {/* Terpene Simulator section (desktop) */}
-              <TerpeneSimulator />
+              <div id="terpene-simulator">
+                <TerpeneSimulator />
+              </div>
             </div>
           </section>
         </>

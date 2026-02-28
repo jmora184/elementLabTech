@@ -215,17 +215,45 @@ export default function SiteHeader({
           <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}>
             {resolvedNavLinks.map((l) => (
               <React.Fragment key={l.id}>
-                <a
-                  href={`/#${l.id}`}
-                  className="ts-siteNavLink"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (l.placeholder) return;
-                    goToSection(l.id);
-                  }}
-                >
-                  {l.label}
-                </a>
+                {l.id === "q-and-a" ? (
+                  <a
+                    href="/qna"
+                    className="ts-siteNavLink"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setMenuOpen(false);
+                      setMiniMenuOpen(false);
+                      navigate("/qna");
+                    }}
+                  >
+                    {l.label}
+                  </a>
+                ) : l.id === "blog" ? (
+                  <a
+                    href="/blog"
+                    className="ts-siteNavLink"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setMenuOpen(false);
+                      setMiniMenuOpen(false);
+                      navigate("/blog");
+                    }}
+                  >
+                    {l.label}
+                  </a>
+                ) : (
+                  <a
+                    href={`/#${l.id}`}
+                    className="ts-siteNavLink"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (l.placeholder) return;
+                      goToSection(l.id);
+                    }}
+                  >
+                    {l.label}
+                  </a>
+                )}
                 {l.id === "contact-sales" ? (
                   <button
                     className="ts-cartIconBtn"

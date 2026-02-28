@@ -502,6 +502,38 @@ function PostDetail({ post, onClose }) {
 }
 
 export default function BlogPage() {
+    // Blog post form submit handler
+    async function handleSubmit(e) {
+      e.preventDefault();
+      setFormError("");
+      setSubmitting(true);
+      try {
+        // Example payload, adjust as needed for your API
+        const payload = {
+          title,
+          message,
+          // image and attachment are UI-only unless API supports multipart
+        };
+        const res = await fetch("/api/blog", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("Failed to publish post");
+        setTitle("");
+        setMessage("");
+        setImage(null);
+        setAttachment(null);
+        setShowForm(false);
+        // Optionally reload posts
+        const data = await res.json();
+        setPosts(normalizePosts(data));
+      } catch (err) {
+        setFormError(err.message || "Error publishing post");
+      } finally {
+        setSubmitting(false);
+      }
+    }
   const [showForm, setShowForm] = useState(false);
 
   // form
@@ -529,7 +561,6 @@ export default function BlogPage() {
 
   useEffect(() => {
     let mounted = true;
-
     async function load() {
       setLoading(true);
       setLoadError("");
@@ -537,64 +568,19 @@ export default function BlogPage() {
         const res = await fetch("/api/blog", { method: "GET" });
         if (!res.ok) throw new Error("Failed to load blog posts");
         const data = await res.json();
-        const normalized = normalizePosts(data);
-        if (mounted) setPosts(normalized);
-      } catch (e) {
-        if (!mounted) return;
-        setLoadError(e?.message || "Error loading posts");
-
-        // Optional fallback (keeps page looking alive in dev)
-        setPosts([]);
+        if (mounted) setPosts(normalizePosts(data));
+      } catch (err) {
+        if (mounted) setLoadError(err.message || "Error loading posts");
       } finally {
         if (mounted) setLoading(false);
       }
     }
-
     load();
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setFormError("");
-
-    try {
-      // NOTE: Your original code was posting JSON. Keeping that as default.
-      // If you want images/docs, your API should accept multipart/form-data.
-      const res = await fetch("/api/blog", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, message }),
-      });
-
-      if (!res.ok) throw new Error("Failed to create blog post");
-
-      // Reload after create (simple + reliable)
-      const refreshed = await fetch("/api/blog", { method: "GET" });
-      if (refreshed.ok) {
-        const data = await refreshed.json();
-        setPosts(normalizePosts(data));
-      }
-
-      setShowForm(false);
-      setTitle("");
-      setMessage("");
-      setImage(null);
-      setAttachment(null);
-    } catch (err) {
-      setFormError(err?.message || "Error submitting blog post");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   return (
-    <>
-      <SiteHeader />
-
+    <div>
       {/* Tiny CSS to give hover/polish without disrupting your existing CSS pipeline */}
       <style>{`
         .el-blog-card:hover { transform: translateY(-2px); box-shadow: 0 18px 60px rgba(0,0,0,0.45); border-color: rgba(34,197,94,0.35); }
@@ -605,7 +591,6 @@ export default function BlogPage() {
           .el-modal-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
-
       <div
         style={{
           minHeight: "100vh",
@@ -640,7 +625,6 @@ export default function BlogPage() {
                   >
                     Blog
                   </h1>
-
                   <p style={{ margin: "12px 0 0 0", maxWidth: 740, color: "rgba(255,255,255,0.75)", fontSize: 15, lineHeight: 1.6 }}>
                     Product updates, R&amp;D notes, release announcements, and behind-the-scenes stories — including
                     images and downloadable documents.
@@ -673,208 +657,205 @@ export default function BlogPage() {
               </div>
 
               {/* Form */}
-              {showForm ? (
-                <form
-                  onSubmit={handleSubmit}
-                  style={{
-                    marginTop: 18,
-                    borderRadius: 18,
-                    border: "1px solid rgba(255,255,255,0.10)",
-                    background: "rgba(10, 14, 18, 0.68)",
-                    padding: 16,
-                    color: "#fff",
-                  }}
-                >
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                    <div style={{ gridColumn: "1 / -1" }}>
-                      <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
-                        Title
-                      </label>
-                      <input
-                        type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                        placeholder="e.g., New terpene sample kit release"
-                        style={{
-                          width: "100%",
-                          padding: "12px 12px",
-                          borderRadius: 14,
-                          border: "1px solid rgba(255,255,255,0.14)",
-                          background: "rgba(255,255,255,0.04)",
-                          color: "#fff",
-                          outline: "none",
-                        }}
-                      />
-                    </div>
+              {showForm && (
+                <div>
+                  <form
+                    onSubmit={handleSubmit}
+                    style={{
+                      marginTop: 18,
+                      borderRadius: 18,
+                      border: "1px solid rgba(255,255,255,0.10)",
+                      background: "rgba(10, 14, 18, 0.68)",
+                      padding: 16,
+                      color: "#fff",
+                    }}
+                  >
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                      <div style={{ gridColumn: "1 / -1" }}>
+                        <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
+                          Title
+                        </label>
+                        <input
+                          type="text"
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
+                          required
+                          placeholder="e.g., New terpene sample kit release"
+                          style={{
+                            width: "100%",
+                            padding: "12px 12px",
+                            borderRadius: 14,
+                            border: "1px solid rgba(255,255,255,0.14)",
+                            background: "rgba(255,255,255,0.04)",
+                            color: "#fff",
+                            outline: "none",
+                          }}
+                        />
+                      </div>
 
-                    <div style={{ gridColumn: "1 / -1" }}>
-                      <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
-                        Message
-                      </label>
-                      <textarea
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        required
-                        rows={5}
-                        placeholder="Write your post…"
-                        style={{
-                          width: "100%",
-                          padding: "12px 12px",
-                          borderRadius: 14,
-                          border: "1px solid rgba(255,255,255,0.14)",
-                          background: "rgba(255,255,255,0.04)",
-                          color: "#fff",
-                          outline: "none",
-                          resize: "vertical",
-                        }}
-                      />
-                    </div>
+                      <div style={{ gridColumn: "1 / -1" }}>
+                        <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
+                          Message
+                        </label>
+                        <textarea
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
+                          required
+                          rows={5}
+                          placeholder="Write your post…"
+                          style={{
+                            width: "100%",
+                            padding: "12px 12px",
+                            borderRadius: 14,
+                            border: "1px solid rgba(255,255,255,0.14)",
+                            background: "rgba(255,255,255,0.04)",
+                            color: "#fff",
+                            outline: "none",
+                            resize: "vertical",
+                          }}
+                        />
+                      </div>
 
-                    {/* UI-only fields unless your API supports multipart */}
-                    <div>
-                      <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
-                        Image (optional)
-                      </label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => setImage(e.target.files?.[0] || null)}
+                      {/* UI-only fields unless your API supports multipart */}
+                      <div>
+                        <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
+                          Image (optional)
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setImage(e.target.files?.[0] || null)}
+                          style={{
+                            width: "100%",
+                            padding: "10px 12px",
+                            borderRadius: 14,
+                            border: "1px solid rgba(255,255,255,0.14)",
+                            background: "rgba(255,255,255,0.03)",
+                            color: "rgba(255,255,255,0.85)",
+                          }}
+                        />
+                        {image ? (
+                          <div style={{ marginTop: 8, color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 800 }}>
+                            Selected: {image.name}
+                          </div>
+                        ) : null}
+                      </div>
+
+                      <div>
+                        <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
+                          Document (optional)
+                        </label>
+                        <input
+                          type="file"
+                          onChange={(e) => setAttachment(e.target.files?.[0] || null)}
+                          style={{
+                            width: "100%",
+                            padding: "10px 12px",
+                            borderRadius: 14,
+                            border: "1px solid rgba(255,255,255,0.14)",
+                            background: "rgba(255,255,255,0.03)",
+                            color: "rgba(255,255,255,0.85)",
+                          }}
+                        />
+                        {attachment ? (
+                          <div style={{ marginTop: 8, color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 800 }}>
+                            Selected: {attachment.name}
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                    {formError ? (
+                      <div style={{ marginTop: 12, color: "rgba(248,113,113,0.95)", fontWeight: 900 }}>
+                        {formError}
+                      </div>
+                    ) : null}
+                    <div style={{ marginTop: 12, display: "flex", justifyContent: "flex-end", gap: 10, flexWrap: "wrap" }}>
+                      <button
+                        type="button"
+                        onClick={() => setShowForm(false)}
                         style={{
-                          width: "100%",
-                          padding: "10px 12px",
-                          borderRadius: 14,
-                          border: "1px solid rgba(255,255,255,0.14)",
-                          background: "rgba(255,255,255,0.03)",
+                          background: "transparent",
                           color: "rgba(255,255,255,0.85)",
-                        }}
-                      />
-                      {image ? (
-                        <div style={{ marginTop: 8, color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 800 }}>
-                          Selected: {image.name}
-                        </div>
-                      ) : null}
-                    </div>
-
-                    <div>
-                      <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
-                        Document (optional)
-                      </label>
-                      <input
-                        type="file"
-                        onChange={(e) => setAttachment(e.target.files?.[0] || null)}
-                        style={{
-                          width: "100%",
-                          padding: "10px 12px",
-                          borderRadius: 14,
+                          fontWeight: 900,
                           border: "1px solid rgba(255,255,255,0.14)",
-                          background: "rgba(255,255,255,0.03)",
-                          color: "rgba(255,255,255,0.85)",
+                          borderRadius: 14,
+                          padding: "12px 14px",
+                          cursor: "pointer",
                         }}
-                      />
-                      {attachment ? (
-                        <div style={{ marginTop: 8, color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 800 }}>
-                          Selected: {attachment.name}
-                        </div>
-                      ) : null}
+                        className="el-btn"
+                      >
+                        Cancel
+                      </button>
+
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        style={{
+                          background: "rgba(34,197,94,0.95)",
+                          color: "#fff",
+                          fontWeight: 950,
+                          border: "1px solid rgba(34,197,94,0.40)",
+                          borderRadius: 14,
+                          padding: "12px 14px",
+                          cursor: submitting ? "not-allowed" : "pointer",
+                          opacity: submitting ? 0.7 : 1,
+                        }}
+                        className="el-btn"
+                      >
+                        {submitting ? "Publishing..." : "Publish"}
+                      </button>
                     </div>
-                  </div>
-
-                  {formError ? (
-                    <div style={{ marginTop: 12, color: "rgba(248,113,113,0.95)", fontWeight: 900 }}>
-                      {formError}
+                    <div style={{ marginTop: 10, color: "rgba(255,255,255,0.55)", fontSize: 12, fontWeight: 700, lineHeight: 1.5 }}>
+                      Tip: If you want the image + document uploads to actually save, we’ll switch the POST to
+                      <span style={{ color: "rgba(232,255,241,0.9)", fontWeight: 900 }}> multipart/form-data </span>
+                      and store the assets in R2/Cloudflare Images.
                     </div>
-                  ) : null}
-
-                  <div style={{ marginTop: 12, display: "flex", justifyContent: "flex-end", gap: 10, flexWrap: "wrap" }}>
-                    <button
-                      type="button"
-                      onClick={() => setShowForm(false)}
-                      style={{
-                        background: "transparent",
-                        color: "rgba(255,255,255,0.85)",
-                        fontWeight: 900,
-                        border: "1px solid rgba(255,255,255,0.14)",
-                        borderRadius: 14,
-                        padding: "12px 14px",
-                        cursor: "pointer",
-                      }}
-                      className="el-btn"
-                    >
-                      Cancel
-                    </button>
-
-                    <button
-                      type="submit"
-                      disabled={submitting}
-                      style={{
-                        background: "rgba(34,197,94,0.95)",
-                        color: "#fff",
-                        fontWeight: 950,
-                        border: "1px solid rgba(34,197,94,0.40)",
-                        borderRadius: 14,
-                        padding: "12px 14px",
-                        cursor: submitting ? "not-allowed" : "pointer",
-                        opacity: submitting ? 0.7 : 1,
-                      }}
-                      className="el-btn"
-                    >
-                      {submitting ? "Publishing..." : "Publish"}
-                    </button>
-                  </div>
-
-                  <div style={{ marginTop: 10, color: "rgba(255,255,255,0.55)", fontSize: 12, fontWeight: 700, lineHeight: 1.5 }}>
-                    Tip: If you want the image + document uploads to actually save, we’ll switch the POST to
-                    <span style={{ color: "rgba(232,255,241,0.9)", fontWeight: 900 }}> multipart/form-data </span>
-                    and store the assets in R2/Cloudflare Images.
-                  </div>
-                </form>
-              ) : null}
-            </div>
-
-            <div style={{ height: 1, background: "rgba(255,255,255,0.08)" }} />
-
-            {/* Posts list */}
-            <div style={{ padding: 22 }}>
-              {loading ? (
-                <div style={{ color: "rgba(255,255,255,0.70)", fontWeight: 900 }}>
-                  Loading posts…
-                </div>
-              ) : posts.length ? (
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 14 }}>
-                  {posts.map((p) => (
-                    <div key={p.id} style={{ gridColumn: "span 6" }}>
-                      <PostCard post={p} onOpen={setActivePost} />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div
-                  style={{
-                    borderRadius: 18,
-                    border: "1px dashed rgba(255,255,255,0.16)",
-                    background: "rgba(255,255,255,0.03)",
-                    padding: 18,
-                    color: "rgba(255,255,255,0.72)",
-                    lineHeight: 1.6,
-                  }}
-                >
-                  <div style={{ fontWeight: 950, color: "#fff", marginBottom: 6 }}>
-                    No posts yet.
-                  </div>
-                  When you publish your first post, it will appear here with images and downloadable documents.
+                  </form>
                 </div>
               )}
+
+              <div style={{ height: 1, background: "rgba(255,255,255,0.08)" }} />
+
+              {/* Posts list */}
+              <div style={{ padding: 22 }}>
+                {loading ? (
+                  <div style={{ color: "rgba(255,255,255,0.70)", fontWeight: 900 }}>
+                    Loading posts…
+                  </div>
+                ) : posts.length ? (
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 14 }}>
+                    {posts.map((p) => (
+                      <div key={p.id} style={{ gridColumn: "span 6" }}>
+                        <PostCard post={p} onOpen={setActivePost} />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      borderRadius: 18,
+                      border: "1px dashed rgba(255,255,255,0.16)",
+                      background: "rgba(255,255,255,0.03)",
+                      padding: 18,
+                      color: "rgba(255,255,255,0.72)",
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    <div style={{ fontWeight: 950, color: "#fff", marginBottom: 6 }}>
+                      No posts yet.
+                    </div>
+                    When you publish your first post, it will appear here with images and downloadable documents.
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
+        <Modal open={!!activePost} onClose={() => setActivePost(null)} ariaLabel={activePost?.title || "Blog post"}>
+          {activePost ? <PostDetail post={activePost} onClose={() => setActivePost(null)} /> : null}
+        </Modal>
+        {/* <SiteFooter /> */}
       </div>
-
-      <Modal open={!!activePost} onClose={() => setActivePost(null)} ariaLabel={activePost?.title || "Blog post"}>
-        {activePost ? <PostDetail post={activePost} onClose={() => setActivePost(null)} /> : null}
-      </Modal>
-
-      {/* <SiteFooter /> */}
-    </>
+    </div>
   );
 }

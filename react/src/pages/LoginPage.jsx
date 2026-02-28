@@ -37,6 +37,7 @@ export default function LoginPage() {
   return (
     <div style={elPageBackgroundStyle}>
       <div className="el-authPage">
+        <br></br>
       <h1 className="el-authTitle">Login</h1>
       <p className="el-authSub">Welcome back.</p>
 

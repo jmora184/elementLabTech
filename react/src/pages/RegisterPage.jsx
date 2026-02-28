@@ -42,6 +42,7 @@ export default function RegisterPage() {
   return (
     <div style={elPageBackgroundStyle}>
       <div className="el-authPage">
+        <br></br>
       <h1 className="el-authTitle">Create account</h1>
       <p className="el-authSub">Save blends and manage your profile later.</p>
 

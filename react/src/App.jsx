@@ -20,9 +20,21 @@ import CustomizePage from "./pages/CustomizePage";
 import BlogPage from "./pages/BlogPage";
 import FAQPage from "./pages/FAQPage";
 
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
+function ScrollToTop() {
+  const location = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route element={<SiteLayout />}>
           <Route

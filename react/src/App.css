@@ -49,7 +49,7 @@
 /* --- Auth pages (minimal, matches existing dark/gradient vibe) --- */
 .el-authPage{
   max-width: 520px;
-  margin: 40px auto;
+  margin: 0 auto;
   padding: 16px;
 }
 .el-authTitle{

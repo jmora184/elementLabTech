@@ -24,6 +24,7 @@ export default function AccountPage() {
     return (
       <div style={elPageBackgroundStyle}>
         <div className="el-authPage">
+          <br></br>
           <h1 className="el-authTitle">Account</h1>
           <p className="el-authSub">Loading...</p>
         </div>

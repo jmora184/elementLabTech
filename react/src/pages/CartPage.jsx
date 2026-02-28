@@ -39,6 +39,7 @@ export default function CartPage() {
   return (
     <div style={elPageBackgroundStyle}>
       <div className="el-authPage">
+        <br></br>
       <h1 className="el-authTitle">Cart</h1>
       <p className="el-authSub">{totalItems} item{totalItems === 1 ? "" : "s"}</p>
 

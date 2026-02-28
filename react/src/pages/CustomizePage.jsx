@@ -11,7 +11,6 @@ const APPLICATION_OPTIONS = [
 
 const PROFILE_OPTIONS = [
   { key: "strain_inspired", label: "Strain-inspired" },
-  { key: "botanical", label: "Botanical" },
   { key: "candy_dessert", label: "Candy / Dessert" },
   { key: "beverage_forward", label: "Beverage-forward" },
   { key: "custom_concept", label: "Custom concept" },
@@ -162,7 +161,7 @@ export default function CustomizePage() {
       `Company: ${company || "(blank)"}`,
       `Email: ${email || "(blank)"}`,
       `Phone: ${phone || "(blank)"}`,
-      `State/Market: ${stateMarket || "(blank)"}`,
+      `State: ${stateMarket || "(blank)"}`,
     ]
       .filter(Boolean)
       .join("\n");
@@ -742,7 +741,7 @@ export default function CustomizePage() {
                 />
               </label>
               <label className="el-authLabel" style={{ margin: 0 }}>
-                State / Market
+                State
                 <input
                   className="el-authInput"
                   style={{ background: '#f8fafc', border: '1px solid #e5e7eb' }}

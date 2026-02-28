@@ -175,9 +175,15 @@ export default function TerpeneShowcase({ HeroBanner }) {
                 })}
               </div>
               {/* Certifications Banner */}
-              <div style={{ width: '100%', maxWidth: '1200px', margin: '60px auto 0', padding: '0 20px' }}>
+        
+  
+              <div style={{ width: '100%', maxWidth: '1200px', margin: '60px auto 0', padding: '0 10px 0 10px' }}>
                 <hr style={{ border: 'none', borderTop: '1px solid rgba(0,0,0,0.1)', margin: '0' }} />
               </div>
+                    <br></br>
+                                <div style={{ color: 'black', fontSize: 24, fontWeight: 500, textAlign: 'center', marginBottom: 0, width: '100%' }}>
+                      Recognized for formulation consistency and technical integrity, our natural fragrance and flavor systems are trusted worldwide.
+                    </div>
               <div style={{ 
                 width: '100%',
                 background: 'linear-gradient(135deg, rgba(183, 248, 183, 0.15) 0%, rgba(110, 231, 183, 0.1) 50%, rgba(209, 247, 196, 0.15) 100%)',
@@ -191,6 +197,7 @@ export default function TerpeneShowcase({ HeroBanner }) {
                   justifyContent: 'center',
                   alignItems: 'center'
                 }}>
+  
                   <img 
                     src={certificationBadges} 
                     alt="Certifications: Non GMO, ISO 9001, Food Grade, OU Kosher, FSSC22000, Natural Ingredients, Botanical Derived" 
@@ -279,6 +286,9 @@ export default function TerpeneShowcase({ HeroBanner }) {
                 justifyContent: 'center',
                 alignItems: 'center'
               }}>
+                  <div style={{ color: 'black', fontSize: 22, fontWeight: 500, textAlign: 'center', marginBottom: 14, width: '100%' }}>
+                    Recognized for formulation consistency and technical integrity, our natural fragrance and flavor systems are trusted worldwide.
+                  </div>
                 <img 
                   src={certificationBadges} 
                   alt="Certifications: Non GMO, ISO 9001, Food Grade, OU Kosher, FSSC22000, Natural Ingredients, Botanical Derived" 

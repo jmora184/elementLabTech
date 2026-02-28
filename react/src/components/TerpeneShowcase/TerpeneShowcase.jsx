@@ -181,8 +181,8 @@ export default function TerpeneShowcase({ HeroBanner }) {
                 <hr style={{ border: 'none', borderTop: '1px solid rgba(0,0,0,0.1)', margin: '0' }} />
               </div>
                     <br></br>
-                                <div style={{ color: 'black', fontSize: 24, fontWeight: 500, textAlign: 'center', marginBottom: 0, width: '100%' }}>
-                      Recognized for formulation consistency and technical integrity, our natural fragrance and flavor systems are trusted worldwide.
+                                <div style={{ color: 'black', fontSize: 24, fontWeight: 700, textAlign: 'center', marginBottom: 0, width: '75%', margin: '0 auto' }}>
+                      Recognized for formulation consistency and technical integrity, our natural fragrance and flavor systems are trusted by leading brands across global markets.
                     </div>
               <div style={{ 
                 width: '100%',

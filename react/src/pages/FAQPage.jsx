@@ -53,8 +53,8 @@ export default function FAQPage() {
     },
   ];
 
-  // User request: align everything left + increase font size ~3x.
-  const SCALE = 1.6875;
+  // Lower font size for FAQ content
+  const SCALE = 1.15;
 
   const shell = {
     maxWidth: 1050,

@@ -268,15 +268,17 @@ export default function SiteHeader({
                     </a>
                   )}
                 {l.id === "contact-sales" ? (
-                  <button
-                    className="ts-cartIconBtn"
-                    type="button"
-                    aria-label={`Cart with ${cartCount} item${cartCount === 1 ? "" : "s"}`}
-                    onClick={handleCartButtonClick}
-                  >
-                    <img src={cartIcon} alt="Cart" />
-                    {cartCount > 0 ? <span>{cartCount}</span> : null}
-                  </button>
+                  <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+                    <button
+                      className="ts-cartIconBtn"
+                      type="button"
+                      aria-label={`Cart with ${cartCount} item${cartCount === 1 ? "" : "s"}`}
+                      onClick={handleCartButtonClick}
+                    >
+                      <img src={cartIcon} alt="Cart" />
+                      {cartCount > 0 ? <span>{cartCount}</span> : null}
+                    </button>
+                  </div>
                 ) : null}
               </React.Fragment>
             ))}

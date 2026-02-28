@@ -18,6 +18,7 @@ import CartPage from "./pages/CartPage";
 import QnAPage from "./pages/QnAPage";
 import CustomizePage from "./pages/CustomizePage";
 import BlogPage from "./pages/BlogPage";
+import FAQPage from "./pages/FAQPage";
 
 export default function App() {
   return (
@@ -58,6 +59,7 @@ export default function App() {
           <Route path="/account" element={<AccountPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/faq" element={<FAQPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

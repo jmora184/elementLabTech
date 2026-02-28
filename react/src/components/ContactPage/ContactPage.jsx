@@ -52,8 +52,20 @@ export default function ContactPage() {
     }
   };
 
+  const elPageBackgroundStyle = {
+    minHeight: "100vh",
+    color: "#e8f3ec",
+    background:
+      "radial-gradient(1200px 600px at 20% -10%, rgba(34,197,94,0.20), transparent 55%), " +
+      "radial-gradient(900px 500px at 90% 10%, rgba(16,185,129,0.14), transparent 60%), " +
+      "linear-gradient(180deg, #070a0d 0%, #06070a 100%)",
+  };
+
+
+
   return (
-    <section
+    <div style={elPageBackgroundStyle}>
+      <section
       id="contact"
       style={{
         padding: "0 24px 80px",
@@ -180,5 +192,6 @@ export default function ContactPage() {
         </p>
       </div>
     </section>
+    </div>
   );
 }

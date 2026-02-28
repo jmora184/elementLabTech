@@ -2,6 +2,16 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
+const elPageBackgroundStyle = {
+  minHeight: "100vh",
+  color: "#e8f3ec",
+  background:
+    "radial-gradient(1200px 600px at 20% -10%, rgba(34,197,94,0.20), transparent 55%), " +
+    "radial-gradient(900px 500px at 90% 10%, rgba(16,185,129,0.14), transparent 60%), " +
+    "linear-gradient(180deg, #070a0d 0%, #06070a 100%)",
+};
+
+
 export default function RegisterPage() {
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -30,7 +40,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="el-authPage">
+    <div style={elPageBackgroundStyle}>
+      <div className="el-authPage">
       <h1 className="el-authTitle">Create account</h1>
       <p className="el-authSub">Save blends and manage your profile later.</p>
 
@@ -83,6 +94,7 @@ export default function RegisterPage() {
           Already have one? <Link to="/login">Sign in</Link>
         </div>
       </form>
+    </div>
     </div>
   );
 }

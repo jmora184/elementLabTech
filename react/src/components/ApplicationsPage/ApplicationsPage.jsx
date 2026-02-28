@@ -8,6 +8,15 @@ import beverageImg from "../../assets/beverage.png";
 import gummiesImg from "../../assets/gummies.png";
 
 export default function ApplicationsPage() {
+  const elPageBackgroundStyle = {
+    minHeight: "100vh",
+    color: "#e8f3ec",
+    background:
+      "radial-gradient(1200px 600px at 20% -10%, rgba(34,197,94,0.20), transparent 55%), " +
+      "radial-gradient(900px 500px at 90% 10%, rgba(16,185,129,0.14), transparent 60%), " +
+      "linear-gradient(180deg, #070a0d 0%, #06070a 100%)",
+  };
+
   const items = [
     {
       image: vaporImg,
@@ -52,7 +61,7 @@ export default function ApplicationsPage() {
   ];
 
   return (
-    <section id="applications" className="ap-section">
+    <section id="applications" className="ap-section" style={elPageBackgroundStyle}>
       <div className="ap-inner">
         <div className="ap-header">
           <h1 className="ap-title">Applications</h1>

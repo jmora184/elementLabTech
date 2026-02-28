@@ -2,6 +2,16 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { clearCart, getCartItems, removeCartItem, setCartItems } from "../utils/cart";
 
+const elPageBackgroundStyle = {
+  minHeight: "100vh",
+  color: "#e8f3ec",
+  background:
+    "radial-gradient(1200px 600px at 20% -10%, rgba(34,197,94,0.20), transparent 55%), " +
+    "radial-gradient(900px 500px at 90% 10%, rgba(16,185,129,0.14), transparent 60%), " +
+    "linear-gradient(180deg, #070a0d 0%, #06070a 100%)",
+};
+
+
 export default function CartPage() {
   const [items, setItems] = useState(() => getCartItems());
 
@@ -27,7 +37,8 @@ export default function CartPage() {
   };
 
   return (
-    <div className="el-authPage">
+    <div style={elPageBackgroundStyle}>
+      <div className="el-authPage">
       <h1 className="el-authTitle">Cart</h1>
       <p className="el-authSub">{totalItems} item{totalItems === 1 ? "" : "s"}</p>
 
@@ -95,6 +106,7 @@ export default function CartPage() {
           </>
         )}
       </div>
+    </div>
     </div>
   );
 }

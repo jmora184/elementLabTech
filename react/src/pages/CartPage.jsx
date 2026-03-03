@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { clearCart, getCartItems, removeCartItem, setCartItems } from "../utils/cart";
+import StripeCheckoutWrapper from '../components/StripeCheckoutWrapper';
 
 const elPageBackgroundStyle = {
   minHeight: "100vh",
@@ -14,6 +15,7 @@ const elPageBackgroundStyle = {
 
 export default function CartPage() {
   const [items, setItems] = useState(() => getCartItems());
+  const [showCheckout, setShowCheckout] = useState(false);
 
   useEffect(() => {
     const handleCartUpdated = () => setItems(getCartItems());
@@ -93,17 +95,39 @@ export default function CartPage() {
             <button className="el-authBtn" type="button" onClick={() => clearCart()}>
               Clear cart
             </button>
-            <button
-              className="el-authBtn"
-              type="button"
-              style={{ marginTop: 12, background: '#7c3aed', color: '#fff', fontWeight: 700 }}
-              onClick={() => {
-                // TODO: Implement checkout logic or navigation
-                alert('Checkout coming soon!');
-              }}
-            >
-              Checkout
-            </button>
+            {showCheckout && (
+              <div style={{ marginTop: 24 }}>
+                <StripeCheckoutWrapper
+                  items={items}
+                  totalAmount={items.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0)}
+                  onSuccess={() => {
+                    clearCart();
+                    setShowCheckout(false);
+                    alert('Payment successful!');
+                  }}
+                />
+              </div>
+            )}
+            {!showCheckout && (
+              <>
+                <button
+                  className="el-authBtn"
+                  type="button"
+                  style={{ marginTop: 12, background: '#22c55e', color: '#fff', fontWeight: 700 }}
+                  onClick={() => setShowCheckout(true)}
+                >
+                  Pay Now With Stripe
+                </button>
+                <button
+                  className="el-authBtn"
+                  type="button"
+                  style={{ marginTop: 12, background: '#22c55e', color: '#fff', fontWeight: 700 }}
+                  onClick={() => window.open('https://calendly.com/', '_blank')}
+                >
+                  Set Up a Call
+                </button>
+              </>
+            )}
           </>
         )}
       </div>

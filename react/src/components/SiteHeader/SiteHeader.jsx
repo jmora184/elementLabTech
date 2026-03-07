@@ -194,10 +194,10 @@ export default function SiteHeader({
           <a
             href="/"
             className="ts-logoLink"
-            aria-label="Element Labs Home"
+            aria-label="Element Lab Home"
             onClick={handleLogoClick}
           >
-            <img src={logoSrc} alt="Element Labs Logo" className="ts-siteLogo" />
+            <img src={logoSrc} alt="Element Lab Logo" className="ts-siteLogo" />
           </a>
 
           <div className="ts-headerActions">

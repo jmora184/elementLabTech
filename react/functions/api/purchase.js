@@ -1,4 +1,4 @@
-// POST /api/purchase
+d// POST /api/purchase
 // Handles checkout and saves purchase record after Stripe payment
 import { getUserFromRequest } from '../_lib/auth';
 import Stripe from 'stripe';

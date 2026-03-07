@@ -146,7 +146,7 @@ export default function TerpeneShowcase({ HeroBanner }) {
                 </div>
               )}
               {/* <div className="ts-header">
-                <h2 className="ts-title">Terpenes By Element Labs</h2>
+                <h2 className="ts-title">Terpenes By Element Lab</h2>
               </div> */}
               <div className="ts-desktopCardStack">
                 {displayedCollections.map((c, i) => {
@@ -240,7 +240,7 @@ export default function TerpeneShowcase({ HeroBanner }) {
               </div>
             )}
             {/* <div className="ts-mobileHeader">
-              <h2 className="ts-mobileTitle">Terpenes By Element Labs</h2>
+              <h2 className="ts-mobileTitle">Terpenes By Element Lab</h2>
             </div> */}
             <div className="ts-mobileCardStack" style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
               {displayedCollections.map((c, i) => {

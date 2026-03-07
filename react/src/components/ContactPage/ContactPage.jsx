@@ -74,7 +74,7 @@ export default function ContactPage() {
       }}
     >
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 18 }}>
-        <img src={logoImg} alt="Element Labs" style={{ width: "min(120px, 35vw)", height: "auto" }} />
+        <img src={logoImg} alt="Element Lab" style={{ width: "min(120px, 35vw)", height: "auto" }} />
       </div>
 
       <h1 style={{ margin: 0, fontSize: "36px", lineHeight: 1.1 }}>Contact</h1>

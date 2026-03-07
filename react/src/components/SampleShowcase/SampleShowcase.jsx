@@ -86,13 +86,12 @@ export default function SampleShowcase({ HeroBanner }) {
         <div className="ss-heroInner">
           <div className="ss-heroCopy">
             <div className="ss-kicker">Sample Kits</div>
-            <div className="ss-topline" style={{ fontSize: 18, fontWeight: 500, marginBottom: 10, color: '#000' }}>
-              Explore. Evaluate. Formulate. Ten high-impact profiles in one streamlined kit.
-            </div>
-            <h1 className="ss-title">Explore our curated flavor sample sets.</h1>
+            <h1 className="ss-title">Still Deciding?</h1>
             <p className="ss-subtitle">
-              Each kit includes <strong>5 hand-picked profiles</strong> designed to help you quickly identify the right
-              direction for R&amp;D, sensory evaluation, and product matching.
+ Test 10 Profiles in 2mL format for $199 
+            </p>
+                        <p className="ss-subtitle">
+Ten high-impact profiles in one streamlined kit.
             </p>
             <div className="ss-miniRow">
               <div className="ss-pill">5 profiles per kit</div>
@@ -132,7 +131,10 @@ export default function SampleShowcase({ HeroBanner }) {
           Phone: <a href="tel:+1234567890" style={{color:'#7c3aed',textDecoration:'none'}}>+1 (234) 567-890</a>
         </div>
         <div style={{marginBottom: 6}}>
-          Address: 1234 Terpene Ave, Suite 100, Los Angeles, CA 90001
+          FL Office: 515 N Flagler Dr<br />West Palm Beach, 33401
+        </div>
+        <div style={{marginBottom: 6}}>
+          CA Office: 10250 Constellation Blvd, Los Angeles, 90067
         </div>
         <div style={{marginTop: 18, fontSize: 13, color: '#888'}}>
           &copy; {new Date().getFullYear()} Element Lab. All rights reserved.

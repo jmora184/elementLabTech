@@ -181,13 +181,12 @@ export default function TerpeneShowcase({ HeroBanner }) {
                 <hr style={{ border: 'none', borderTop: '1px solid rgba(0,0,0,0.1)', margin: '0' }} />
               </div>
                     <br></br>
-                                <div style={{ color: 'black', fontSize: 24, fontWeight: 700, textAlign: 'center', marginBottom: 0, width: '75%', margin: '0 auto' }}>
+                                <div style={{ color: 'black', fontSize: 24, fontWeight: 700, textAlign: 'center', marginBottom: '-2%', width: '75%', margin: '0 auto' }}>
                       Recognized for formulation consistency and technical integrity, our natural fragrance and flavor systems are trusted by leading brands across global markets.
                     </div>
-              <div style={{ 
+              <div style={{
                 width: '100%',
-                background: 'linear-gradient(135deg, rgba(183, 248, 183, 0.15) 0%, rgba(110, 231, 183, 0.1) 50%, rgba(209, 247, 196, 0.15) 100%)',
-                padding: '50px 20px',
+                padding: '0 20px 50px 20px',
                 margin: '40px 0'
               }}>
                 <div style={{
@@ -273,10 +272,9 @@ export default function TerpeneShowcase({ HeroBanner }) {
             <div style={{ width: '100%', margin: '40px 0 0', padding: '0 10px' }}>
               <hr style={{ border: 'none', borderTop: '1px solid rgba(0,0,0,0.1)', margin: '0' }} />
             </div>
-            <div style={{ 
+            <div style={{
               width: '100%',
-              background: 'linear-gradient(135deg, rgba(183, 248, 183, 0.15) 0%, rgba(110, 231, 183, 0.1) 50%, rgba(209, 247, 196, 0.15) 100%)',
-              padding: '40px 15px',
+              padding: '0 15px 40px 15px',
               margin: '30px 0'
             }}>
               <div style={{

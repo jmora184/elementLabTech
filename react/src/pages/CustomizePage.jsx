@@ -15,6 +15,7 @@ const PROFILE_OPTIONS = [
   { key: "beverage_forward", label: "Beverage-forward" },
   { key: "custom_concept", label: "Custom concept" },
   { key: "reformulation", label: "Reformulation of an existing SKU" },
+  // 'botanical' removed as requested
 ];
 
 const TERPENE_OPTIONS = [

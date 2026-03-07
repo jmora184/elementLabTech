@@ -549,13 +549,13 @@ export default function CarriersShowcase() {
                       outline: "none",
                     }}
                   >
-                    <option value="2mL | 1.84 g - $20">2mL | 1.84 g - $20</option>
-                    <option value="5mL | 4.2g - $35">5mL | 4.2g - $35</option>
-                    <option value="24mL | 20g - $125">24mL | 20g - $125</option>
-                    <option value="60mL | 50g | 2oz - $276">60mL | 50g | 2oz - $276</option>
-                    <option value="111mL | 100g | 4oz - $418">111mL | 100g | 4oz - $418</option>
-                    <option value="556mL | 500g | 19.9oz - $1897">556mL | 500g | 19.9oz - $1897</option>
-                    <option value="1kg | 39.8oz - $2,999">1kg | 39.8oz - $2,999</option>
+                    <option value="2mL | 1.84 g - $1.30">2mL | 1.84 g - $1.30</option>
+                    <option value="5mL | 4.2g - $3.25">5mL | 4.2g - $3.25</option>
+                    <option value="24mL | 20g - $15.60">24mL | 20g - $15.60</option>
+                    <option value="60mL | 50g | 2oz - $39.00">60mL | 50g | 2oz - $39.00</option>
+                    <option value="111mL | 100g | 4oz - $72.15">111mL | 100g | 4oz - $72.15</option>
+                    <option value="556mL | 500g | 19.9oz - $361.40">556mL | 500g | 19.9oz - $361.40</option>
+                    <option value="1kg (~1000mL) | 39.8oz - $650.00">1kg (~1000mL) | 39.8oz - $650.00</option>
                   </select>
                 </div>
 

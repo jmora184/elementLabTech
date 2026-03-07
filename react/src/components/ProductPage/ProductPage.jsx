@@ -395,7 +395,7 @@ export default function ProductPage() {
 
   useEffect(() => {
     if (!requestedProfileSlug || !dbProfiles.length) return;
-    const match = dbProfiles.find((p) => p.slug === requestedProfileSlug);
+    const match = dbProfiles.find((p) => (p.slug || '').toLowerCase() === requestedProfileSlug.toLowerCase());
     if (!match) return;
     setSelectedSlug(match.slug);
     setExpandedSlug(match.slug);
@@ -1699,22 +1699,34 @@ export default function ProductPage() {
                   }}
                 >
                   {(() => {
-                    const baseSizes = [
-                      { label: "2mL | 1.84 g", price: 20 },
-                      { label: "5mL | 4.2g", price: 35 },
-                      { label: "24mL | 20g", price: 125 },
-                      { label: "60mL | 50g | 2oz", price: 276 },
-                      { label: "111mL | 100g | 4oz", price: 418 },
-                      { label: "556mL | 500g | 19.9oz", price: 1897 },
-                      { label: "1kg | 39.8oz", price: 2999 },
-                    ];
                     const isEmeraldCut = (collection?.name || "").toLowerCase().includes("emerald cut");
-                    return baseSizes.map(({ label, price }) => {
-                      const finalPrice = isEmeraldCut ? price + 4 : price;
-                      return (
-                        <option key={label} value={`${label} - $${finalPrice}`}>{`${label} - $${finalPrice}`}</option>
-                      );
-                    });
+                    if (isEmeraldCut) {
+                      const emeraldCutSizes = [
+                        "2mL | 1.84 g - $24",
+                        "5mL | 4.2g - $39",
+                        "24mL | 20g - $129",
+                        "60mL | 50g | 2oz - $280",
+                        "111mL | 100g | 4oz - $422",
+                        "556mL | 500g | 19.9oz - $1901",
+                        "1kg | 39.8oz - $3003"
+                      ];
+                      return emeraldCutSizes.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ));
+                    } else {
+                      const baseSizes = [
+                        { label: "2mL | 1.84 g", price: 20 },
+                        { label: "5mL | 4.2g", price: 35 },
+                        { label: "24mL | 20g", price: 125 },
+                        { label: "60mL | 50g | 2oz", price: 276 },
+                        { label: "111mL | 100g | 4oz", price: 418 },
+                        { label: "556mL | 500g | 19.9oz", price: 1897 },
+                        { label: "1kg | 39.8oz", price: 2999 },
+                      ];
+                      return baseSizes.map(({ label, price }) => (
+                        <option key={label} value={`${label} - $${price}`}>{`${label} - $${price}`}</option>
+                      ));
+                    }
                   })()}
                 </select>
               </div>

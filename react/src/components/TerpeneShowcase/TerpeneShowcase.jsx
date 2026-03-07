@@ -601,6 +601,7 @@ function getCollectionImageUrl(collection) {
 
 function CollectionCard({ collection, isMobile, cardIndex }) {
   const navigate = useNavigate();
+  // Use default productPath logic
   const productPath = String(collection?.productPath || `/product/${collection?.id || ""}`);
   const cardImageSrc = getCollectionImageUrl(collection);
   const primaryLabel =
@@ -706,7 +707,21 @@ function CollectionCard({ collection, isMobile, cardIndex }) {
           >
             <button
               type="button"
-              onClick={() => setSelectedType(primaryLabel)}
+              onClick={() => {
+                if (cardIndex === 0) {
+                  setSelectedType(primaryLabel);
+                  navigate("/product/matrix-collection");
+                } else if (cardIndex === 4) {
+                  setSelectedType(primaryLabel);
+                  navigate("/product/matrix-collection?profile=pistachio-baklava");
+                } 
+                else if (cardIndex === 1) {
+  navigate("/product/matrix-collection?profile=pistachio-baklava");
+}else {
+                  setSelectedType(primaryLabel);
+                  navigate(productPath);
+                }
+              }}
               style={{
                 fontSize: 14,
                 padding: '6px 12px',
@@ -722,7 +737,14 @@ function CollectionCard({ collection, isMobile, cardIndex }) {
             </button>
             <button
               type="button"
-              onClick={() => setSelectedType(secondaryLabel)}
+              onClick={() => {
+                setSelectedType(secondaryLabel);
+                if (cardIndex === 0) {
+                  navigate("/samples");
+                } else if (secondaryLabel === "Candy") {
+                  navigate("/product/matrix-collection?profile=white-gusher");
+                }
+              }}
               style={{
                 fontSize: 14,
                 padding: '6px 12px',

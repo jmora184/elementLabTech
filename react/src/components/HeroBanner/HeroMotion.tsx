@@ -29,7 +29,7 @@ export default function HeroMotion() {
         ctas: [
           { text: "Customize", href: "/customize" },
           { text: "Isolates", href: "/isolates" },
-          { text: "Terpenes", href: "#terpenes" },
+          { text: "Terpenes", href: "/isolates" },
         ],
         bgImage:
           "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=2000&q=60",

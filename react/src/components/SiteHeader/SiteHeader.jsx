@@ -14,7 +14,7 @@ const DEFAULT_NAV_LINKS = [
   { label: "Q&A", id: "q-and-a" },
   { label: "FAQ", id: "faq", placeholder: true },
   { label: "Blog", id: "blog", placeholder: true },
-  { label: "Contact Sales", id: "contact-sales"},
+  { label: "Contact Sales", id: "contact-sales" },
 ];
 
 const DEFAULT_MINI_LINKS = [
@@ -22,7 +22,8 @@ const DEFAULT_MINI_LINKS = [
   { label: "Best Sellers", id: "best-sellers" },
   { label: "Sample Sets", id: "signature-blends" },
   { label: "Isolates", id: "isolates" },
-   { label: "Carriers", id: "carriers" },
+  { label: "Carriers", id: "carriers" },
+  { label: "Customize", id: "customize" },
 ];
 
 const DEFAULT_MINI_MENU_LEFT = [
@@ -70,7 +71,15 @@ const MINI_LINK_ROUTES = {
   "signature-blends": "/samples",
   "isolates": "/isolates",
   "carriers": "/carriers",
+  "customize": "/customize",
 };
+
+const RESOURCE_ITEMS = [
+  { label: "Applications", id: "applications", type: "section" },
+  { label: "Blog", id: "blog", type: "route", route: "/blog" },
+  { label: "Q&A", id: "q-and-a", type: "route", route: "/qna" },
+  { label: "FAQ", id: "faq", type: "route", route: "/faq" },
+];
 
 /**
  * Shared Site Header (+ mini header)
@@ -102,6 +111,7 @@ export default function SiteHeader({
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [miniMenuOpen, setMiniMenuOpen] = useState(false);
+  const [resourcesOpen, setResourcesOpen] = useState(false);
   const [cartCount, setCartCount] = useState(() => getCartCount());
 
   useEffect(() => {
@@ -127,6 +137,7 @@ export default function SiteHeader({
     e.preventDefault();
     setMenuOpen(false);
     setMiniMenuOpen(false);
+    setResourcesOpen(false);
     if (typeof onLogoClick === "function") {
       onLogoClick();
       return;
@@ -139,6 +150,7 @@ export default function SiteHeader({
   const goToSection = (id) => {
     setMenuOpen(false);
     setMiniMenuOpen(false);
+    setResourcesOpen(false);
 
     if (typeof onNavToSection === "function") {
       onNavToSection(id);
@@ -162,12 +174,14 @@ export default function SiteHeader({
     if (!route) return;
     setMenuOpen(false);
     setMiniMenuOpen(false);
+    setResourcesOpen(false);
     navigate(route);
   };
 
   const handleCartButtonClick = () => {
     setMenuOpen(false);
     setMiniMenuOpen(false);
+    setResourcesOpen(false);
     if (typeof onCartClick === "function") {
       onCartClick();
       return;
@@ -175,8 +189,92 @@ export default function SiteHeader({
     navigate("/cart");
   };
 
+  const handleResourceItemClick = (item) => {
+    setMenuOpen(false);
+    setMiniMenuOpen(false);
+    setResourcesOpen(false);
+
+    if (item.type === "route" && item.route) {
+      navigate(item.route);
+      return;
+    }
+
+    goToSection(item.id);
+  };
+
   return (
     <>
+      <style>{`
+        .ts-desktopOnlyResourceLink {
+          display: inline-flex;
+        }
+
+        .ts-desktopResources {
+          position: relative;
+          display: none;
+          align-items: center;
+          padding-bottom: 10px;
+          margin-bottom: -10px;
+        }
+
+        .ts-desktopResourcesBtn {
+          background: transparent;
+          border: 0;
+          padding: 0;
+          margin: 0;
+          cursor: pointer;
+          font: inherit;
+          color: inherit;
+        }
+
+        .ts-desktopResourcesChevron {
+          display: inline-block;
+          margin-left: 6px;
+          font-size: 0.75em;
+          transform: translateY(-1px);
+        }
+
+        .ts-desktopResourcesMenu {
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          min-width: 180px;
+          background: #ffffff;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          border-radius: 12px;
+          box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+          padding: 18px 0 8px;
+          z-index: 50;
+        }
+
+        .ts-desktopResourcesItem {
+          width: 100%;
+          display: block;
+          background: transparent;
+          border: 0;
+          text-align: left;
+          padding: 10px 14px;
+          cursor: pointer;
+          font: inherit;
+          color: #1f2937;
+        }
+
+        .ts-desktopResourcesItem:hover {
+          background: rgba(0, 0, 0, 0.04);
+        }
+
+        @media (min-width: 901px) {
+          .ts-desktopOnlyResourceLink {
+            display: none !important;
+          }
+
+          .ts-desktopResources {
+            display: inline-flex;
+          }
+        }
+      `}</style>
+
       <header className="ts-siteHeader">
         <nav className="ts-siteNav" aria-label="Primary">
           <div className="ts-jump ts-headerJump">
@@ -206,23 +304,78 @@ export default function SiteHeader({
               type="button"
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((v) => !v)}
+              onClick={() => {
+                setMenuOpen((v) => !v);
+                setResourcesOpen(false);
+              }}
             >
               ☰
             </button>
           </div>
 
           <div className={`ts-navLinks ${menuOpen ? "isOpen" : ""}`}>
-            {resolvedNavLinks.map((l) => (
-              <React.Fragment key={l.id}>
-                  {l.id === "q-and-a" ? (
+            {resolvedNavLinks.map((l) => {
+              const isDesktopResourceLink =
+                l.id === "applications" || l.id === "q-and-a" || l.id === "faq" || l.id === "blog";
+
+              return (
+                <React.Fragment key={l.id}>
+                  {l.id === "contact-sales" ? (
+                    <>
+                      <div
+                        className="ts-desktopResources"
+                        onMouseEnter={() => setResourcesOpen(true)}
+                        onMouseLeave={() => setResourcesOpen(false)}
+                      >
+                        <button
+                          className="ts-siteNavLink ts-desktopResourcesBtn"
+                          type="button"
+                          aria-haspopup="menu"
+                          aria-expanded={resourcesOpen}
+                          onClick={() => setResourcesOpen((v) => !v)}
+                        >
+                          Resources
+                          <span className="ts-desktopResourcesChevron">▾</span>
+                        </button>
+
+                        {resourcesOpen ? (
+                          <div className="ts-desktopResourcesMenu" role="menu" aria-label="Resources">
+                            {RESOURCE_ITEMS.map((item) => (
+                              <button
+                                key={item.id}
+                                type="button"
+                                role="menuitem"
+                                className="ts-desktopResourcesItem"
+                                onClick={() => handleResourceItemClick(item)}
+                              >
+                                {item.label}
+                              </button>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+
+                      <a
+                        href={`/#${l.id}`}
+                        className="ts-siteNavLink"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (l.placeholder) return;
+                          goToSection(l.id);
+                        }}
+                      >
+                        {l.label}
+                      </a>
+                    </>
+                  ) : l.id === "q-and-a" ? (
                     <a
                       href="/qna"
-                      className="ts-siteNavLink"
+                      className={`ts-siteNavLink ${isDesktopResourceLink ? "ts-desktopOnlyResourceLink" : ""}`}
                       onClick={(e) => {
                         e.preventDefault();
                         setMenuOpen(false);
                         setMiniMenuOpen(false);
+                        setResourcesOpen(false);
                         navigate("/qna");
                       }}
                     >
@@ -231,11 +384,12 @@ export default function SiteHeader({
                   ) : l.id === "faq" ? (
                     <a
                       href="/faq"
-                      className="ts-siteNavLink"
+                      className={`ts-siteNavLink ${isDesktopResourceLink ? "ts-desktopOnlyResourceLink" : ""}`}
                       onClick={(e) => {
                         e.preventDefault();
                         setMenuOpen(false);
                         setMiniMenuOpen(false);
+                        setResourcesOpen(false);
                         navigate("/faq");
                       }}
                     >
@@ -244,11 +398,12 @@ export default function SiteHeader({
                   ) : l.id === "blog" ? (
                     <a
                       href="/blog"
-                      className="ts-siteNavLink"
+                      className={`ts-siteNavLink ${isDesktopResourceLink ? "ts-desktopOnlyResourceLink" : ""}`}
                       onClick={(e) => {
                         e.preventDefault();
                         setMenuOpen(false);
                         setMiniMenuOpen(false);
+                        setResourcesOpen(false);
                         navigate("/blog");
                       }}
                     >
@@ -257,7 +412,7 @@ export default function SiteHeader({
                   ) : (
                     <a
                       href={`/#${l.id}`}
-                      className="ts-siteNavLink"
+                      className={`ts-siteNavLink ${isDesktopResourceLink ? "ts-desktopOnlyResourceLink" : ""}`}
                       onClick={(e) => {
                         e.preventDefault();
                         if (l.placeholder) return;
@@ -267,21 +422,24 @@ export default function SiteHeader({
                       {l.label}
                     </a>
                   )}
-                {l.id === "contact-sales" ? (
-                  <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                    <button
-                      className="ts-cartIconBtn"
-                      type="button"
-                      aria-label={`Cart with ${cartCount} item${cartCount === 1 ? "" : "s"}`}
-                      onClick={handleCartButtonClick}
-                    >
-                      <img src={cartIcon} alt="Cart" />
-                      {cartCount > 0 ? <span>{cartCount}</span> : null}
-                    </button>
-                  </div>
-                ) : null}
-              </React.Fragment>
-            ))}
+
+                  {l.id === "contact-sales" ? (
+                    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+                      <button
+                        className="ts-cartIconBtn"
+                        type="button"
+                        aria-label={`Cart with ${cartCount} item${cartCount === 1 ? "" : "s"}`}
+                        onClick={handleCartButtonClick}
+                      >
+                        <img src={cartIcon} alt="Cart" />
+                        {cartCount > 0 ? <span>{cartCount}</span> : null}
+                      </button>
+                    </div>
+                  ) : null}
+                </React.Fragment>
+              );
+            })}
+
             <div className="ts-authArea">
               {user ? (
                 <>
@@ -291,6 +449,7 @@ export default function SiteHeader({
                     onClick={() => {
                       setMenuOpen(false);
                       setMiniMenuOpen(false);
+                      setResourcesOpen(false);
                       navigate("/account");
                     }}
                   >
@@ -302,6 +461,7 @@ export default function SiteHeader({
                     onClick={async () => {
                       setMenuOpen(false);
                       setMiniMenuOpen(false);
+                      setResourcesOpen(false);
                       await logout();
                       navigate("/");
                     }}
@@ -316,6 +476,7 @@ export default function SiteHeader({
                   onClick={() => {
                     setMenuOpen(false);
                     setMiniMenuOpen(false);
+                    setResourcesOpen(false);
                     navigate("/login");
                   }}
                 >
@@ -384,6 +545,7 @@ export default function SiteHeader({
                   if (route) {
                     setMenuOpen(false);
                     setMiniMenuOpen(false);
+                    setResourcesOpen(false);
                     navigate(route);
                     return;
                   }

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useMemo, useState } from "react";
 import "../ProductPage/ProductPage.css";
 import { useAuth } from "../../auth/AuthContext";
@@ -549,13 +550,13 @@ export default function IsolatesShowcase() {
                       outline: "none",
                     }}
                   >
-                    <option value="2mL | 1.84 g - $20">2mL | 1.84 g - $20</option>
-                    <option value="5mL | 4.2g - $35">5mL | 4.2g - $35</option>
-                    <option value="24mL | 20g - $125">24mL | 20g - $125</option>
-                    <option value="60mL | 50g | 2oz - $276">60mL | 50g | 2oz - $276</option>
-                    <option value="111mL | 100g | 4oz - $418">111mL | 100g | 4oz - $418</option>
-                    <option value="556mL | 500g | 19.9oz - $1897">556mL | 500g | 19.9oz - $1897</option>
-                    <option value="1kg | 39.8oz - $2,999">1kg | 39.8oz - $2,999</option>
+                    <option value="2mL | 1.84 g - $18">2mL | 1.84 g - $18</option>
+                    <option value="5mL | 4.2g - $33">5mL | 4.2g - $33</option>
+                    <option value="24mL | 20g - $123">24mL | 20g - $123</option>
+                    <option value="60mL | 50g | 2oz - $274">60mL | 50g | 2oz - $274</option>
+                    <option value="111mL | 100g | 4oz - $416">111mL | 100g | 4oz - $416</option>
+                    <option value="556mL | 500g | 19.9oz - $1895">556mL | 500g | 19.9oz - $1895</option>
+                    <option value="1kg | 39.8oz - $2997">1kg | 39.8oz - $2997</option>
                   </select>
                 </div>
 

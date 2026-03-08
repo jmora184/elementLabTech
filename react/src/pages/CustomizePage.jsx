@@ -72,14 +72,6 @@ function formatLabelFromKey(options, key) {
 }
 
 export default function CustomizePage() {
-  React.useEffect(() => {
-    document.body.style.background = '#fff';
-    document.body.style.color = '#000';
-    return () => {
-      document.body.style.background = '';
-      document.body.style.color = '';
-    };
-  }, []);
   const [flavorName, setFlavorName] = useState("");
 
   const [applications, setApplications] = useState([]);
@@ -303,35 +295,36 @@ export default function CustomizePage() {
   };
 
   return (
-    <div className="el-authPage" style={pageStyle}>
-      <h1 className="el-authTitle">Custom Formulation</h1>
-      <p className="el-authSub">
-        Tell us what you want to build — we’ll review your intake and follow up with next steps.
-      </p>
+    <div style={{ background: '#fff', color: '#111', minHeight: '100vh' }}>
+      <div className="el-authPage" style={pageStyle}>
+        <h1 className="el-authTitle">Custom Formulation</h1>
+        <p className="el-authSub">
+          Tell us what you want to build — we’ll review your intake and follow up with next steps.
+        </p>
 
-      <form
-        className="el-authCard"
-        onSubmit={handleSubmit}
-        style={{
-          background: '#fff',
-          boxShadow: '0 2px 16px rgba(0,0,0,0.04)',
-          borderRadius: 14,
-        }}
-      >
-        {submitError ? <div className="el-authError">{submitError}</div> : null}
-        {submitOk ? (
-          <div
-            className="el-authError"
-            style={{
-              borderColor: "#b6f5c9",
-              background: "#e6f7ee",
-            }}
-          >
-            Submitted successfully. We’ll reach out shortly.
-          </div>
-        ) : null}
+        <form
+          className="el-authCard"
+          onSubmit={handleSubmit}
+          style={{
+            background: '#fff',
+            boxShadow: '0 2px 16px rgba(0,0,0,0.04)',
+            borderRadius: 14,
+          }}
+        >
+          {submitError ? <div className="el-authError">{submitError}</div> : null}
+          {submitOk ? (
+            <div
+              className="el-authError"
+              style={{
+                borderColor: "#b6f5c9",
+                background: "#e6f7ee",
+              }}
+            >
+              Submitted successfully. We’ll reach out shortly.
+            </div>
+          ) : null}
 
-        <div style={sectionStackStyle}>
+          <div style={sectionStackStyle}>
           <label className="el-authLabel" style={{ margin: 0 }}>
             Flavor Name
             <input
@@ -759,11 +752,12 @@ export default function CustomizePage() {
             </div>
           </fieldset>
 
-          <button className="el-authBtn" type="submit" disabled={isSubmitting} style={{ padding: "12px 14px" }}>
+          <button className="el-authBtn" type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Submitting…" : "Submit intake"}
           </button>
         </div>
       </form>
+    </div>
     </div>
   );
 }

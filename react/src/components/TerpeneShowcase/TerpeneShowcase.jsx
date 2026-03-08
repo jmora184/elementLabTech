@@ -709,13 +709,18 @@ function CollectionCard({ collection, isMobile, cardIndex }) {
                 if (cardIndex === 0) {
                   setSelectedType(primaryLabel);
                   navigate("/product/matrix-collection");
+                } else if (cardIndex === 2) {
+                  setSelectedType(primaryLabel);
+                  navigate("/product/test?profile=roadkill-skunk");
+                } else if (cardIndex === 3) {
+                  setSelectedType(primaryLabel);
+                  navigate("/product/emerald-cut?profile=savory-backbone");
                 } else if (cardIndex === 4) {
                   setSelectedType(primaryLabel);
                   navigate("/product/matrix-collection?profile=pistachio-baklava");
-                } 
-                else if (cardIndex === 1) {
-  navigate("/product/matrix-collection?profile=pistachio-baklava");
-}else {
+                } else if (cardIndex === 1) {
+                  navigate("/product/matrix-collection?profile=pistachio-baklava");
+                } else {
                   setSelectedType(primaryLabel);
                   navigate(productPath);
                 }
@@ -739,6 +744,8 @@ function CollectionCard({ collection, isMobile, cardIndex }) {
                 setSelectedType(secondaryLabel);
                 if (cardIndex === 0) {
                   navigate("/samples");
+                } else if (cardIndex === 3) {
+                  navigate("/product/emerald-cut?profile=permanent-marker-cut");
                 } else if (secondaryLabel === "Candy") {
                   navigate("/product/matrix-collection?profile=white-gusher");
                 }

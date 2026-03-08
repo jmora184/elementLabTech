@@ -202,6 +202,18 @@ export default function SiteHeader({
     goToSection(item.id);
   };
 
+  // Responsive: precompute mobile rows for flavor archive
+  let mobileMiniMenuRows = [];
+  if (typeof window !== 'undefined' && window.innerWidth <= 520) {
+    const allLabels = [...miniMenuLeft, ...miniMenuRight];
+    for (let i = 0; i < allLabels.length; i += 2) {
+      mobileMiniMenuRows.push([
+        allLabels[i],
+        allLabels[i + 1] || null
+      ]);
+    }
+  }
+
   return (
     <>
       <style>{`
@@ -503,32 +515,60 @@ export default function SiteHeader({
 
             {miniMenuOpen && (
               <div id="mini-menu-panel" className="ts-miniMenuPanel">
-                <div className="ts-miniMenuGrid">
-                  <div className="ts-miniMenuCol">
-                    {miniMenuLeft.map((label) => (
-                      <button
-                        key={label}
-                        type="button"
-                        className="ts-miniMenuItem"
-                        onClick={() => handleMiniMenuItemClick(label)}
-                      >
-                        {label}
-                      </button>
+                {/* Responsive: desktop = two columns, mobile = two-button rows */}
+                {typeof window !== 'undefined' && window.innerWidth <= 520 ? (
+                  <div className="ts-miniMenuGrid">
+                    {mobileMiniMenuRows.map((row, idx) => (
+                      <div className="ts-miniMenuRow" key={`row-${idx}`}>
+                        <button
+                          key={row[0]}
+                          type="button"
+                          className="ts-miniMenuItem"
+                          onClick={() => handleMiniMenuItemClick(row[0])}
+                        >
+                          {row[0]}
+                        </button>
+                        {row[1] && (
+                          <button
+                            key={row[1]}
+                            type="button"
+                            className="ts-miniMenuItem"
+                            onClick={() => handleMiniMenuItemClick(row[1])}
+                          >
+                            {row[1]}
+                          </button>
+                        )}
+                      </div>
                     ))}
                   </div>
-                  <div className="ts-miniMenuCol">
-                    {miniMenuRight.map((label) => (
-                      <button
-                        key={label}
-                        type="button"
-                        className="ts-miniMenuItem"
-                        onClick={() => handleMiniMenuItemClick(label)}
-                      >
-                        {label}
-                      </button>
-                    ))}
+                ) : (
+                  <div className="ts-miniMenuGrid">
+                    <div className="ts-miniMenuCol ts-miniMenuCol-left">
+                      {miniMenuLeft.map((label) => (
+                        <button
+                          key={label}
+                          type="button"
+                          className="ts-miniMenuItem"
+                          onClick={() => handleMiniMenuItemClick(label)}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="ts-miniMenuCol ts-miniMenuCol-right">
+                      {miniMenuRight.map((label) => (
+                        <button
+                          key={label}
+                          type="button"
+                          className="ts-miniMenuItem"
+                          onClick={() => handleMiniMenuItemClick(label)}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
           </div>

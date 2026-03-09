@@ -22,7 +22,6 @@ const DEFAULT_MINI_LINKS = [
   { label: "Best Sellers", id: "best-sellers" },
   { label: "Sample Sets", id: "signature-blends" },
   { label: "Isolates", id: "isolates" },
-  { label: "Carriers", id: "carriers" },
   { label: "Customize", id: "customize" },
 ];
 
@@ -70,7 +69,6 @@ const MINI_LINK_ROUTES = {
   "best-sellers": "/product/matrix-collection?profile=hawiiana-snow-cone",
   "signature-blends": "/samples",
   "isolates": "/isolates",
-  "carriers": "/carriers",
   "customize": "/customize",
 };
 

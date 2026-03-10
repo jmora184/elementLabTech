@@ -1,7 +1,7 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
-// .wrangler/tmp/pages-7COOOG/functionsWorker-0.7345463262836465.mjs
+// .wrangler/tmp/pages-f5DSf0/functionsWorker-0.24625229424921802.mjs
 var __defProp2 = Object.defineProperty;
 var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
 var __export = /* @__PURE__ */ __name((target, all) => {
@@ -6857,6 +6857,42 @@ async function onRequestPost9() {
 }
 __name(onRequestPost9, "onRequestPost9");
 __name2(onRequestPost9, "onRequestPost");
+var CORS_HEADERS11 = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
+function json16(body, status = 200, extraHeaders = {}) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json", ...CORS_HEADERS11, ...extraHeaders }
+  });
+}
+__name(json16, "json16");
+__name2(json16, "json");
+async function onRequestOptions11() {
+  return new Response(null, { status: 204, headers: { ...CORS_HEADERS11 } });
+}
+__name(onRequestOptions11, "onRequestOptions11");
+__name2(onRequestOptions11, "onRequestOptions");
+async function onRequestGet6({ request, env }) {
+  const cookieHeader = request.headers.get("Cookie") || "";
+  const cookies = parseCookie(cookieHeader);
+  const token = cookies?.el_session || "";
+  const user = await getUserFromSession(env, token);
+  if (!user) return json16({ ok: false, error: "Unauthorized" }, 401);
+  try {
+    const res = await env.DB.prepare(
+      "SELECT id, items, total_amount, purchased_at, stripe_payment_id FROM purchases WHERE user_id = ? ORDER BY purchased_at DESC"
+    ).bind(user.id).all();
+    return json16({ ok: true, purchases: res?.results || [] });
+  } catch (err) {
+    console.error("USER PURCHASES ERROR:", err);
+    return json16({ ok: false, error: "Server error." }, 500);
+  }
+}
+__name(onRequestGet6, "onRequestGet6");
+__name2(onRequestGet6, "onRequestGet");
 async function onRequest5(context) {
   const { request, env } = context;
   const url = new URL(request.url);
@@ -7109,6 +7145,20 @@ var routes = [
     method: "POST",
     middlewares: [],
     modules: [onRequestPost9]
+  },
+  {
+    routePath: "/api/user-purchases",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet6]
+  },
+  {
+    routePath: "/api/user-purchases",
+    mountPath: "/api",
+    method: "OPTIONS",
+    middlewares: [],
+    modules: [onRequestOptions11]
   },
   {
     routePath: "/api/blog",
@@ -7783,7 +7833,7 @@ var jsonError2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx
 }, "jsonError");
 var middleware_miniflare3_json_error_default2 = jsonError2;
 
-// .wrangler/tmp/bundle-z0cSnH/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-D4rmiw/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
   middleware_ensure_req_body_drained_default2,
   middleware_miniflare3_json_error_default2
@@ -7815,7 +7865,7 @@ function __facade_invoke__2(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__2, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-z0cSnH/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-D4rmiw/middleware-loader.entry.ts
 var __Facade_ScheduledController__2 = class ___Facade_ScheduledController__2 {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
@@ -7915,4 +7965,4 @@ export {
   __INTERNAL_WRANGLER_MIDDLEWARE__2 as __INTERNAL_WRANGLER_MIDDLEWARE__,
   middleware_loader_entry_default2 as default
 };
-//# sourceMappingURL=functionsWorker-0.7345463262836465.js.map
+//# sourceMappingURL=functionsWorker-0.24625229424921802.js.map

@@ -6980,6 +6980,41 @@ async function onRequestPost9() {
 }
 __name(onRequestPost9, "onRequestPost");
 
+// api/user-purchases.js
+var CORS_HEADERS11 = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
+function json16(body, status = 200, extraHeaders = {}) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json", ...CORS_HEADERS11, ...extraHeaders }
+  });
+}
+__name(json16, "json");
+async function onRequestOptions11() {
+  return new Response(null, { status: 204, headers: { ...CORS_HEADERS11 } });
+}
+__name(onRequestOptions11, "onRequestOptions");
+async function onRequestGet6({ request, env }) {
+  const cookieHeader = request.headers.get("Cookie") || "";
+  const cookies = parseCookie(cookieHeader);
+  const token = cookies?.el_session || "";
+  const user = await getUserFromSession(env, token);
+  if (!user) return json16({ ok: false, error: "Unauthorized" }, 401);
+  try {
+    const res = await env.DB.prepare(
+      "SELECT id, items, total_amount, purchased_at, stripe_payment_id FROM purchases WHERE user_id = ? ORDER BY purchased_at DESC"
+    ).bind(user.id).all();
+    return json16({ ok: true, purchases: res?.results || [] });
+  } catch (err) {
+    console.error("USER PURCHASES ERROR:", err);
+    return json16({ ok: false, error: "Server error." }, 500);
+  }
+}
+__name(onRequestGet6, "onRequestGet");
+
 // api/blog.js
 async function onRequest5(context) {
   const { request, env } = context;
@@ -7023,7 +7058,7 @@ async function onRequest5(context) {
 }
 __name(onRequest5, "onRequest");
 
-// ../.wrangler/tmp/pages-7COOOG/functionsRoutes-0.8285265798175059.mjs
+// ../.wrangler/tmp/pages-f5DSf0/functionsRoutes-0.6963784245291738.mjs
 var routes = [
   {
     routePath: "/api/collections/:id/documents/:docId/download",
@@ -7234,6 +7269,20 @@ var routes = [
     method: "POST",
     middlewares: [],
     modules: [onRequestPost9]
+  },
+  {
+    routePath: "/api/user-purchases",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet6]
+  },
+  {
+    routePath: "/api/user-purchases",
+    mountPath: "/api",
+    method: "OPTIONS",
+    middlewares: [],
+    modules: [onRequestOptions11]
   },
   {
     routePath: "/api/blog",
@@ -7731,7 +7780,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// ../.wrangler/tmp/bundle-1V8sOk/middleware-insertion-facade.js
+// ../.wrangler/tmp/bundle-U7im6b/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -7763,7 +7812,7 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// ../.wrangler/tmp/bundle-1V8sOk/middleware-loader.entry.ts
+// ../.wrangler/tmp/bundle-U7im6b/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
@@ -7863,4 +7912,4 @@ export {
   __INTERNAL_WRANGLER_MIDDLEWARE__,
   middleware_loader_entry_default as default
 };
-//# sourceMappingURL=functionsWorker-0.7345463262836465.mjs.map
+//# sourceMappingURL=functionsWorker-0.24625229424921802.mjs.map

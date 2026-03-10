@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { loadStripe } from "@stripe/stripe-js";
 import { clearCart, getCartItems, removeCartItem, setCartItems } from "../utils/cart";
 
 const elPageBackgroundStyle = {
@@ -37,6 +36,9 @@ function parseUnitPrice(item) {
     const parsed = Number(match[1]);
     if (Number.isFinite(parsed) && parsed >= 0) return parsed;
   }
+
+  const explicitPrice = Number(item?.unitPrice);
+  if (Number.isFinite(explicitPrice) && explicitPrice >= 0) return explicitPrice;
 
   return 0;
 }
@@ -174,12 +176,6 @@ export default function CartPage() {
       return;
     }
 
-    const publishableKey = String(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "").trim();
-    if (!publishableKey) {
-      setCheckoutError("Stripe is not configured yet. Add VITE_STRIPE_PUBLISHABLE_KEY to your environment.");
-      return;
-    }
-//test
     setCheckoutLoading(true);
 
     try {
@@ -190,23 +186,19 @@ export default function CartPage() {
       });
 
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.sessionId) {
+
+      if (!res.ok) {
         throw new Error(String(data?.error || "Unable to start Stripe checkout."));
       }
 
-      const stripe = await loadStripe(publishableKey);
-      if (!stripe) {
-        throw new Error("Stripe failed to initialize in the browser.");
+      if (!data?.url) {
+        throw new Error("Stripe checkout URL was not returned.");
       }
 
-      const result = await stripe.redirectToCheckout({ sessionId: data.sessionId });
-      if (result?.error) {
-        throw new Error(result.error.message || "Stripe redirect failed.");
-      }
+      window.location.href = data.url;
     } catch (err) {
       setCheckoutError(err?.message || "Unable to start Stripe checkout.");
       setCheckoutLoading(false);
-      return;
     }
   };
 

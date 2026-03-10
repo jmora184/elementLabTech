@@ -28,6 +28,8 @@ import { onRequestOptions as __api_create_checkout_session_js_onRequestOptions }
 import { onRequestPost as __api_create_checkout_session_js_onRequestPost } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\create-checkout-session.js"
 import { onRequestOptions as __api_purchase_js_onRequestOptions } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\purchase.js"
 import { onRequestPost as __api_purchase_js_onRequestPost } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\purchase.js"
+import { onRequestGet as __api_user_purchases_js_onRequestGet } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\user-purchases.js"
+import { onRequestOptions as __api_user_purchases_js_onRequestOptions } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\user-purchases.js"
 import { onRequest as __api_blog_js_onRequest } from "C:\\Users\\Jeremiah\\source\\repos\\elementLabTech\\react\\functions\\api\\blog.js"
 
 export const routes = [
@@ -240,6 +242,20 @@ export const routes = [
       method: "POST",
       middlewares: [],
       modules: [__api_purchase_js_onRequestPost],
+    },
+  {
+      routePath: "/api/user-purchases",
+      mountPath: "/api",
+      method: "GET",
+      middlewares: [],
+      modules: [__api_user_purchases_js_onRequestGet],
+    },
+  {
+      routePath: "/api/user-purchases",
+      mountPath: "/api",
+      method: "OPTIONS",
+      middlewares: [],
+      modules: [__api_user_purchases_js_onRequestOptions],
     },
   {
       routePath: "/api/blog",

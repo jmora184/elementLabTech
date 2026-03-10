@@ -1715,7 +1715,7 @@ export default function ProductPage() {
                       ));
                     } else {
                       const baseSizes = [
-                        { label: "2mL | 1.84 g", price: 1 }, // Set first item to $1 for testing
+                        { label: "2mL | 1.84 g", price: 20 },
                         { label: "5mL | 4.2g", price: 35 },
                         { label: "24mL | 20g", price: 125 },
                         { label: "60mL | 50g | 2oz", price: 276 },

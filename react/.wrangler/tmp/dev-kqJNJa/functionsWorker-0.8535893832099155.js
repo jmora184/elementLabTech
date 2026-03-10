@@ -1,15 +1,17 @@
 var __defProp = Object.defineProperty;
-var __getOwnPropNames = Object.getOwnPropertyNames;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-var __esm = (fn, res) => function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-};
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
 
-// _lib/auth.js
+// .wrangler/tmp/pages-qHcGvK/functionsWorker-0.8535893832099155.mjs
+var __defProp2 = Object.defineProperty;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
+var __esm = /* @__PURE__ */ __name((fn, res) => /* @__PURE__ */ __name(function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+}, "__init"), "__esm");
+var __export = /* @__PURE__ */ __name((target, all) => {
+  for (var name in all)
+    __defProp2(target, name, { get: all[name], enumerable: true });
+}, "__export");
 function json(status, data, extraHeaders = {}) {
   const headers = new Headers({
     "Content-Type": "application/json; charset=utf-8",
@@ -17,9 +19,11 @@ function json(status, data, extraHeaders = {}) {
   });
   return new Response(JSON.stringify(data), { status, headers });
 }
+__name(json, "json");
 function normalizeEmail(email) {
   return String(email || "").trim().toLowerCase();
 }
+__name(normalizeEmail, "normalizeEmail");
 function cookieOptions(opts = {}) {
   const defaults = {
     httpOnly: true,
@@ -31,6 +35,7 @@ function cookieOptions(opts = {}) {
   };
   return { ...defaults, ...opts };
 }
+__name(cookieOptions, "cookieOptions");
 function setCookie(headers, name, value, options = {}) {
   const opts = cookieOptions(options);
   const parts = [`${name}=${encodeURIComponent(value)}`];
@@ -42,6 +47,7 @@ function setCookie(headers, name, value, options = {}) {
   if (opts.secure) parts.push("Secure");
   headers.append("Set-Cookie", parts.join("; "));
 }
+__name(setCookie, "setCookie");
 function parseCookie(cookieHeader) {
   const out = {};
   const str = cookieHeader || "";
@@ -52,11 +58,13 @@ function parseCookie(cookieHeader) {
   });
   return out;
 }
+__name(parseCookie, "parseCookie");
 function randomToken(byteLen = 32) {
   const bytes = new Uint8Array(byteLen);
   crypto.getRandomValues(bytes);
   return [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
+__name(randomToken, "randomToken");
 async function hashPassword(password, iters = DEFAULT_PBKDF2_ITERS) {
   const safeIters = Math.min(Number(iters) || DEFAULT_PBKDF2_ITERS, 1e5);
   const salt = new Uint8Array(16);
@@ -81,6 +89,7 @@ async function hashPassword(password, iters = DEFAULT_PBKDF2_ITERS) {
   const hash = new Uint8Array(bits);
   return `pbkdf2$${safeIters}$${toHex(salt)}$${toHex(hash)}`;
 }
+__name(hashPassword, "hashPassword");
 async function verifyPassword(password, stored) {
   try {
     const [alg, itersStr, saltHex, hashHex] = String(stored || "").split("$");
@@ -111,6 +120,7 @@ async function verifyPassword(password, stored) {
     return false;
   }
 }
+__name(verifyPassword, "verifyPassword");
 async function getUserFromSession(env, sessionToken) {
   if (!env?.DB || !sessionToken) return null;
   const row = await env.DB.prepare(
@@ -127,9 +137,11 @@ async function getUserFromSession(env, sessionToken) {
   if (Number.isFinite(exp) && exp < Date.now()) return null;
   return { id: row.id, email: row.email, role: row.role || "user" };
 }
+__name(getUserFromSession, "getUserFromSession");
 function toHex(u8) {
   return [...u8].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
+__name(toHex, "toHex");
 function fromHex(hex) {
   const clean = String(hex || "").trim();
   const out = new Uint8Array(clean.length / 2);
@@ -138,43 +150,46 @@ function fromHex(hex) {
   }
   return out;
 }
+__name(fromHex, "fromHex");
 function timingSafeEqual(a, b) {
   if (a.length !== b.length) return false;
   let diff = 0;
   for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
   return diff === 0;
 }
-var encoder, DEFAULT_PBKDF2_ITERS;
+__name(timingSafeEqual, "timingSafeEqual");
+var encoder;
+var DEFAULT_PBKDF2_ITERS;
 var init_auth = __esm({
   "_lib/auth.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     encoder = new TextEncoder();
-    __name(json, "json");
-    __name(normalizeEmail, "normalizeEmail");
-    __name(cookieOptions, "cookieOptions");
-    __name(setCookie, "setCookie");
-    __name(parseCookie, "parseCookie");
-    __name(randomToken, "randomToken");
+    __name2(json, "json");
+    __name2(normalizeEmail, "normalizeEmail");
+    __name2(cookieOptions, "cookieOptions");
+    __name2(setCookie, "setCookie");
+    __name2(parseCookie, "parseCookie");
+    __name2(randomToken, "randomToken");
     DEFAULT_PBKDF2_ITERS = 1e5;
-    __name(hashPassword, "hashPassword");
-    __name(verifyPassword, "verifyPassword");
-    __name(getUserFromSession, "getUserFromSession");
-    __name(toHex, "toHex");
-    __name(fromHex, "fromHex");
-    __name(timingSafeEqual, "timingSafeEqual");
+    __name2(hashPassword, "hashPassword");
+    __name2(verifyPassword, "verifyPassword");
+    __name2(getUserFromSession, "getUserFromSession");
+    __name2(toHex, "toHex");
+    __name2(fromHex, "fromHex");
+    __name2(timingSafeEqual, "timingSafeEqual");
   }
 });
-
-// api/collections/[id]/documents/[docId]/download.js
 function withCors(headers = {}) {
   return { ...headers, ...CORS_HEADERS };
 }
+__name(withCors, "withCors");
 function json2(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: withCors({ "Content-Type": "application/json", ...extraHeaders })
   });
 }
+__name(json2, "json2");
 function safeJsonArray(text) {
   if (!text) return [];
   try {
@@ -184,6 +199,7 @@ function safeJsonArray(text) {
     return [];
   }
 }
+__name(safeJsonArray, "safeJsonArray");
 async function requireLoginIfConfigured(request, env) {
   if (String(env.DOCS_REQUIRE_LOGIN || "") !== "1") return { ok: true };
   const cookieHeader = request.headers.get("Cookie") || "";
@@ -193,9 +209,11 @@ async function requireLoginIfConfigured(request, env) {
   if (!user) return { ok: false, status: 401, error: "Unauthorized" };
   return { ok: true, user };
 }
+__name(requireLoginIfConfigured, "requireLoginIfConfigured");
 async function onRequestOptions() {
   return new Response(null, { status: 204, headers: withCors() });
 }
+__name(onRequestOptions, "onRequestOptions");
 async function onRequestGet({ request, env, params }) {
   const id = params?.id;
   const docId = params?.docId;
@@ -232,32 +250,32 @@ async function onRequestGet({ request, env, params }) {
   if (obj.httpEtag) headers.set("ETag", obj.httpEtag);
   return new Response(obj.body, { status: 200, headers });
 }
+__name(onRequestGet, "onRequestGet");
 var CORS_HEADERS;
 var init_download = __esm({
   "api/collections/[id]/documents/[docId]/download.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
     CORS_HEADERS = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type"
     };
-    __name(withCors, "withCors");
-    __name(json2, "json");
-    __name(safeJsonArray, "safeJsonArray");
-    __name(requireLoginIfConfigured, "requireLoginIfConfigured");
-    __name(onRequestOptions, "onRequestOptions");
-    __name(onRequestGet, "onRequestGet");
+    __name2(withCors, "withCors");
+    __name2(json2, "json");
+    __name2(safeJsonArray, "safeJsonArray");
+    __name2(requireLoginIfConfigured, "requireLoginIfConfigured");
+    __name2(onRequestOptions, "onRequestOptions");
+    __name2(onRequestGet, "onRequestGet");
   }
 });
-
-// api/collections/[id]/documents/upload.js
 function json3(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...CORS_HEADERS2, ...extraHeaders }
   });
 }
+__name(json3, "json3");
 async function requireAdmin(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -267,6 +285,7 @@ async function requireAdmin(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
+__name(requireAdmin, "requireAdmin");
 function safeJsonArray2(text) {
   if (!text) return [];
   if (Array.isArray(text)) return text;
@@ -277,13 +296,16 @@ function safeJsonArray2(text) {
     return [];
   }
 }
+__name(safeJsonArray2, "safeJsonArray2");
 function sanitizeFileName(name) {
   const base = String(name || "document").replace(/[/\\?%*:|"<>]/g, "_");
   return base.length > 120 ? base.slice(0, 120) : base;
 }
+__name(sanitizeFileName, "sanitizeFileName");
 async function onRequestOptions2() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS2 } });
 }
+__name(onRequestOptions2, "onRequestOptions2");
 async function onRequestPost({ request, env, params }) {
   const id = params?.id;
   if (!id) return json3({ ok: false, error: "Missing collection id." }, 400);
@@ -367,32 +389,32 @@ async function onRequestPost({ request, env, params }) {
     documents: docs
   });
 }
+__name(onRequestPost, "onRequestPost");
 var CORS_HEADERS2;
 var init_upload = __esm({
   "api/collections/[id]/documents/upload.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
     CORS_HEADERS2 = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type"
     };
-    __name(json3, "json");
-    __name(requireAdmin, "requireAdmin");
-    __name(safeJsonArray2, "safeJsonArray");
-    __name(sanitizeFileName, "sanitizeFileName");
-    __name(onRequestOptions2, "onRequestOptions");
-    __name(onRequestPost, "onRequestPost");
+    __name2(json3, "json");
+    __name2(requireAdmin, "requireAdmin");
+    __name2(safeJsonArray2, "safeJsonArray");
+    __name2(sanitizeFileName, "sanitizeFileName");
+    __name2(onRequestOptions2, "onRequestOptions");
+    __name2(onRequestPost, "onRequestPost");
   }
 });
-
-// api/collections/[id]/documents/[docId].js
 function json4(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...CORS_HEADERS3, ...extraHeaders }
   });
 }
+__name(json4, "json4");
 async function requireAdmin2(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -402,6 +424,7 @@ async function requireAdmin2(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
+__name(requireAdmin2, "requireAdmin2");
 function safeJsonArray3(text) {
   if (!text) return [];
   try {
@@ -411,9 +434,11 @@ function safeJsonArray3(text) {
     return [];
   }
 }
+__name(safeJsonArray3, "safeJsonArray3");
 async function onRequestOptions3() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS3 } });
 }
+__name(onRequestOptions3, "onRequestOptions3");
 async function onRequestDelete({ request, env, params }) {
   const id = params?.id;
   const docId = params?.docId;
@@ -443,31 +468,31 @@ async function onRequestDelete({ request, env, params }) {
   }
   return json4({ ok: true, deleted: { id: docId } });
 }
+__name(onRequestDelete, "onRequestDelete");
 var CORS_HEADERS3;
 var init_docId = __esm({
   "api/collections/[id]/documents/[docId].js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
     CORS_HEADERS3 = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "DELETE,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type"
     };
-    __name(json4, "json");
-    __name(requireAdmin2, "requireAdmin");
-    __name(safeJsonArray3, "safeJsonArray");
-    __name(onRequestOptions3, "onRequestOptions");
-    __name(onRequestDelete, "onRequestDelete");
+    __name2(json4, "json");
+    __name2(requireAdmin2, "requireAdmin");
+    __name2(safeJsonArray3, "safeJsonArray");
+    __name2(onRequestOptions3, "onRequestOptions");
+    __name2(onRequestDelete, "onRequestDelete");
   }
 });
-
-// api/collections/[id]/sample-profiles/[profileId].js
 function json5(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...extraHeaders }
   });
 }
+__name(json5, "json5");
 async function requireAdmin3(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -477,6 +502,7 @@ async function requireAdmin3(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
+__name(requireAdmin3, "requireAdmin3");
 async function onRequest(context) {
   const { request, env, params } = context;
   const collectionId = String(params?.id || "").trim();
@@ -505,29 +531,31 @@ async function onRequest(context) {
     return json5({ ok: false, error: String(err?.message || err) }, 500);
   }
 }
+__name(onRequest, "onRequest");
 var init_profileId = __esm({
   "api/collections/[id]/sample-profiles/[profileId].js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
-    __name(json5, "json");
-    __name(requireAdmin3, "requireAdmin");
-    __name(onRequest, "onRequest");
+    __name2(json5, "json");
+    __name2(requireAdmin3, "requireAdmin");
+    __name2(onRequest, "onRequest");
   }
 });
-
-// api/collections/[id]/profiles.js
 function json6(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...extraHeaders }
   });
 }
+__name(json6, "json6");
 function slugify(input) {
   return String(input || "").trim().toLowerCase().replace(/['"]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
 }
+__name(slugify, "slugify");
 function nowIso() {
   return (/* @__PURE__ */ new Date()).toISOString();
 }
+__name(nowIso, "nowIso");
 function cleanImagesArray(value) {
   if (!Array.isArray(value)) return [];
   return value.filter((x) => x && typeof x.url === "string" && x.url.trim()).map((x, idx) => ({
@@ -537,6 +565,7 @@ function cleanImagesArray(value) {
     sort_order: x.sort_order === void 0 || x.sort_order === null || x.sort_order === "" ? idx : Number(x.sort_order)
   }));
 }
+__name(cleanImagesArray, "cleanImagesArray");
 async function requireAdmin4(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -546,6 +575,7 @@ async function requireAdmin4(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
+__name(requireAdmin4, "requireAdmin4");
 async function onRequest2(context) {
   const { request, env, params } = context;
   const id = params?.id;
@@ -637,29 +667,30 @@ async function onRequest2(context) {
   }
   return json6({ ok: false, error: "Method not allowed" }, 405);
 }
+__name(onRequest2, "onRequest2");
 var init_profiles = __esm({
   "api/collections/[id]/profiles.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
-    __name(json6, "json");
-    __name(slugify, "slugify");
-    __name(nowIso, "nowIso");
-    __name(cleanImagesArray, "cleanImagesArray");
-    __name(requireAdmin4, "requireAdmin");
-    __name(onRequest2, "onRequest");
+    __name2(json6, "json");
+    __name2(slugify, "slugify");
+    __name2(nowIso, "nowIso");
+    __name2(cleanImagesArray, "cleanImagesArray");
+    __name2(requireAdmin4, "requireAdmin");
+    __name2(onRequest2, "onRequest");
   }
 });
-
-// api/collections/[id]/sample-profiles.js
 function json7(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...extraHeaders }
   });
 }
+__name(json7, "json7");
 function nowIso2() {
   return (/* @__PURE__ */ new Date()).toISOString();
 }
+__name(nowIso2, "nowIso2");
 async function requireAdmin5(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -669,6 +700,7 @@ async function requireAdmin5(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
+__name(requireAdmin5, "requireAdmin5");
 async function onRequest3(context) {
   const { request, env, params } = context;
   const collectionId = String(params?.id || "").trim();
@@ -769,18 +801,17 @@ async function onRequest3(context) {
   }
   return json7({ ok: false, error: "Method not allowed" }, 405);
 }
+__name(onRequest3, "onRequest3");
 var init_sample_profiles = __esm({
   "api/collections/[id]/sample-profiles.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
-    __name(json7, "json");
-    __name(nowIso2, "nowIso");
-    __name(requireAdmin5, "requireAdmin");
-    __name(onRequest3, "onRequest");
+    __name2(json7, "json");
+    __name2(nowIso2, "nowIso");
+    __name2(requireAdmin5, "requireAdmin");
+    __name2(onRequest3, "onRequest");
   }
 });
-
-// api/auth/login.js
 async function onRequestPost2(context) {
   try {
     const { request, env } = context;
@@ -819,18 +850,18 @@ async function onRequestPost2(context) {
     return json(500, { ok: false, error: String(e?.message || e) });
   }
 }
-var SESSION_COOKIE, SESSION_TTL_MS;
+__name(onRequestPost2, "onRequestPost2");
+var SESSION_COOKIE;
+var SESSION_TTL_MS;
 var init_login = __esm({
   "api/auth/login.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
     SESSION_COOKIE = "el_session";
     SESSION_TTL_MS = 1e3 * 60 * 60 * 24 * 14;
-    __name(onRequestPost2, "onRequestPost");
+    __name2(onRequestPost2, "onRequestPost");
   }
 });
-
-// api/auth/logout.js
 async function onRequestPost3(context) {
   const { request, env } = context;
   try {
@@ -846,34 +877,32 @@ async function onRequestPost3(context) {
   setCookie(headers, SESSION_COOKIE2, "", cookieOptions({ maxAge: 0 }));
   return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
 }
+__name(onRequestPost3, "onRequestPost3");
 var SESSION_COOKIE2;
 var init_logout = __esm({
   "api/auth/logout.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
     SESSION_COOKIE2 = "el_session";
-    __name(onRequestPost3, "onRequestPost");
+    __name2(onRequestPost3, "onRequestPost");
   }
 });
-
-// api/auth/me.js
 async function onRequestGet2(context) {
   const cookies = parseCookie(context.request.headers.get("Cookie"));
   const token = cookies[SESSION_COOKIE3];
   const user = await getUserFromSession(context.env, token);
   return json(200, { ok: true, user: user || null });
 }
+__name(onRequestGet2, "onRequestGet2");
 var SESSION_COOKIE3;
 var init_me = __esm({
   "api/auth/me.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
     SESSION_COOKIE3 = "el_session";
-    __name(onRequestGet2, "onRequestGet");
+    __name2(onRequestGet2, "onRequestGet");
   }
 });
-
-// api/auth/register.js
 async function onRequestPost4(context) {
   try {
     const { request, env } = context;
@@ -920,21 +949,21 @@ async function onRequestPost4(context) {
     return json(500, { ok: false, error: String(e?.message || e) });
   }
 }
+__name(onRequestPost4, "onRequestPost4");
 var init_register = __esm({
   "api/auth/register.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
-    __name(onRequestPost4, "onRequestPost");
+    __name2(onRequestPost4, "onRequestPost");
   }
 });
-
-// api/images/direct-upload.js
 function json8(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...CORS_HEADERS4, ...extraHeaders }
   });
 }
+__name(json8, "json8");
 async function requireAdmin6(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -944,9 +973,11 @@ async function requireAdmin6(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
+__name(requireAdmin6, "requireAdmin6");
 async function onRequestOptions4() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS4 } });
 }
+__name(onRequestOptions4, "onRequestOptions4");
 async function onRequestPost5({ request, env }) {
   const gate = await requireAdmin6(request, env);
   if (!gate.ok) return json8({ ok: false, error: gate.error }, gate.status);
@@ -993,30 +1024,30 @@ async function onRequestPost5({ request, env }) {
   }
   return json8({ ok: true, id: data.result?.id, uploadURL: data.result?.uploadURL });
 }
+__name(onRequestPost5, "onRequestPost5");
 var CORS_HEADERS4;
 var init_direct_upload = __esm({
   "api/images/direct-upload.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
     CORS_HEADERS4 = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type"
     };
-    __name(json8, "json");
-    __name(requireAdmin6, "requireAdmin");
-    __name(onRequestOptions4, "onRequestOptions");
-    __name(onRequestPost5, "onRequestPost");
+    __name2(json8, "json");
+    __name2(requireAdmin6, "requireAdmin");
+    __name2(onRequestOptions4, "onRequestOptions");
+    __name2(onRequestPost5, "onRequestPost");
   }
 });
-
-// api/collections/[id].js
 function json9(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...CORS_HEADERS5, ...extraHeaders }
   });
 }
+__name(json9, "json9");
 async function requireAdmin7(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -1026,19 +1057,23 @@ async function requireAdmin7(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
+__name(requireAdmin7, "requireAdmin7");
 function toText(v) {
   if (v === null || typeof v === "undefined") return null;
   return String(v);
 }
+__name(toText, "toText");
 function toNumber(v) {
   if (v === null || typeof v === "undefined" || v === "") return null;
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
 }
+__name(toNumber, "toNumber");
 function toBool01(v) {
   if (v === null || typeof v === "undefined") return null;
   return v === true || v === 1 || v === "1" || v === "true" ? 1 : 0;
 }
+__name(toBool01, "toBool01");
 function toJsonText(v) {
   if (v === null || typeof v === "undefined") return null;
   if (typeof v === "string") return v;
@@ -1048,9 +1083,11 @@ function toJsonText(v) {
     return null;
   }
 }
+__name(toJsonText, "toJsonText");
 async function onRequestOptions5() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS5 } });
 }
+__name(onRequestOptions5, "onRequestOptions5");
 async function onRequestGet3({ env, params }) {
   const id = params?.id;
   if (!id) return json9({ ok: false, error: "Missing collection id." }, 400);
@@ -1065,6 +1102,7 @@ async function onRequestGet3({ env, params }) {
     return json9({ ok: false, error: "Server error." }, 500);
   }
 }
+__name(onRequestGet3, "onRequestGet3");
 async function onRequestPut({ request, env, params }) {
   const id = params?.id;
   if (!id) return json9({ ok: false, error: "Missing collection id." }, 400);
@@ -1097,6 +1135,7 @@ async function onRequestPut({ request, env, params }) {
     binds.push(val);
   }
   __name(add, "add");
+  __name2(add, "add");
   add("name", name);
   add("tagline", tagline);
   add("description", description);
@@ -1126,38 +1165,39 @@ async function onRequestPut({ request, env, params }) {
     return json9({ ok: false, error: "Server error." }, 500);
   }
 }
+__name(onRequestPut, "onRequestPut");
 var CORS_HEADERS5;
 var init_id = __esm({
   "api/collections/[id].js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
     CORS_HEADERS5 = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET,PUT,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type"
     };
-    __name(json9, "json");
-    __name(requireAdmin7, "requireAdmin");
-    __name(toText, "toText");
-    __name(toNumber, "toNumber");
-    __name(toBool01, "toBool01");
-    __name(toJsonText, "toJsonText");
-    __name(onRequestOptions5, "onRequestOptions");
-    __name(onRequestGet3, "onRequestGet");
-    __name(onRequestPut, "onRequestPut");
+    __name2(json9, "json");
+    __name2(requireAdmin7, "requireAdmin");
+    __name2(toText, "toText");
+    __name2(toNumber, "toNumber");
+    __name2(toBool01, "toBool01");
+    __name2(toJsonText, "toJsonText");
+    __name2(onRequestOptions5, "onRequestOptions");
+    __name2(onRequestGet3, "onRequestGet");
+    __name2(onRequestPut, "onRequestPut");
   }
 });
-
-// api/profiles/[slug].js
 function json10(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...extraHeaders }
   });
 }
+__name(json10, "json10");
 function nowIso3() {
   return (/* @__PURE__ */ new Date()).toISOString();
 }
+__name(nowIso3, "nowIso3");
 async function requireAdmin8(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -1167,6 +1207,7 @@ async function requireAdmin8(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
+__name(requireAdmin8, "requireAdmin8");
 function asJsonTextArray(value) {
   if (Array.isArray(value)) {
     const arr = value.map((s) => String(s).trim()).filter(Boolean);
@@ -1178,6 +1219,7 @@ function asJsonTextArray(value) {
   }
   return JSON.stringify([]);
 }
+__name(asJsonTextArray, "asJsonTextArray");
 function parseJsonArray(text) {
   try {
     const v = JSON.parse(text || "[]");
@@ -1186,6 +1228,7 @@ function parseJsonArray(text) {
     return [];
   }
 }
+__name(parseJsonArray, "parseJsonArray");
 function cleanImagesArray2(value) {
   if (!Array.isArray(value)) return [];
   return value.filter((x) => x && typeof x.url === "string" && x.url.trim()).map((x, idx) => ({
@@ -1195,6 +1238,7 @@ function cleanImagesArray2(value) {
     sort_order: x.sort_order === void 0 || x.sort_order === null || x.sort_order === "" ? idx : Number(x.sort_order)
   }));
 }
+__name(cleanImagesArray2, "cleanImagesArray2");
 async function onRequest4(context) {
   const { request, env, params } = context;
   const slug = params?.slug;
@@ -1316,30 +1360,32 @@ async function onRequest4(context) {
   }
   return json10({ ok: false, error: "Method not allowed" }, 405);
 }
+__name(onRequest4, "onRequest4");
 var init_slug = __esm({
   "api/profiles/[slug].js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
-    __name(json10, "json");
-    __name(nowIso3, "nowIso");
-    __name(requireAdmin8, "requireAdmin");
-    __name(asJsonTextArray, "asJsonTextArray");
-    __name(parseJsonArray, "parseJsonArray");
-    __name(cleanImagesArray2, "cleanImagesArray");
-    __name(onRequest4, "onRequest");
+    __name2(json10, "json");
+    __name2(nowIso3, "nowIso");
+    __name2(requireAdmin8, "requireAdmin");
+    __name2(asJsonTextArray, "asJsonTextArray");
+    __name2(parseJsonArray, "parseJsonArray");
+    __name2(cleanImagesArray2, "cleanImagesArray");
+    __name2(onRequest4, "onRequest");
   }
 });
-
-// ../node_modules/stripe/esm/utils.js
 function isOptionsHash(o) {
   return o && typeof o === "object" && OPTIONS_KEYS.some((prop) => Object.prototype.hasOwnProperty.call(o, prop));
 }
+__name(isOptionsHash, "isOptionsHash");
 function queryStringifyRequestData(data, _apiMode) {
   return stringifyRequestData(data);
 }
+__name(queryStringifyRequestData, "queryStringifyRequestData");
 function encodeQueryValue(value) {
   return encodeURIComponent(value).replace(/!/g, "%21").replace(/\*/g, "%2A").replace(/\(/g, "%28").replace(/\)/g, "%29").replace(/'/g, "%27").replace(/%5B/g, "[").replace(/%5D/g, "]");
 }
+__name(encodeQueryValue, "encodeQueryValue");
 function valueToString(value) {
   if (value instanceof Date) {
     return Math.floor(value.getTime() / 1e3).toString();
@@ -1349,6 +1395,7 @@ function valueToString(value) {
   }
   return String(value);
 }
+__name(valueToString, "valueToString");
 function stringifyRequestData(data) {
   const pairs = [];
   function encode(key, value) {
@@ -1372,6 +1419,7 @@ function stringifyRequestData(data) {
     }
   }
   __name(encode, "encode");
+  __name2(encode, "encode");
   if (typeof data === "object" && data !== null) {
     for (const key of Object.keys(data)) {
       encode(key, data[key]);
@@ -1379,9 +1427,11 @@ function stringifyRequestData(data) {
   }
   return pairs.join("&");
 }
+__name(stringifyRequestData, "stringifyRequestData");
 function isValidEncodeUriComponentType(value) {
   return ["number", "string", "boolean"].includes(typeof value);
 }
+__name(isValidEncodeUriComponentType, "isValidEncodeUriComponentType");
 function extractUrlParams(path) {
   const params = path.match(/\{\w+\}/g);
   if (!params) {
@@ -1389,6 +1439,7 @@ function extractUrlParams(path) {
   }
   return params.map((param) => param.replace(/[{}]/g, ""));
 }
+__name(extractUrlParams, "extractUrlParams");
 function getDataFromArgs(args) {
   if (!Array.isArray(args) || !args[0] || typeof args[0] !== "object") {
     return {};
@@ -1403,6 +1454,7 @@ function getDataFromArgs(args) {
   }
   return {};
 }
+__name(getDataFromArgs, "getDataFromArgs");
 function getOptionsFromArgs(args) {
   const opts = {
     host: null,
@@ -1466,6 +1518,7 @@ function getOptionsFromArgs(args) {
   }
   return opts;
 }
+__name(getOptionsFromArgs, "getOptionsFromArgs");
 function protoExtend(sub) {
   const Super = this;
   const Constructor = Object.prototype.hasOwnProperty.call(sub, "constructor") ? sub.constructor : function(...args) {
@@ -1476,6 +1529,7 @@ function protoExtend(sub) {
   Object.assign(Constructor.prototype, sub);
   return Constructor;
 }
+__name(protoExtend, "protoExtend");
 function removeNullish(obj) {
   if (typeof obj !== "object") {
     throw new Error("Argument must be an object");
@@ -1487,6 +1541,7 @@ function removeNullish(obj) {
     return result;
   }, {});
 }
+__name(removeNullish, "removeNullish");
 function normalizeHeaders(obj) {
   if (!(obj && typeof obj === "object")) {
     return obj;
@@ -1496,9 +1551,11 @@ function normalizeHeaders(obj) {
     return result;
   }, {});
 }
+__name(normalizeHeaders, "normalizeHeaders");
 function normalizeHeader(header) {
   return header.split("-").map((text) => text.charAt(0).toUpperCase() + text.substr(1).toLowerCase()).join("-");
 }
+__name(normalizeHeader, "normalizeHeader");
 function callbackifyPromiseWithTimeout(promise, callback) {
   if (callback) {
     return promise.then((res) => {
@@ -1513,6 +1570,7 @@ function callbackifyPromiseWithTimeout(promise, callback) {
   }
   return promise;
 }
+__name(callbackifyPromiseWithTimeout, "callbackifyPromiseWithTimeout");
 function pascalToCamelCase(name) {
   if (name === "OAuth") {
     return "oauth";
@@ -1520,19 +1578,22 @@ function pascalToCamelCase(name) {
     return name[0].toLowerCase() + name.substring(1);
   }
 }
+__name(pascalToCamelCase, "pascalToCamelCase");
 function emitWarning(warning) {
   if (typeof process.emitWarning !== "function") {
     return console.warn(`Stripe: ${warning}`);
   }
   return process.emitWarning(warning, "Stripe");
 }
+__name(emitWarning, "emitWarning");
 function isObject(obj) {
   const type = typeof obj;
   return (type === "function" || type === "object") && !!obj;
 }
+__name(isObject, "isObject");
 function flattenAndStringify(data) {
   const result = {};
-  const step = /* @__PURE__ */ __name((obj, prevKey) => {
+  const step = /* @__PURE__ */ __name2((obj, prevKey) => {
     Object.entries(obj).forEach(([key, value]) => {
       const newKey = prevKey ? `${prevKey}[${key}]` : key;
       if (isObject(value)) {
@@ -1549,6 +1610,7 @@ function flattenAndStringify(data) {
   step(data, null);
   return result;
 }
+__name(flattenAndStringify, "flattenAndStringify");
 function validateInteger(name, n, defaultVal) {
   if (!Number.isInteger(n)) {
     if (defaultVal !== void 0) {
@@ -1559,54 +1621,64 @@ function validateInteger(name, n, defaultVal) {
   }
   return n;
 }
+__name(validateInteger, "validateInteger");
 function determineProcessUserAgentProperties() {
   return typeof process === "undefined" ? {} : {
     lang_version: process.version,
     platform: process.platform
   };
 }
+__name(determineProcessUserAgentProperties, "determineProcessUserAgentProperties");
 function createApiKeyAuthenticator(apiKey) {
-  const authenticator = /* @__PURE__ */ __name((request) => {
+  const authenticator = /* @__PURE__ */ __name2((request) => {
     request.headers.Authorization = "Bearer " + apiKey;
     return Promise.resolve();
   }, "authenticator");
   authenticator._apiKey = apiKey;
   return authenticator;
 }
+__name(createApiKeyAuthenticator, "createApiKeyAuthenticator");
 function dateTimeReplacer(key, value) {
   if (this[key] instanceof Date) {
     return Math.floor(this[key].getTime() / 1e3).toString();
   }
   return value;
 }
+__name(dateTimeReplacer, "dateTimeReplacer");
 function jsonStringifyRequestData(data) {
   return JSON.stringify(data, dateTimeReplacer);
 }
+__name(jsonStringifyRequestData, "jsonStringifyRequestData");
 function getAPIMode(path) {
   if (!path) {
     return "v1";
   }
   return path.startsWith("/v2") ? "v2" : "v1";
 }
+__name(getAPIMode, "getAPIMode");
 function parseHttpHeaderAsString(header) {
   if (Array.isArray(header)) {
     return header.join(", ");
   }
   return String(header);
 }
+__name(parseHttpHeaderAsString, "parseHttpHeaderAsString");
 function parseHttpHeaderAsNumber(header) {
   const number = Array.isArray(header) ? header[0] : header;
   return Number(number);
 }
+__name(parseHttpHeaderAsNumber, "parseHttpHeaderAsNumber");
 function parseHeadersForFetch(headers) {
   return Object.entries(headers).map(([key, value]) => {
     return [key, parseHttpHeaderAsString(value)];
   });
 }
-var OPTIONS_KEYS, makeURLInterpolator;
+__name(parseHeadersForFetch, "parseHeadersForFetch");
+var OPTIONS_KEYS;
+var makeURLInterpolator;
 var init_utils = __esm({
   "../node_modules/stripe/esm/utils.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     OPTIONS_KEYS = [
       "apiKey",
       "idempotencyKey",
@@ -1620,11 +1692,11 @@ var init_utils = __esm({
       "additionalHeaders",
       "streaming"
     ];
-    __name(isOptionsHash, "isOptionsHash");
-    __name(queryStringifyRequestData, "queryStringifyRequestData");
-    __name(encodeQueryValue, "encodeQueryValue");
-    __name(valueToString, "valueToString");
-    __name(stringifyRequestData, "stringifyRequestData");
+    __name2(isOptionsHash, "isOptionsHash");
+    __name2(queryStringifyRequestData, "queryStringifyRequestData");
+    __name2(encodeQueryValue, "encodeQueryValue");
+    __name2(valueToString, "valueToString");
+    __name2(stringifyRequestData, "stringifyRequestData");
     makeURLInterpolator = /* @__PURE__ */ (() => {
       const rc = {
         "\n": "\\n",
@@ -1644,39 +1716,41 @@ var init_utils = __esm({
         };
       };
     })();
-    __name(isValidEncodeUriComponentType, "isValidEncodeUriComponentType");
-    __name(extractUrlParams, "extractUrlParams");
-    __name(getDataFromArgs, "getDataFromArgs");
-    __name(getOptionsFromArgs, "getOptionsFromArgs");
-    __name(protoExtend, "protoExtend");
-    __name(removeNullish, "removeNullish");
-    __name(normalizeHeaders, "normalizeHeaders");
-    __name(normalizeHeader, "normalizeHeader");
-    __name(callbackifyPromiseWithTimeout, "callbackifyPromiseWithTimeout");
-    __name(pascalToCamelCase, "pascalToCamelCase");
-    __name(emitWarning, "emitWarning");
-    __name(isObject, "isObject");
-    __name(flattenAndStringify, "flattenAndStringify");
-    __name(validateInteger, "validateInteger");
-    __name(determineProcessUserAgentProperties, "determineProcessUserAgentProperties");
-    __name(createApiKeyAuthenticator, "createApiKeyAuthenticator");
-    __name(dateTimeReplacer, "dateTimeReplacer");
-    __name(jsonStringifyRequestData, "jsonStringifyRequestData");
-    __name(getAPIMode, "getAPIMode");
-    __name(parseHttpHeaderAsString, "parseHttpHeaderAsString");
-    __name(parseHttpHeaderAsNumber, "parseHttpHeaderAsNumber");
-    __name(parseHeadersForFetch, "parseHeadersForFetch");
+    __name2(isValidEncodeUriComponentType, "isValidEncodeUriComponentType");
+    __name2(extractUrlParams, "extractUrlParams");
+    __name2(getDataFromArgs, "getDataFromArgs");
+    __name2(getOptionsFromArgs, "getOptionsFromArgs");
+    __name2(protoExtend, "protoExtend");
+    __name2(removeNullish, "removeNullish");
+    __name2(normalizeHeaders, "normalizeHeaders");
+    __name2(normalizeHeader, "normalizeHeader");
+    __name2(callbackifyPromiseWithTimeout, "callbackifyPromiseWithTimeout");
+    __name2(pascalToCamelCase, "pascalToCamelCase");
+    __name2(emitWarning, "emitWarning");
+    __name2(isObject, "isObject");
+    __name2(flattenAndStringify, "flattenAndStringify");
+    __name2(validateInteger, "validateInteger");
+    __name2(determineProcessUserAgentProperties, "determineProcessUserAgentProperties");
+    __name2(createApiKeyAuthenticator, "createApiKeyAuthenticator");
+    __name2(dateTimeReplacer, "dateTimeReplacer");
+    __name2(jsonStringifyRequestData, "jsonStringifyRequestData");
+    __name2(getAPIMode, "getAPIMode");
+    __name2(parseHttpHeaderAsString, "parseHttpHeaderAsString");
+    __name2(parseHttpHeaderAsNumber, "parseHttpHeaderAsNumber");
+    __name2(parseHeadersForFetch, "parseHeadersForFetch");
   }
 });
-
-// ../node_modules/stripe/esm/net/HttpClient.js
-var HttpClient, HttpClientResponse;
+var HttpClient;
+var HttpClientResponse;
 var init_HttpClient = __esm({
   "../node_modules/stripe/esm/net/HttpClient.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     HttpClient = class _HttpClient {
       static {
-        __name(this, "HttpClient");
+        __name(this, "_HttpClient");
+      }
+      static {
+        __name2(this, "HttpClient");
       }
       /** The client name used for diagnostics. */
       getClientName() {
@@ -1697,6 +1771,9 @@ var init_HttpClient = __esm({
     HttpClientResponse = class {
       static {
         __name(this, "HttpClientResponse");
+      }
+      static {
+        __name2(this, "HttpClientResponse");
       }
       constructor(statusCode, headers) {
         this._statusCode = statusCode;
@@ -1720,17 +1797,19 @@ var init_HttpClient = __esm({
     };
   }
 });
-
-// ../node_modules/stripe/esm/net/FetchHttpClient.js
-var FetchHttpClient, FetchHttpClientResponse;
+var FetchHttpClient;
+var FetchHttpClientResponse;
 var init_FetchHttpClient = __esm({
   "../node_modules/stripe/esm/net/FetchHttpClient.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_utils();
     init_HttpClient();
     FetchHttpClient = class _FetchHttpClient extends HttpClient {
       static {
-        __name(this, "FetchHttpClient");
+        __name(this, "_FetchHttpClient");
+      }
+      static {
+        __name2(this, "FetchHttpClient");
       }
       constructor(fetchFn) {
         super();
@@ -1805,7 +1884,10 @@ var init_FetchHttpClient = __esm({
     };
     FetchHttpClientResponse = class _FetchHttpClientResponse extends HttpClientResponse {
       static {
-        __name(this, "FetchHttpClientResponse");
+        __name(this, "_FetchHttpClientResponse");
+      }
+      static {
+        __name2(this, "FetchHttpClientResponse");
       }
       constructor(res) {
         super(res.status, _FetchHttpClientResponse._transformHeadersToObject(res.headers));
@@ -1834,15 +1916,17 @@ var init_FetchHttpClient = __esm({
     };
   }
 });
-
-// ../node_modules/stripe/esm/crypto/CryptoProvider.js
-var CryptoProvider, CryptoProviderOnlySupportsAsyncError;
+var CryptoProvider;
+var CryptoProviderOnlySupportsAsyncError;
 var init_CryptoProvider = __esm({
   "../node_modules/stripe/esm/crypto/CryptoProvider.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     CryptoProvider = class {
       static {
         __name(this, "CryptoProvider");
+      }
+      static {
+        __name2(this, "CryptoProvider");
       }
       /**
        * Computes a SHA-256 HMAC given a secret and a payload (encoded in UTF-8).
@@ -1880,19 +1964,24 @@ var init_CryptoProvider = __esm({
       static {
         __name(this, "CryptoProviderOnlySupportsAsyncError");
       }
+      static {
+        __name2(this, "CryptoProviderOnlySupportsAsyncError");
+      }
     };
   }
 });
-
-// ../node_modules/stripe/esm/crypto/SubtleCryptoProvider.js
-var SubtleCryptoProvider, byteHexMapping;
+var SubtleCryptoProvider;
+var byteHexMapping;
 var init_SubtleCryptoProvider = __esm({
   "../node_modules/stripe/esm/crypto/SubtleCryptoProvider.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_CryptoProvider();
     SubtleCryptoProvider = class extends CryptoProvider {
       static {
         __name(this, "SubtleCryptoProvider");
+      }
+      static {
+        __name2(this, "SubtleCryptoProvider");
       }
       constructor(subtleCrypto) {
         super();
@@ -1928,17 +2017,18 @@ var init_SubtleCryptoProvider = __esm({
     }
   }
 });
-
-// ../node_modules/stripe/esm/platform/PlatformFunctions.js
 var PlatformFunctions;
 var init_PlatformFunctions = __esm({
   "../node_modules/stripe/esm/platform/PlatformFunctions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_FetchHttpClient();
     init_SubtleCryptoProvider();
     PlatformFunctions = class {
       static {
         __name(this, "PlatformFunctions");
+      }
+      static {
+        __name2(this, "PlatformFunctions");
       }
       constructor() {
         this._fetchFn = null;
@@ -2028,15 +2118,17 @@ var init_PlatformFunctions = __esm({
     };
   }
 });
-
-// ../node_modules/stripe/esm/StripeEmitter.js
-var _StripeEvent, StripeEmitter;
+var _StripeEvent;
+var StripeEmitter;
 var init_StripeEmitter = __esm({
   "../node_modules/stripe/esm/StripeEmitter.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     _StripeEvent = class extends Event {
       static {
         __name(this, "_StripeEvent");
+      }
+      static {
+        __name2(this, "_StripeEvent");
       }
       constructor(eventName, data) {
         super(eventName);
@@ -2047,12 +2139,15 @@ var init_StripeEmitter = __esm({
       static {
         __name(this, "StripeEmitter");
       }
+      static {
+        __name2(this, "StripeEmitter");
+      }
       constructor() {
         this.eventTarget = new EventTarget();
         this.listenerMapping = /* @__PURE__ */ new Map();
       }
       on(eventName, listener) {
-        const listenerWrapper = /* @__PURE__ */ __name((event) => {
+        const listenerWrapper = /* @__PURE__ */ __name2((event) => {
           listener(event.data);
         }, "listenerWrapper");
         this.listenerMapping.set(listener, listenerWrapper);
@@ -2064,7 +2159,7 @@ var init_StripeEmitter = __esm({
         return this.eventTarget.removeEventListener(eventName, listenerWrapper);
       }
       once(eventName, listener) {
-        const listenerWrapper = /* @__PURE__ */ __name((event) => {
+        const listenerWrapper = /* @__PURE__ */ __name2((event) => {
           listener(event.data);
         }, "listenerWrapper");
         this.listenerMapping.set(listener, listenerWrapper);
@@ -2078,17 +2173,18 @@ var init_StripeEmitter = __esm({
     };
   }
 });
-
-// ../node_modules/stripe/esm/platform/WebPlatformFunctions.js
 var WebPlatformFunctions;
 var init_WebPlatformFunctions = __esm({
   "../node_modules/stripe/esm/platform/WebPlatformFunctions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_PlatformFunctions();
     init_StripeEmitter();
     WebPlatformFunctions = class extends PlatformFunctions {
       static {
         __name(this, "WebPlatformFunctions");
+      }
+      static {
+        __name2(this, "WebPlatformFunctions");
       }
       /** @override */
       getUname() {
@@ -2124,31 +2220,43 @@ var init_WebPlatformFunctions = __esm({
     };
   }
 });
-
-// ../node_modules/stripe/esm/Error.js
 var Error_exports = {};
 __export(Error_exports, {
-  StripeAPIError: () => StripeAPIError,
-  StripeAuthenticationError: () => StripeAuthenticationError,
-  StripeCardError: () => StripeCardError,
-  StripeConnectionError: () => StripeConnectionError,
-  StripeError: () => StripeError,
-  StripeIdempotencyError: () => StripeIdempotencyError,
-  StripeInvalidGrantError: () => StripeInvalidGrantError,
-  StripeInvalidRequestError: () => StripeInvalidRequestError,
-  StripePermissionError: () => StripePermissionError,
-  StripeRateLimitError: () => StripeRateLimitError,
-  StripeSignatureVerificationError: () => StripeSignatureVerificationError,
-  StripeUnknownError: () => StripeUnknownError,
-  TemporarySessionExpiredError: () => TemporarySessionExpiredError,
-  generateV1Error: () => generateV1Error,
-  generateV2Error: () => generateV2Error
+  StripeAPIError: /* @__PURE__ */ __name(() => StripeAPIError, "StripeAPIError"),
+  StripeAuthenticationError: /* @__PURE__ */ __name(() => StripeAuthenticationError, "StripeAuthenticationError"),
+  StripeCardError: /* @__PURE__ */ __name(() => StripeCardError, "StripeCardError"),
+  StripeConnectionError: /* @__PURE__ */ __name(() => StripeConnectionError, "StripeConnectionError"),
+  StripeError: /* @__PURE__ */ __name(() => StripeError, "StripeError"),
+  StripeIdempotencyError: /* @__PURE__ */ __name(() => StripeIdempotencyError, "StripeIdempotencyError"),
+  StripeInvalidGrantError: /* @__PURE__ */ __name(() => StripeInvalidGrantError, "StripeInvalidGrantError"),
+  StripeInvalidRequestError: /* @__PURE__ */ __name(() => StripeInvalidRequestError, "StripeInvalidRequestError"),
+  StripePermissionError: /* @__PURE__ */ __name(() => StripePermissionError, "StripePermissionError"),
+  StripeRateLimitError: /* @__PURE__ */ __name(() => StripeRateLimitError, "StripeRateLimitError"),
+  StripeSignatureVerificationError: /* @__PURE__ */ __name(() => StripeSignatureVerificationError, "StripeSignatureVerificationError"),
+  StripeUnknownError: /* @__PURE__ */ __name(() => StripeUnknownError, "StripeUnknownError"),
+  TemporarySessionExpiredError: /* @__PURE__ */ __name(() => TemporarySessionExpiredError, "TemporarySessionExpiredError"),
+  generateV1Error: /* @__PURE__ */ __name(() => generateV1Error, "generateV1Error"),
+  generateV2Error: /* @__PURE__ */ __name(() => generateV2Error, "generateV2Error")
 });
-var generateV1Error, generateV2Error, StripeError, StripeCardError, StripeInvalidRequestError, StripeAPIError, StripeAuthenticationError, StripePermissionError, StripeRateLimitError, StripeConnectionError, StripeSignatureVerificationError, StripeIdempotencyError, StripeInvalidGrantError, StripeUnknownError, TemporarySessionExpiredError;
+var generateV1Error;
+var generateV2Error;
+var StripeError;
+var StripeCardError;
+var StripeInvalidRequestError;
+var StripeAPIError;
+var StripeAuthenticationError;
+var StripePermissionError;
+var StripeRateLimitError;
+var StripeConnectionError;
+var StripeSignatureVerificationError;
+var StripeIdempotencyError;
+var StripeInvalidGrantError;
+var StripeUnknownError;
+var TemporarySessionExpiredError;
 var init_Error = __esm({
   "../node_modules/stripe/esm/Error.js"() {
-    init_functionsRoutes_0_6820790580908853();
-    generateV1Error = /* @__PURE__ */ __name((rawStripeError) => {
+    init_functionsRoutes_0_36703542789728894();
+    generateV1Error = /* @__PURE__ */ __name2((rawStripeError) => {
       switch (rawStripeError.type) {
         case "card_error":
           return new StripeCardError(rawStripeError);
@@ -2168,7 +2276,7 @@ var init_Error = __esm({
           return new StripeUnknownError(rawStripeError);
       }
     }, "generateV1Error");
-    generateV2Error = /* @__PURE__ */ __name((rawStripeError) => {
+    generateV2Error = /* @__PURE__ */ __name2((rawStripeError) => {
       switch (rawStripeError.type) {
         // switchCases: The beginning of the section generated from our OpenAPI spec
         case "temporary_session_expired":
@@ -2183,6 +2291,9 @@ var init_Error = __esm({
     StripeError = class extends Error {
       static {
         __name(this, "StripeError");
+      }
+      static {
+        __name2(this, "StripeError");
       }
       constructor(raw = {}, type = null) {
         var _a;
@@ -2213,6 +2324,9 @@ var init_Error = __esm({
       static {
         __name(this, "StripeCardError");
       }
+      static {
+        __name2(this, "StripeCardError");
+      }
       constructor(raw = {}) {
         super(raw, "StripeCardError");
       }
@@ -2220,6 +2334,9 @@ var init_Error = __esm({
     StripeInvalidRequestError = class extends StripeError {
       static {
         __name(this, "StripeInvalidRequestError");
+      }
+      static {
+        __name2(this, "StripeInvalidRequestError");
       }
       constructor(raw = {}) {
         super(raw, "StripeInvalidRequestError");
@@ -2229,6 +2346,9 @@ var init_Error = __esm({
       static {
         __name(this, "StripeAPIError");
       }
+      static {
+        __name2(this, "StripeAPIError");
+      }
       constructor(raw = {}) {
         super(raw, "StripeAPIError");
       }
@@ -2236,6 +2356,9 @@ var init_Error = __esm({
     StripeAuthenticationError = class extends StripeError {
       static {
         __name(this, "StripeAuthenticationError");
+      }
+      static {
+        __name2(this, "StripeAuthenticationError");
       }
       constructor(raw = {}) {
         super(raw, "StripeAuthenticationError");
@@ -2245,6 +2368,9 @@ var init_Error = __esm({
       static {
         __name(this, "StripePermissionError");
       }
+      static {
+        __name2(this, "StripePermissionError");
+      }
       constructor(raw = {}) {
         super(raw, "StripePermissionError");
       }
@@ -2252,6 +2378,9 @@ var init_Error = __esm({
     StripeRateLimitError = class extends StripeError {
       static {
         __name(this, "StripeRateLimitError");
+      }
+      static {
+        __name2(this, "StripeRateLimitError");
       }
       constructor(raw = {}) {
         super(raw, "StripeRateLimitError");
@@ -2261,6 +2390,9 @@ var init_Error = __esm({
       static {
         __name(this, "StripeConnectionError");
       }
+      static {
+        __name2(this, "StripeConnectionError");
+      }
       constructor(raw = {}) {
         super(raw, "StripeConnectionError");
       }
@@ -2268,6 +2400,9 @@ var init_Error = __esm({
     StripeSignatureVerificationError = class extends StripeError {
       static {
         __name(this, "StripeSignatureVerificationError");
+      }
+      static {
+        __name2(this, "StripeSignatureVerificationError");
       }
       constructor(header, payload, raw = {}) {
         super(raw, "StripeSignatureVerificationError");
@@ -2279,6 +2414,9 @@ var init_Error = __esm({
       static {
         __name(this, "StripeIdempotencyError");
       }
+      static {
+        __name2(this, "StripeIdempotencyError");
+      }
       constructor(raw = {}) {
         super(raw, "StripeIdempotencyError");
       }
@@ -2286,6 +2424,9 @@ var init_Error = __esm({
     StripeInvalidGrantError = class extends StripeError {
       static {
         __name(this, "StripeInvalidGrantError");
+      }
+      static {
+        __name2(this, "StripeInvalidGrantError");
       }
       constructor(raw = {}) {
         super(raw, "StripeInvalidGrantError");
@@ -2295,6 +2436,9 @@ var init_Error = __esm({
       static {
         __name(this, "StripeUnknownError");
       }
+      static {
+        __name2(this, "StripeUnknownError");
+      }
       constructor(raw = {}) {
         super(raw, "StripeUnknownError");
       }
@@ -2303,25 +2447,30 @@ var init_Error = __esm({
       static {
         __name(this, "TemporarySessionExpiredError");
       }
+      static {
+        __name2(this, "TemporarySessionExpiredError");
+      }
       constructor(rawStripeError = {}) {
         super(rawStripeError, "TemporarySessionExpiredError");
       }
     };
   }
 });
-
-// ../node_modules/stripe/esm/RequestSender.js
-var MAX_RETRY_AFTER_WAIT, RequestSender;
+var MAX_RETRY_AFTER_WAIT;
+var RequestSender;
 var init_RequestSender = __esm({
   "../node_modules/stripe/esm/RequestSender.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_Error();
     init_HttpClient();
     init_utils();
     MAX_RETRY_AFTER_WAIT = 60;
     RequestSender = class _RequestSender {
       static {
-        __name(this, "RequestSender");
+        __name(this, "_RequestSender");
+      }
+      static {
+        __name2(this, "RequestSender");
       }
       constructor(stripe, maxBufferedRequestMetric) {
         this._stripe = stripe;
@@ -2371,7 +2520,7 @@ var init_RequestSender = __esm({
       _streamingResponseHandler(requestEvent, usage, callback) {
         return (res) => {
           const headers = res.getHeaders();
-          const streamCompleteCallback = /* @__PURE__ */ __name(() => {
+          const streamCompleteCallback = /* @__PURE__ */ __name2(() => {
             const responseEvent = this._makeResponseEvent(requestEvent, res.getStatusCode(), headers);
             this._stripe._emitter.emit("response", responseEvent);
             this._recordRequestMetrics(this._getRequestId(headers), responseEvent.elapsed, usage);
@@ -2483,7 +2632,7 @@ var init_RequestSender = __esm({
       }
       _defaultIdempotencyKey(method, settings, apiMode) {
         const maxRetries = this._getMaxNetworkRetries(settings);
-        const genKey = /* @__PURE__ */ __name(() => `stripe-node-retry-${this._stripe._platformFunctions.uuid4()}`, "genKey");
+        const genKey = /* @__PURE__ */ __name2(() => `stripe-node-retry-${this._stripe._platformFunctions.uuid4()}`, "genKey");
         if (apiMode === "v2") {
           if (method === "POST" || method === "DELETE") {
             return genKey();
@@ -2588,6 +2737,7 @@ var init_RequestSender = __esm({
             }
           }
           __name(requestCallback, "requestCallback");
+          __name2(requestCallback, "requestCallback");
           const { headers, settings } = opts;
           const authenticator = opts.authenticator;
           this._request(opts.requestMethod, opts.host, path, opts.bodyData, authenticator, { headers, settings, streaming: opts.streaming }, opts.usage, requestCallback);
@@ -2602,10 +2752,10 @@ var init_RequestSender = __esm({
         let requestData;
         authenticator = (_a = authenticator !== null && authenticator !== void 0 ? authenticator : this._stripe._authenticator) !== null && _a !== void 0 ? _a : null;
         const apiMode = getAPIMode(path);
-        const retryRequest = /* @__PURE__ */ __name((requestFn, apiVersion, headers, requestRetries, retryAfter) => {
+        const retryRequest = /* @__PURE__ */ __name2((requestFn, apiVersion, headers, requestRetries, retryAfter) => {
           return setTimeout(requestFn, this._getSleepTimeInMS(requestRetries, retryAfter), apiVersion, headers, requestRetries + 1);
         }, "retryRequest");
-        const makeRequest = /* @__PURE__ */ __name((apiVersion, headers, numRetries) => {
+        const makeRequest = /* @__PURE__ */ __name2((apiVersion, headers, numRetries) => {
           const timeout = options.settings && options.settings.timeout && Number.isInteger(options.settings.timeout) && options.settings.timeout >= 0 ? options.settings.timeout : this._stripe.getApiField("timeout");
           const request = {
             host: host || this._stripe.getApiField("host"),
@@ -2656,7 +2806,7 @@ var init_RequestSender = __esm({
             });
           });
         }, "makeRequest");
-        const prepareAndMakeRequest = /* @__PURE__ */ __name((error, data2) => {
+        const prepareAndMakeRequest = /* @__PURE__ */ __name2((error, data2) => {
           if (error) {
             return callback(error);
           }
@@ -2695,14 +2845,13 @@ var init_RequestSender = __esm({
     };
   }
 });
-
-// ../node_modules/stripe/esm/autoPagination.js
 function getAsyncIteratorSymbol() {
   if (typeof Symbol !== "undefined" && Symbol.asyncIterator) {
     return Symbol.asyncIterator;
   }
   return "@@asyncIterator";
 }
+__name(getAsyncIteratorSymbol, "getAsyncIteratorSymbol");
 function getDoneCallback(args) {
   if (args.length < 2) {
     return null;
@@ -2713,6 +2862,7 @@ function getDoneCallback(args) {
   }
   return onDone;
 }
+__name(getDoneCallback, "getDoneCallback");
 function getItemCallback(args) {
   if (args.length === 0) {
     return void 0;
@@ -2727,11 +2877,12 @@ function getItemCallback(args) {
   if (onItem.length > 2) {
     throw Error(`The \`onItem\` callback function passed to autoPagingEach must accept at most two arguments; got ${onItem}`);
   }
-  return /* @__PURE__ */ __name(function _onItem(item, next) {
+  return /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function _onItem(item, next) {
     const shouldContinue = onItem(item);
     next(shouldContinue);
-  }, "_onItem");
+  }, "_onItem"), "_onItem");
 }
+__name(getItemCallback, "getItemCallback");
 function getLastId(listResult, reverseIteration) {
   const lastIdx = reverseIteration ? 0 : listResult.data.length - 1;
   const lastItem = listResult.data[lastIdx];
@@ -2741,8 +2892,9 @@ function getLastId(listResult, reverseIteration) {
   }
   return lastId;
 }
+__name(getLastId, "getLastId");
 function makeAutoPagingEach(asyncIteratorNext) {
-  return /* @__PURE__ */ __name(function autoPagingEach() {
+  return /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function autoPagingEach() {
     const args = [].slice.call(arguments);
     const onItem = getItemCallback(args);
     const onDone = getDoneCallback(args);
@@ -2755,10 +2907,11 @@ function makeAutoPagingEach(asyncIteratorNext) {
       onItem
     );
     return callbackifyPromiseWithTimeout(autoPagePromise, onDone);
-  }, "autoPagingEach");
+  }, "autoPagingEach"), "autoPagingEach");
 }
+__name(makeAutoPagingEach, "makeAutoPagingEach");
 function makeAutoPagingToArray(autoPagingEach) {
-  return /* @__PURE__ */ __name(function autoPagingToArray(opts, onDone) {
+  return /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function autoPagingToArray(opts, onDone) {
     const limit = opts && opts.limit;
     if (!limit) {
       throw Error("You must pass a `limit` option to autoPagingToArray, e.g., `autoPagingToArray({limit: 1000});`.");
@@ -2778,8 +2931,9 @@ function makeAutoPagingToArray(autoPagingEach) {
       }).catch(reject);
     });
     return callbackifyPromiseWithTimeout(promise, onDone);
-  }, "autoPagingToArray");
+  }, "autoPagingToArray"), "autoPagingToArray");
 }
+__name(makeAutoPagingToArray, "makeAutoPagingToArray");
 function wrapAsyncIteratorWithCallback(asyncIteratorNext, onItem) {
   return new Promise((resolve, reject) => {
     function handleIteration(iterResult) {
@@ -2799,22 +2953,33 @@ function wrapAsyncIteratorWithCallback(asyncIteratorNext, onItem) {
       });
     }
     __name(handleIteration, "handleIteration");
+    __name2(handleIteration, "handleIteration");
     asyncIteratorNext().then(handleIteration).catch(reject);
   });
 }
+__name(wrapAsyncIteratorWithCallback, "wrapAsyncIteratorWithCallback");
 function isReverseIteration(requestArgs) {
   const args = [].slice.call(requestArgs);
   const dataFromArgs = getDataFromArgs(args);
   return !!dataFromArgs.ending_before;
 }
-var V1Iterator, V1ListIterator, V1SearchIterator, V2ListIterator, makeAutoPaginationMethods, makeAutoPaginationMethodsFromIterator;
+__name(isReverseIteration, "isReverseIteration");
+var V1Iterator;
+var V1ListIterator;
+var V1SearchIterator;
+var V2ListIterator;
+var makeAutoPaginationMethods;
+var makeAutoPaginationMethodsFromIterator;
 var init_autoPagination = __esm({
   "../node_modules/stripe/esm/autoPagination.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_utils();
     V1Iterator = class {
       static {
         __name(this, "V1Iterator");
+      }
+      static {
+        __name2(this, "V1Iterator");
       }
       constructor(firstPagePromise, requestArgs, spec, stripeResource) {
         this.index = 0;
@@ -2866,6 +3031,9 @@ var init_autoPagination = __esm({
       static {
         __name(this, "V1ListIterator");
       }
+      static {
+        __name2(this, "V1ListIterator");
+      }
       getNextPage(pageResult) {
         const reverseIteration = isReverseIteration(this.requestArgs);
         const lastId = getLastId(pageResult, reverseIteration);
@@ -2877,6 +3045,9 @@ var init_autoPagination = __esm({
     V1SearchIterator = class extends V1Iterator {
       static {
         __name(this, "V1SearchIterator");
+      }
+      static {
+        __name2(this, "V1SearchIterator");
       }
       getNextPage(pageResult) {
         if (!pageResult.next_page) {
@@ -2890,6 +3061,9 @@ var init_autoPagination = __esm({
     V2ListIterator = class {
       static {
         __name(this, "V2ListIterator");
+      }
+      static {
+        __name2(this, "V2ListIterator");
       }
       constructor(firstPagePromise, requestArgs, spec, stripeResource) {
         this.firstPagePromise = firstPagePromise;
@@ -2933,7 +3107,7 @@ var init_autoPagination = __esm({
         return { done: true, value: void 0 };
       }
     };
-    makeAutoPaginationMethods = /* @__PURE__ */ __name((stripeResource, requestArgs, spec, firstPagePromise) => {
+    makeAutoPaginationMethods = /* @__PURE__ */ __name2((stripeResource, requestArgs, spec, firstPagePromise) => {
       const apiMode = getAPIMode(spec.fullPath || spec.path);
       if (apiMode !== "v2" && spec.methodType === "search") {
         return makeAutoPaginationMethodsFromIterator(new V1SearchIterator(firstPagePromise, requestArgs, spec, stripeResource));
@@ -2946,15 +3120,15 @@ var init_autoPagination = __esm({
       }
       return null;
     }, "makeAutoPaginationMethods");
-    makeAutoPaginationMethodsFromIterator = /* @__PURE__ */ __name((iterator) => {
+    makeAutoPaginationMethodsFromIterator = /* @__PURE__ */ __name2((iterator) => {
       const autoPagingEach = makeAutoPagingEach((...args) => iterator.next(...args));
       const autoPagingToArray = makeAutoPagingToArray(autoPagingEach);
       const autoPaginationMethods = {
         autoPagingEach,
         autoPagingToArray,
         // Async iterator functions:
-        next: /* @__PURE__ */ __name(() => iterator.next(), "next"),
-        return: /* @__PURE__ */ __name(() => {
+        next: /* @__PURE__ */ __name2(() => iterator.next(), "next"),
+        return: /* @__PURE__ */ __name2(() => {
           return {};
         }, "return"),
         [getAsyncIteratorSymbol()]: () => {
@@ -2963,18 +3137,16 @@ var init_autoPagination = __esm({
       };
       return autoPaginationMethods;
     }, "makeAutoPaginationMethodsFromIterator");
-    __name(getAsyncIteratorSymbol, "getAsyncIteratorSymbol");
-    __name(getDoneCallback, "getDoneCallback");
-    __name(getItemCallback, "getItemCallback");
-    __name(getLastId, "getLastId");
-    __name(makeAutoPagingEach, "makeAutoPagingEach");
-    __name(makeAutoPagingToArray, "makeAutoPagingToArray");
-    __name(wrapAsyncIteratorWithCallback, "wrapAsyncIteratorWithCallback");
-    __name(isReverseIteration, "isReverseIteration");
+    __name2(getAsyncIteratorSymbol, "getAsyncIteratorSymbol");
+    __name2(getDoneCallback, "getDoneCallback");
+    __name2(getItemCallback, "getItemCallback");
+    __name2(getLastId, "getLastId");
+    __name2(makeAutoPagingEach, "makeAutoPagingEach");
+    __name2(makeAutoPagingToArray, "makeAutoPagingToArray");
+    __name2(wrapAsyncIteratorWithCallback, "wrapAsyncIteratorWithCallback");
+    __name2(isReverseIteration, "isReverseIteration");
   }
 });
-
-// ../node_modules/stripe/esm/StripeMethod.js
 function stripeMethod(spec) {
   if (spec.path !== void 0 && spec.fullPath !== void 0) {
     throw new Error(`Method spec specified both a 'path' (${spec.path}) and a 'fullPath' (${spec.fullPath}).`);
@@ -2987,16 +3159,15 @@ function stripeMethod(spec) {
     return requestPromise;
   };
 }
+__name(stripeMethod, "stripeMethod");
 var init_StripeMethod = __esm({
   "../node_modules/stripe/esm/StripeMethod.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_utils();
     init_autoPagination();
-    __name(stripeMethod, "stripeMethod");
+    __name2(stripeMethod, "stripeMethod");
   }
 });
-
-// ../node_modules/stripe/esm/StripeResource.js
 function StripeResource(stripe, deprecatedUrlData) {
   this._stripe = stripe;
   if (deprecatedUrlData) {
@@ -3010,15 +3181,16 @@ function StripeResource(stripe, deprecatedUrlData) {
   this.path = makeURLInterpolator(this.path);
   this.initialize(...arguments);
 }
+__name(StripeResource, "StripeResource");
 var init_StripeResource = __esm({
   "../node_modules/stripe/esm/StripeResource.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_utils();
     init_StripeMethod();
     StripeResource.extend = protoExtend;
     StripeResource.method = stripeMethod;
     StripeResource.MAX_BUFFERED_REQUEST_METRICS = 100;
-    __name(StripeResource, "StripeResource");
+    __name2(StripeResource, "StripeResource");
     StripeResource.prototype = {
       _stripe: null,
       // @ts-ignore the type of path changes in ctor
@@ -3126,6 +3298,7 @@ var init_StripeResource = __esm({
             }
           }
           __name(requestCallback, "requestCallback");
+          __name2(requestCallback, "requestCallback");
           const emptyQuery = Object.keys(opts.queryData).length === 0;
           const path = [
             opts.requestPath,
@@ -3143,15 +3316,16 @@ var init_StripeResource = __esm({
     };
   }
 });
-
-// ../node_modules/stripe/esm/StripeContext.js
 var StripeContext;
 var init_StripeContext = __esm({
   "../node_modules/stripe/esm/StripeContext.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     StripeContext = class _StripeContext {
       static {
-        __name(this, "StripeContext");
+        __name(this, "_StripeContext");
+      }
+      static {
+        __name2(this, "StripeContext");
       }
       /**
        * Creates a new StripeContext with the given segments.
@@ -3202,8 +3376,6 @@ var init_StripeContext = __esm({
     };
   }
 });
-
-// ../node_modules/stripe/esm/Webhooks.js
 function createWebhooks(platformFunctions) {
   const Webhook = {
     DEFAULT_TOLERANCE: 300,
@@ -3242,12 +3414,12 @@ function createWebhooks(platformFunctions) {
      * @property {string} signature - Computed webhook signature
      * @property {CryptoProvider} cryptoProvider - Crypto provider to use for computing the signature if none was provided. Defaults to NodeCryptoProvider.
      */
-    generateTestHeaderString: /* @__PURE__ */ __name(function(opts) {
+    generateTestHeaderString: /* @__PURE__ */ __name2(function(opts) {
       const preparedOpts = prepareOptions(opts);
       const signature2 = preparedOpts.signature || preparedOpts.cryptoProvider.computeHMACSignature(preparedOpts.payloadString, preparedOpts.secret);
       return preparedOpts.generateHeaderString(signature2);
     }, "generateTestHeaderString"),
-    generateTestHeaderStringAsync: /* @__PURE__ */ __name(async function(opts) {
+    generateTestHeaderStringAsync: /* @__PURE__ */ __name2(async function(opts) {
       const preparedOpts = prepareOptions(opts);
       const signature2 = preparedOpts.signature || await preparedOpts.cryptoProvider.computeHMACSignatureAsync(preparedOpts.payloadString, preparedOpts.secret);
       return preparedOpts.generateHeaderString(signature2);
@@ -3275,6 +3447,7 @@ function createWebhooks(platformFunctions) {
     return `${details.timestamp}.${payload}`;
   }
   __name(makeHMACContent, "makeHMACContent");
+  __name2(makeHMACContent, "makeHMACContent");
   function parseEventDetails(encodedPayload, encodedHeader, expectedScheme) {
     if (!encodedPayload) {
       throw new StripeSignatureVerificationError(encodedHeader, encodedPayload, {
@@ -3312,6 +3485,7 @@ function createWebhooks(platformFunctions) {
     };
   }
   __name(parseEventDetails, "parseEventDetails");
+  __name2(parseEventDetails, "parseEventDetails");
   function validateComputedSignature(payload, header, details, expectedSignature, tolerance, suspectPayloadType, secretContainsWhitespace, receivedAt) {
     const signatureFound = !!details.signatures.filter(platformFunctions.secureCompare.bind(platformFunctions, expectedSignature)).length;
     const docsLocation = "\nLearn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature";
@@ -3335,6 +3509,7 @@ function createWebhooks(platformFunctions) {
     return true;
   }
   __name(validateComputedSignature, "validateComputedSignature");
+  __name2(validateComputedSignature, "validateComputedSignature");
   function parseHeader(header, scheme) {
     if (typeof header !== "string") {
       return null;
@@ -3354,6 +3529,7 @@ function createWebhooks(platformFunctions) {
     });
   }
   __name(parseHeader, "parseHeader");
+  __name2(parseHeader, "parseHeader");
   let webhooksCryptoProviderInstance = null;
   function getCryptoProvider() {
     if (!webhooksCryptoProviderInstance) {
@@ -3362,6 +3538,7 @@ function createWebhooks(platformFunctions) {
     return webhooksCryptoProviderInstance;
   }
   __name(getCryptoProvider, "getCryptoProvider");
+  __name2(getCryptoProvider, "getCryptoProvider");
   function prepareOptions(opts) {
     if (!opts) {
       throw new StripeError({
@@ -3372,7 +3549,7 @@ function createWebhooks(platformFunctions) {
     const scheme = opts.scheme || signature.EXPECTED_SCHEME;
     const cryptoProvider = opts.cryptoProvider || getCryptoProvider();
     const payloadString = `${timestamp}.${opts.payload}`;
-    const generateHeaderString = /* @__PURE__ */ __name((signature2) => {
+    const generateHeaderString = /* @__PURE__ */ __name2((signature2) => {
       return `t=${timestamp},${scheme}=${signature2}`;
     }, "generateHeaderString");
     return Object.assign(Object.assign({}, opts), {
@@ -3384,28 +3561,26 @@ function createWebhooks(platformFunctions) {
     });
   }
   __name(prepareOptions, "prepareOptions");
+  __name2(prepareOptions, "prepareOptions");
   Webhook.signature = signature;
   return Webhook;
 }
+__name(createWebhooks, "createWebhooks");
 var init_Webhooks = __esm({
   "../node_modules/stripe/esm/Webhooks.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_Error();
     init_CryptoProvider();
-    __name(createWebhooks, "createWebhooks");
+    __name2(createWebhooks, "createWebhooks");
   }
 });
-
-// ../node_modules/stripe/esm/apiVersion.js
 var ApiVersion;
 var init_apiVersion = __esm({
   "../node_modules/stripe/esm/apiVersion.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     ApiVersion = "2026-02-25.clover";
   }
 });
-
-// ../node_modules/stripe/esm/ResourceNamespace.js
 function ResourceNamespace(stripe, resources) {
   for (const name in resources) {
     if (!Object.prototype.hasOwnProperty.call(resources, name)) {
@@ -3416,24 +3591,25 @@ function ResourceNamespace(stripe, resources) {
     this[camelCaseName] = resource;
   }
 }
+__name(ResourceNamespace, "ResourceNamespace");
 function resourceNamespace(namespace, resources) {
   return function(stripe) {
     return new ResourceNamespace(stripe, resources);
   };
 }
+__name(resourceNamespace, "resourceNamespace");
 var init_ResourceNamespace = __esm({
   "../node_modules/stripe/esm/ResourceNamespace.js"() {
-    init_functionsRoutes_0_6820790580908853();
-    __name(ResourceNamespace, "ResourceNamespace");
-    __name(resourceNamespace, "resourceNamespace");
+    init_functionsRoutes_0_36703542789728894();
+    __name2(ResourceNamespace, "ResourceNamespace");
+    __name2(resourceNamespace, "resourceNamespace");
   }
 });
-
-// ../node_modules/stripe/esm/resources/V2/Core/AccountLinks.js
-var stripeMethod2, AccountLinks;
+var stripeMethod2;
+var AccountLinks;
 var init_AccountLinks = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/AccountLinks.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod2 = StripeResource.method;
     AccountLinks = StripeResource.extend({
@@ -3441,12 +3617,11 @@ var init_AccountLinks = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/V2/Core/AccountTokens.js
-var stripeMethod3, AccountTokens;
+var stripeMethod3;
+var AccountTokens;
 var init_AccountTokens = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/AccountTokens.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod3 = StripeResource.method;
     AccountTokens = StripeResource.extend({
@@ -3458,12 +3633,11 @@ var init_AccountTokens = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/FinancialConnections/Accounts.js
-var stripeMethod4, Accounts;
+var stripeMethod4;
+var Accounts;
 var init_Accounts = __esm({
   "../node_modules/stripe/esm/resources/FinancialConnections/Accounts.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod4 = StripeResource.method;
     Accounts = StripeResource.extend({
@@ -3500,12 +3674,11 @@ var init_Accounts = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/V2/Core/Accounts/Persons.js
-var stripeMethod5, Persons;
+var stripeMethod5;
+var Persons;
 var init_Persons = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/Accounts/Persons.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod5 = StripeResource.method;
     Persons = StripeResource.extend({
@@ -3533,12 +3706,11 @@ var init_Persons = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/V2/Core/Accounts/PersonTokens.js
-var stripeMethod6, PersonTokens;
+var stripeMethod6;
+var PersonTokens;
 var init_PersonTokens = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/Accounts/PersonTokens.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod6 = StripeResource.method;
     PersonTokens = StripeResource.extend({
@@ -3553,18 +3725,17 @@ var init_PersonTokens = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/V2/Core/Accounts.js
-var stripeMethod7, Accounts2;
+var stripeMethod7;
+var Accounts2;
 var init_Accounts2 = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/Accounts.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     init_Persons();
     init_PersonTokens();
     stripeMethod7 = StripeResource.method;
     Accounts2 = StripeResource.extend({
-      constructor: /* @__PURE__ */ __name(function(...args) {
+      constructor: /* @__PURE__ */ __name2(function(...args) {
         StripeResource.apply(this, args);
         this.persons = new Persons(...args);
         this.personTokens = new PersonTokens(...args);
@@ -3584,12 +3755,11 @@ var init_Accounts2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Entitlements/ActiveEntitlements.js
-var stripeMethod8, ActiveEntitlements;
+var stripeMethod8;
+var ActiveEntitlements;
 var init_ActiveEntitlements = __esm({
   "../node_modules/stripe/esm/resources/Entitlements/ActiveEntitlements.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod8 = StripeResource.method;
     ActiveEntitlements = StripeResource.extend({
@@ -3605,12 +3775,11 @@ var init_ActiveEntitlements = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Billing/Alerts.js
-var stripeMethod9, Alerts;
+var stripeMethod9;
+var Alerts;
 var init_Alerts = __esm({
   "../node_modules/stripe/esm/resources/Billing/Alerts.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod9 = StripeResource.method;
     Alerts = StripeResource.extend({
@@ -3636,12 +3805,11 @@ var init_Alerts = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Tax/Associations.js
-var stripeMethod10, Associations;
+var stripeMethod10;
+var Associations;
 var init_Associations = __esm({
   "../node_modules/stripe/esm/resources/Tax/Associations.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod10 = StripeResource.method;
     Associations = StripeResource.extend({
@@ -3649,12 +3817,11 @@ var init_Associations = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Issuing/Authorizations.js
-var stripeMethod11, Authorizations;
+var stripeMethod11;
+var Authorizations;
 var init_Authorizations = __esm({
   "../node_modules/stripe/esm/resources/Issuing/Authorizations.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod11 = StripeResource.method;
     Authorizations = StripeResource.extend({
@@ -3682,12 +3849,11 @@ var init_Authorizations = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/Issuing/Authorizations.js
-var stripeMethod12, Authorizations2;
+var stripeMethod12;
+var Authorizations2;
 var init_Authorizations2 = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Issuing/Authorizations.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod12 = StripeResource.method;
     Authorizations2 = StripeResource.extend({
@@ -3722,12 +3888,11 @@ var init_Authorizations2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Tax/Calculations.js
-var stripeMethod13, Calculations;
+var stripeMethod13;
+var Calculations;
 var init_Calculations = __esm({
   "../node_modules/stripe/esm/resources/Tax/Calculations.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod13 = StripeResource.method;
     Calculations = StripeResource.extend({
@@ -3744,12 +3909,11 @@ var init_Calculations = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Issuing/Cardholders.js
-var stripeMethod14, Cardholders;
+var stripeMethod14;
+var Cardholders;
 var init_Cardholders = __esm({
   "../node_modules/stripe/esm/resources/Issuing/Cardholders.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod14 = StripeResource.method;
     Cardholders = StripeResource.extend({
@@ -3770,12 +3934,11 @@ var init_Cardholders = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Issuing/Cards.js
-var stripeMethod15, Cards;
+var stripeMethod15;
+var Cards;
 var init_Cards = __esm({
   "../node_modules/stripe/esm/resources/Issuing/Cards.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod15 = StripeResource.method;
     Cards = StripeResource.extend({
@@ -3790,12 +3953,11 @@ var init_Cards = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/Issuing/Cards.js
-var stripeMethod16, Cards2;
+var stripeMethod16;
+var Cards2;
 var init_Cards2 = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Issuing/Cards.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod16 = StripeResource.method;
     Cards2 = StripeResource.extend({
@@ -3822,12 +3984,11 @@ var init_Cards2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/BillingPortal/Configurations.js
-var stripeMethod17, Configurations;
+var stripeMethod17;
+var Configurations;
 var init_Configurations = __esm({
   "../node_modules/stripe/esm/resources/BillingPortal/Configurations.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod17 = StripeResource.method;
     Configurations = StripeResource.extend({
@@ -3851,12 +4012,11 @@ var init_Configurations = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Terminal/Configurations.js
-var stripeMethod18, Configurations2;
+var stripeMethod18;
+var Configurations2;
 var init_Configurations2 = __esm({
   "../node_modules/stripe/esm/resources/Terminal/Configurations.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod18 = StripeResource.method;
     Configurations2 = StripeResource.extend({
@@ -3884,12 +4044,11 @@ var init_Configurations2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/ConfirmationTokens.js
-var stripeMethod19, ConfirmationTokens;
+var stripeMethod19;
+var ConfirmationTokens;
 var init_ConfirmationTokens = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/ConfirmationTokens.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod19 = StripeResource.method;
     ConfirmationTokens = StripeResource.extend({
@@ -3900,12 +4059,11 @@ var init_ConfirmationTokens = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Terminal/ConnectionTokens.js
-var stripeMethod20, ConnectionTokens;
+var stripeMethod20;
+var ConnectionTokens;
 var init_ConnectionTokens = __esm({
   "../node_modules/stripe/esm/resources/Terminal/ConnectionTokens.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod20 = StripeResource.method;
     ConnectionTokens = StripeResource.extend({
@@ -3916,12 +4074,11 @@ var init_ConnectionTokens = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Billing/CreditBalanceSummary.js
-var stripeMethod21, CreditBalanceSummary;
+var stripeMethod21;
+var CreditBalanceSummary;
 var init_CreditBalanceSummary = __esm({
   "../node_modules/stripe/esm/resources/Billing/CreditBalanceSummary.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod21 = StripeResource.method;
     CreditBalanceSummary = StripeResource.extend({
@@ -3932,12 +4089,11 @@ var init_CreditBalanceSummary = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Billing/CreditBalanceTransactions.js
-var stripeMethod22, CreditBalanceTransactions;
+var stripeMethod22;
+var CreditBalanceTransactions;
 var init_CreditBalanceTransactions = __esm({
   "../node_modules/stripe/esm/resources/Billing/CreditBalanceTransactions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod22 = StripeResource.method;
     CreditBalanceTransactions = StripeResource.extend({
@@ -3953,12 +4109,11 @@ var init_CreditBalanceTransactions = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Billing/CreditGrants.js
-var stripeMethod23, CreditGrants;
+var stripeMethod23;
+var CreditGrants;
 var init_CreditGrants = __esm({
   "../node_modules/stripe/esm/resources/Billing/CreditGrants.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod23 = StripeResource.method;
     CreditGrants = StripeResource.extend({
@@ -3987,12 +4142,11 @@ var init_CreditGrants = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Treasury/CreditReversals.js
-var stripeMethod24, CreditReversals;
+var stripeMethod24;
+var CreditReversals;
 var init_CreditReversals = __esm({
   "../node_modules/stripe/esm/resources/Treasury/CreditReversals.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod24 = StripeResource.method;
     CreditReversals = StripeResource.extend({
@@ -4012,12 +4166,11 @@ var init_CreditReversals = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/Customers.js
-var stripeMethod25, Customers;
+var stripeMethod25;
+var Customers;
 var init_Customers = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Customers.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod25 = StripeResource.method;
     Customers = StripeResource.extend({
@@ -4028,12 +4181,11 @@ var init_Customers = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Treasury/DebitReversals.js
-var stripeMethod26, DebitReversals;
+var stripeMethod26;
+var DebitReversals;
 var init_DebitReversals = __esm({
   "../node_modules/stripe/esm/resources/Treasury/DebitReversals.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod26 = StripeResource.method;
     DebitReversals = StripeResource.extend({
@@ -4053,12 +4205,11 @@ var init_DebitReversals = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Issuing/Disputes.js
-var stripeMethod27, Disputes;
+var stripeMethod27;
+var Disputes;
 var init_Disputes = __esm({
   "../node_modules/stripe/esm/resources/Issuing/Disputes.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod27 = StripeResource.method;
     Disputes = StripeResource.extend({
@@ -4083,12 +4234,11 @@ var init_Disputes = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Radar/EarlyFraudWarnings.js
-var stripeMethod28, EarlyFraudWarnings;
+var stripeMethod28;
+var EarlyFraudWarnings;
 var init_EarlyFraudWarnings = __esm({
   "../node_modules/stripe/esm/resources/Radar/EarlyFraudWarnings.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod28 = StripeResource.method;
     EarlyFraudWarnings = StripeResource.extend({
@@ -4104,12 +4254,11 @@ var init_EarlyFraudWarnings = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/V2/Core/EventDestinations.js
-var stripeMethod29, EventDestinations;
+var stripeMethod29;
+var EventDestinations;
 var init_EventDestinations = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/EventDestinations.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod29 = StripeResource.method;
     EventDestinations = StripeResource.extend({
@@ -4149,17 +4298,16 @@ var init_EventDestinations = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/V2/Core/Events.js
-var stripeMethod30, Events;
+var stripeMethod30;
+var Events;
 var init_Events = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/Events.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod30 = StripeResource.method;
     Events = StripeResource.extend({
       retrieve(...args) {
-        const transformResponseData = /* @__PURE__ */ __name((response) => {
+        const transformResponseData = /* @__PURE__ */ __name2((response) => {
           return this.addFetchRelatedObjectIfNeeded(response);
         }, "transformResponseData");
         return stripeMethod30({
@@ -4169,7 +4317,7 @@ var init_Events = __esm({
         }).apply(this, args);
       },
       list(...args) {
-        const transformResponseData = /* @__PURE__ */ __name((response) => {
+        const transformResponseData = /* @__PURE__ */ __name2((response) => {
           return Object.assign(Object.assign({}, response), { data: response.data.map(this.addFetchRelatedObjectIfNeeded.bind(this)) });
         }, "transformResponseData");
         return stripeMethod30({
@@ -4192,7 +4340,7 @@ var init_Events = __esm({
         if (!pulledEvent.related_object || !pulledEvent.related_object.url) {
           return pulledEvent;
         }
-        return Object.assign(Object.assign({}, pulledEvent), { fetchRelatedObject: /* @__PURE__ */ __name(() => (
+        return Object.assign(Object.assign({}, pulledEvent), { fetchRelatedObject: /* @__PURE__ */ __name2(() => (
           // call stripeMethod with 'this' resource to fetch
           // the related object. 'this' is needed to construct
           // and send the request, but the method spec controls
@@ -4211,12 +4359,11 @@ var init_Events = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Entitlements/Features.js
-var stripeMethod31, Features;
+var stripeMethod31;
+var Features;
 var init_Features = __esm({
   "../node_modules/stripe/esm/resources/Entitlements/Features.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod31 = StripeResource.method;
     Features = StripeResource.extend({
@@ -4237,12 +4384,11 @@ var init_Features = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Treasury/FinancialAccounts.js
-var stripeMethod32, FinancialAccounts;
+var stripeMethod32;
+var FinancialAccounts;
 var init_FinancialAccounts = __esm({
   "../node_modules/stripe/esm/resources/Treasury/FinancialAccounts.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod32 = StripeResource.method;
     FinancialAccounts = StripeResource.extend({
@@ -4278,12 +4424,11 @@ var init_FinancialAccounts = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/Treasury/InboundTransfers.js
-var stripeMethod33, InboundTransfers;
+var stripeMethod33;
+var InboundTransfers;
 var init_InboundTransfers = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Treasury/InboundTransfers.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod33 = StripeResource.method;
     InboundTransfers = StripeResource.extend({
@@ -4302,12 +4447,11 @@ var init_InboundTransfers = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Treasury/InboundTransfers.js
-var stripeMethod34, InboundTransfers2;
+var stripeMethod34;
+var InboundTransfers2;
 var init_InboundTransfers2 = __esm({
   "../node_modules/stripe/esm/resources/Treasury/InboundTransfers.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod34 = StripeResource.method;
     InboundTransfers2 = StripeResource.extend({
@@ -4331,12 +4475,11 @@ var init_InboundTransfers2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Terminal/Locations.js
-var stripeMethod35, Locations;
+var stripeMethod35;
+var Locations;
 var init_Locations = __esm({
   "../node_modules/stripe/esm/resources/Terminal/Locations.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod35 = StripeResource.method;
     Locations = StripeResource.extend({
@@ -4361,12 +4504,11 @@ var init_Locations = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Billing/MeterEventAdjustments.js
-var stripeMethod36, MeterEventAdjustments;
+var stripeMethod36;
+var MeterEventAdjustments;
 var init_MeterEventAdjustments = __esm({
   "../node_modules/stripe/esm/resources/Billing/MeterEventAdjustments.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod36 = StripeResource.method;
     MeterEventAdjustments = StripeResource.extend({
@@ -4377,12 +4519,11 @@ var init_MeterEventAdjustments = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/V2/Billing/MeterEventAdjustments.js
-var stripeMethod37, MeterEventAdjustments2;
+var stripeMethod37;
+var MeterEventAdjustments2;
 var init_MeterEventAdjustments2 = __esm({
   "../node_modules/stripe/esm/resources/V2/Billing/MeterEventAdjustments.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod37 = StripeResource.method;
     MeterEventAdjustments2 = StripeResource.extend({
@@ -4393,12 +4534,11 @@ var init_MeterEventAdjustments2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/V2/Billing/MeterEventSession.js
-var stripeMethod38, MeterEventSession;
+var stripeMethod38;
+var MeterEventSession;
 var init_MeterEventSession = __esm({
   "../node_modules/stripe/esm/resources/V2/Billing/MeterEventSession.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod38 = StripeResource.method;
     MeterEventSession = StripeResource.extend({
@@ -4409,12 +4549,11 @@ var init_MeterEventSession = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/V2/Billing/MeterEventStream.js
-var stripeMethod39, MeterEventStream;
+var stripeMethod39;
+var MeterEventStream;
 var init_MeterEventStream = __esm({
   "../node_modules/stripe/esm/resources/V2/Billing/MeterEventStream.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod39 = StripeResource.method;
     MeterEventStream = StripeResource.extend({
@@ -4426,12 +4565,11 @@ var init_MeterEventStream = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Billing/MeterEvents.js
-var stripeMethod40, MeterEvents;
+var stripeMethod40;
+var MeterEvents;
 var init_MeterEvents = __esm({
   "../node_modules/stripe/esm/resources/Billing/MeterEvents.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod40 = StripeResource.method;
     MeterEvents = StripeResource.extend({
@@ -4439,12 +4577,11 @@ var init_MeterEvents = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/V2/Billing/MeterEvents.js
-var stripeMethod41, MeterEvents2;
+var stripeMethod41;
+var MeterEvents2;
 var init_MeterEvents2 = __esm({
   "../node_modules/stripe/esm/resources/V2/Billing/MeterEvents.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod41 = StripeResource.method;
     MeterEvents2 = StripeResource.extend({
@@ -4452,12 +4589,11 @@ var init_MeterEvents2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Billing/Meters.js
-var stripeMethod42, Meters;
+var stripeMethod42;
+var Meters;
 var init_Meters = __esm({
   "../node_modules/stripe/esm/resources/Billing/Meters.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod42 = StripeResource.method;
     Meters = StripeResource.extend({
@@ -4485,12 +4621,11 @@ var init_Meters = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Terminal/OnboardingLinks.js
-var stripeMethod43, OnboardingLinks;
+var stripeMethod43;
+var OnboardingLinks;
 var init_OnboardingLinks = __esm({
   "../node_modules/stripe/esm/resources/Terminal/OnboardingLinks.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod43 = StripeResource.method;
     OnboardingLinks = StripeResource.extend({
@@ -4501,12 +4636,11 @@ var init_OnboardingLinks = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Climate/Orders.js
-var stripeMethod44, Orders;
+var stripeMethod44;
+var Orders;
 var init_Orders = __esm({
   "../node_modules/stripe/esm/resources/Climate/Orders.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod44 = StripeResource.method;
     Orders = StripeResource.extend({
@@ -4531,12 +4665,11 @@ var init_Orders = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/Treasury/OutboundPayments.js
-var stripeMethod45, OutboundPayments;
+var stripeMethod45;
+var OutboundPayments;
 var init_OutboundPayments = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Treasury/OutboundPayments.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod45 = StripeResource.method;
     OutboundPayments = StripeResource.extend({
@@ -4559,12 +4692,11 @@ var init_OutboundPayments = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Treasury/OutboundPayments.js
-var stripeMethod46, OutboundPayments2;
+var stripeMethod46;
+var OutboundPayments2;
 var init_OutboundPayments2 = __esm({
   "../node_modules/stripe/esm/resources/Treasury/OutboundPayments.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod46 = StripeResource.method;
     OutboundPayments2 = StripeResource.extend({
@@ -4588,12 +4720,11 @@ var init_OutboundPayments2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/Treasury/OutboundTransfers.js
-var stripeMethod47, OutboundTransfers;
+var stripeMethod47;
+var OutboundTransfers;
 var init_OutboundTransfers = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Treasury/OutboundTransfers.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod47 = StripeResource.method;
     OutboundTransfers = StripeResource.extend({
@@ -4616,12 +4747,11 @@ var init_OutboundTransfers = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Treasury/OutboundTransfers.js
-var stripeMethod48, OutboundTransfers2;
+var stripeMethod48;
+var OutboundTransfers2;
 var init_OutboundTransfers2 = __esm({
   "../node_modules/stripe/esm/resources/Treasury/OutboundTransfers.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod48 = StripeResource.method;
     OutboundTransfers2 = StripeResource.extend({
@@ -4645,12 +4775,11 @@ var init_OutboundTransfers2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Radar/PaymentEvaluations.js
-var stripeMethod49, PaymentEvaluations;
+var stripeMethod49;
+var PaymentEvaluations;
 var init_PaymentEvaluations = __esm({
   "../node_modules/stripe/esm/resources/Radar/PaymentEvaluations.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod49 = StripeResource.method;
     PaymentEvaluations = StripeResource.extend({
@@ -4661,12 +4790,11 @@ var init_PaymentEvaluations = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Issuing/PersonalizationDesigns.js
-var stripeMethod50, PersonalizationDesigns;
+var stripeMethod50;
+var PersonalizationDesigns;
 var init_PersonalizationDesigns = __esm({
   "../node_modules/stripe/esm/resources/Issuing/PersonalizationDesigns.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod50 = StripeResource.method;
     PersonalizationDesigns = StripeResource.extend({
@@ -4690,12 +4818,11 @@ var init_PersonalizationDesigns = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/Issuing/PersonalizationDesigns.js
-var stripeMethod51, PersonalizationDesigns2;
+var stripeMethod51;
+var PersonalizationDesigns2;
 var init_PersonalizationDesigns2 = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Issuing/PersonalizationDesigns.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod51 = StripeResource.method;
     PersonalizationDesigns2 = StripeResource.extend({
@@ -4714,12 +4841,11 @@ var init_PersonalizationDesigns2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Issuing/PhysicalBundles.js
-var stripeMethod52, PhysicalBundles;
+var stripeMethod52;
+var PhysicalBundles;
 var init_PhysicalBundles = __esm({
   "../node_modules/stripe/esm/resources/Issuing/PhysicalBundles.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod52 = StripeResource.method;
     PhysicalBundles = StripeResource.extend({
@@ -4735,12 +4861,11 @@ var init_PhysicalBundles = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Climate/Products.js
-var stripeMethod53, Products;
+var stripeMethod53;
+var Products;
 var init_Products = __esm({
   "../node_modules/stripe/esm/resources/Climate/Products.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod53 = StripeResource.method;
     Products = StripeResource.extend({
@@ -4756,12 +4881,11 @@ var init_Products = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Terminal/Readers.js
-var stripeMethod54, Readers;
+var stripeMethod54;
+var Readers;
 var init_Readers = __esm({
   "../node_modules/stripe/esm/resources/Terminal/Readers.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod54 = StripeResource.method;
     Readers = StripeResource.extend({
@@ -4818,12 +4942,11 @@ var init_Readers = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/Terminal/Readers.js
-var stripeMethod55, Readers2;
+var stripeMethod55;
+var Readers2;
 var init_Readers2 = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Terminal/Readers.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod55 = StripeResource.method;
     Readers2 = StripeResource.extend({
@@ -4842,12 +4965,11 @@ var init_Readers2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/Treasury/ReceivedCredits.js
-var stripeMethod56, ReceivedCredits;
+var stripeMethod56;
+var ReceivedCredits;
 var init_ReceivedCredits = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Treasury/ReceivedCredits.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod56 = StripeResource.method;
     ReceivedCredits = StripeResource.extend({
@@ -4858,12 +4980,11 @@ var init_ReceivedCredits = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Treasury/ReceivedCredits.js
-var stripeMethod57, ReceivedCredits2;
+var stripeMethod57;
+var ReceivedCredits2;
 var init_ReceivedCredits2 = __esm({
   "../node_modules/stripe/esm/resources/Treasury/ReceivedCredits.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod57 = StripeResource.method;
     ReceivedCredits2 = StripeResource.extend({
@@ -4879,12 +5000,11 @@ var init_ReceivedCredits2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/Treasury/ReceivedDebits.js
-var stripeMethod58, ReceivedDebits;
+var stripeMethod58;
+var ReceivedDebits;
 var init_ReceivedDebits = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Treasury/ReceivedDebits.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod58 = StripeResource.method;
     ReceivedDebits = StripeResource.extend({
@@ -4895,12 +5015,11 @@ var init_ReceivedDebits = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Treasury/ReceivedDebits.js
-var stripeMethod59, ReceivedDebits2;
+var stripeMethod59;
+var ReceivedDebits2;
 var init_ReceivedDebits2 = __esm({
   "../node_modules/stripe/esm/resources/Treasury/ReceivedDebits.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod59 = StripeResource.method;
     ReceivedDebits2 = StripeResource.extend({
@@ -4916,12 +5035,11 @@ var init_ReceivedDebits2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/Refunds.js
-var stripeMethod60, Refunds;
+var stripeMethod60;
+var Refunds;
 var init_Refunds = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Refunds.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod60 = StripeResource.method;
     Refunds = StripeResource.extend({
@@ -4932,12 +5050,11 @@ var init_Refunds = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Tax/Registrations.js
-var stripeMethod61, Registrations;
+var stripeMethod61;
+var Registrations;
 var init_Registrations = __esm({
   "../node_modules/stripe/esm/resources/Tax/Registrations.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod61 = StripeResource.method;
     Registrations = StripeResource.extend({
@@ -4958,12 +5075,11 @@ var init_Registrations = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Reporting/ReportRuns.js
-var stripeMethod62, ReportRuns;
+var stripeMethod62;
+var ReportRuns;
 var init_ReportRuns = __esm({
   "../node_modules/stripe/esm/resources/Reporting/ReportRuns.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod62 = StripeResource.method;
     ReportRuns = StripeResource.extend({
@@ -4980,12 +5096,11 @@ var init_ReportRuns = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Reporting/ReportTypes.js
-var stripeMethod63, ReportTypes;
+var stripeMethod63;
+var ReportTypes;
 var init_ReportTypes = __esm({
   "../node_modules/stripe/esm/resources/Reporting/ReportTypes.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod63 = StripeResource.method;
     ReportTypes = StripeResource.extend({
@@ -5001,12 +5116,11 @@ var init_ReportTypes = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Forwarding/Requests.js
-var stripeMethod64, Requests;
+var stripeMethod64;
+var Requests;
 var init_Requests = __esm({
   "../node_modules/stripe/esm/resources/Forwarding/Requests.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod64 = StripeResource.method;
     Requests = StripeResource.extend({
@@ -5023,12 +5137,11 @@ var init_Requests = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Sigma/ScheduledQueryRuns.js
-var stripeMethod65, ScheduledQueryRuns;
+var stripeMethod65;
+var ScheduledQueryRuns;
 var init_ScheduledQueryRuns = __esm({
   "../node_modules/stripe/esm/resources/Sigma/ScheduledQueryRuns.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod65 = StripeResource.method;
     ScheduledQueryRuns = StripeResource.extend({
@@ -5044,12 +5157,11 @@ var init_ScheduledQueryRuns = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Apps/Secrets.js
-var stripeMethod66, Secrets;
+var stripeMethod66;
+var Secrets;
 var init_Secrets = __esm({
   "../node_modules/stripe/esm/resources/Apps/Secrets.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod66 = StripeResource.method;
     Secrets = StripeResource.extend({
@@ -5067,12 +5179,11 @@ var init_Secrets = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/BillingPortal/Sessions.js
-var stripeMethod67, Sessions;
+var stripeMethod67;
+var Sessions;
 var init_Sessions = __esm({
   "../node_modules/stripe/esm/resources/BillingPortal/Sessions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod67 = StripeResource.method;
     Sessions = StripeResource.extend({
@@ -5083,12 +5194,11 @@ var init_Sessions = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Checkout/Sessions.js
-var stripeMethod68, Sessions2;
+var stripeMethod68;
+var Sessions2;
 var init_Sessions2 = __esm({
   "../node_modules/stripe/esm/resources/Checkout/Sessions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod68 = StripeResource.method;
     Sessions2 = StripeResource.extend({
@@ -5118,12 +5228,11 @@ var init_Sessions2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/FinancialConnections/Sessions.js
-var stripeMethod69, Sessions3;
+var stripeMethod69;
+var Sessions3;
 var init_Sessions3 = __esm({
   "../node_modules/stripe/esm/resources/FinancialConnections/Sessions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod69 = StripeResource.method;
     Sessions3 = StripeResource.extend({
@@ -5138,12 +5247,11 @@ var init_Sessions3 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Tax/Settings.js
-var stripeMethod70, Settings;
+var stripeMethod70;
+var Settings;
 var init_Settings = __esm({
   "../node_modules/stripe/esm/resources/Tax/Settings.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod70 = StripeResource.method;
     Settings = StripeResource.extend({
@@ -5152,12 +5260,11 @@ var init_Settings = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Climate/Suppliers.js
-var stripeMethod71, Suppliers;
+var stripeMethod71;
+var Suppliers;
 var init_Suppliers = __esm({
   "../node_modules/stripe/esm/resources/Climate/Suppliers.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod71 = StripeResource.method;
     Suppliers = StripeResource.extend({
@@ -5173,12 +5280,11 @@ var init_Suppliers = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/TestClocks.js
-var stripeMethod72, TestClocks;
+var stripeMethod72;
+var TestClocks;
 var init_TestClocks = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/TestClocks.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod72 = StripeResource.method;
     TestClocks = StripeResource.extend({
@@ -5206,12 +5312,11 @@ var init_TestClocks = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Issuing/Tokens.js
-var stripeMethod73, Tokens;
+var stripeMethod73;
+var Tokens;
 var init_Tokens = __esm({
   "../node_modules/stripe/esm/resources/Issuing/Tokens.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod73 = StripeResource.method;
     Tokens = StripeResource.extend({
@@ -5231,12 +5336,11 @@ var init_Tokens = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Treasury/TransactionEntries.js
-var stripeMethod74, TransactionEntries;
+var stripeMethod74;
+var TransactionEntries;
 var init_TransactionEntries = __esm({
   "../node_modules/stripe/esm/resources/Treasury/TransactionEntries.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod74 = StripeResource.method;
     TransactionEntries = StripeResource.extend({
@@ -5252,12 +5356,11 @@ var init_TransactionEntries = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/FinancialConnections/Transactions.js
-var stripeMethod75, Transactions;
+var stripeMethod75;
+var Transactions;
 var init_Transactions = __esm({
   "../node_modules/stripe/esm/resources/FinancialConnections/Transactions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod75 = StripeResource.method;
     Transactions = StripeResource.extend({
@@ -5273,12 +5376,11 @@ var init_Transactions = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Issuing/Transactions.js
-var stripeMethod76, Transactions2;
+var stripeMethod76;
+var Transactions2;
 var init_Transactions2 = __esm({
   "../node_modules/stripe/esm/resources/Issuing/Transactions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod76 = StripeResource.method;
     Transactions2 = StripeResource.extend({
@@ -5298,12 +5400,11 @@ var init_Transactions2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Tax/Transactions.js
-var stripeMethod77, Transactions3;
+var stripeMethod77;
+var Transactions3;
 var init_Transactions3 = __esm({
   "../node_modules/stripe/esm/resources/Tax/Transactions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod77 = StripeResource.method;
     Transactions3 = StripeResource.extend({
@@ -5327,12 +5428,11 @@ var init_Transactions3 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TestHelpers/Issuing/Transactions.js
-var stripeMethod78, Transactions4;
+var stripeMethod78;
+var Transactions4;
 var init_Transactions4 = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Issuing/Transactions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod78 = StripeResource.method;
     Transactions4 = StripeResource.extend({
@@ -5351,12 +5451,11 @@ var init_Transactions4 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Treasury/Transactions.js
-var stripeMethod79, Transactions5;
+var stripeMethod79;
+var Transactions5;
 var init_Transactions5 = __esm({
   "../node_modules/stripe/esm/resources/Treasury/Transactions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod79 = StripeResource.method;
     Transactions5 = StripeResource.extend({
@@ -5372,12 +5471,11 @@ var init_Transactions5 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Radar/ValueListItems.js
-var stripeMethod80, ValueListItems;
+var stripeMethod80;
+var ValueListItems;
 var init_ValueListItems = __esm({
   "../node_modules/stripe/esm/resources/Radar/ValueListItems.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod80 = StripeResource.method;
     ValueListItems = StripeResource.extend({
@@ -5401,12 +5499,11 @@ var init_ValueListItems = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Radar/ValueLists.js
-var stripeMethod81, ValueLists;
+var stripeMethod81;
+var ValueLists;
 var init_ValueLists = __esm({
   "../node_modules/stripe/esm/resources/Radar/ValueLists.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod81 = StripeResource.method;
     ValueLists = StripeResource.extend({
@@ -5431,12 +5528,11 @@ var init_ValueLists = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Identity/VerificationReports.js
-var stripeMethod82, VerificationReports;
+var stripeMethod82;
+var VerificationReports;
 var init_VerificationReports = __esm({
   "../node_modules/stripe/esm/resources/Identity/VerificationReports.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod82 = StripeResource.method;
     VerificationReports = StripeResource.extend({
@@ -5452,12 +5548,11 @@ var init_VerificationReports = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Identity/VerificationSessions.js
-var stripeMethod83, VerificationSessions;
+var stripeMethod83;
+var VerificationSessions;
 var init_VerificationSessions = __esm({
   "../node_modules/stripe/esm/resources/Identity/VerificationSessions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod83 = StripeResource.method;
     VerificationSessions = StripeResource.extend({
@@ -5489,12 +5584,11 @@ var init_VerificationSessions = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Accounts.js
-var stripeMethod84, Accounts3;
+var stripeMethod84;
+var Accounts3;
 var init_Accounts3 = __esm({
   "../node_modules/stripe/esm/resources/Accounts.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod84 = StripeResource.method;
     Accounts3 = StripeResource.extend({
@@ -5589,12 +5683,11 @@ var init_Accounts3 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/AccountLinks.js
-var stripeMethod85, AccountLinks2;
+var stripeMethod85;
+var AccountLinks2;
 var init_AccountLinks2 = __esm({
   "../node_modules/stripe/esm/resources/AccountLinks.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod85 = StripeResource.method;
     AccountLinks2 = StripeResource.extend({
@@ -5602,12 +5695,11 @@ var init_AccountLinks2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/AccountSessions.js
-var stripeMethod86, AccountSessions;
+var stripeMethod86;
+var AccountSessions;
 var init_AccountSessions = __esm({
   "../node_modules/stripe/esm/resources/AccountSessions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod86 = StripeResource.method;
     AccountSessions = StripeResource.extend({
@@ -5615,12 +5707,11 @@ var init_AccountSessions = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/ApplePayDomains.js
-var stripeMethod87, ApplePayDomains;
+var stripeMethod87;
+var ApplePayDomains;
 var init_ApplePayDomains = __esm({
   "../node_modules/stripe/esm/resources/ApplePayDomains.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod87 = StripeResource.method;
     ApplePayDomains = StripeResource.extend({
@@ -5641,12 +5732,11 @@ var init_ApplePayDomains = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/ApplicationFees.js
-var stripeMethod88, ApplicationFees;
+var stripeMethod88;
+var ApplicationFees;
 var init_ApplicationFees = __esm({
   "../node_modules/stripe/esm/resources/ApplicationFees.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod88 = StripeResource.method;
     ApplicationFees = StripeResource.extend({
@@ -5679,12 +5769,11 @@ var init_ApplicationFees = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Balance.js
-var stripeMethod89, Balance;
+var stripeMethod89;
+var Balance;
 var init_Balance = __esm({
   "../node_modules/stripe/esm/resources/Balance.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod89 = StripeResource.method;
     Balance = StripeResource.extend({
@@ -5692,12 +5781,11 @@ var init_Balance = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/BalanceSettings.js
-var stripeMethod90, BalanceSettings;
+var stripeMethod90;
+var BalanceSettings;
 var init_BalanceSettings = __esm({
   "../node_modules/stripe/esm/resources/BalanceSettings.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod90 = StripeResource.method;
     BalanceSettings = StripeResource.extend({
@@ -5706,12 +5794,11 @@ var init_BalanceSettings = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/BalanceTransactions.js
-var stripeMethod91, BalanceTransactions;
+var stripeMethod91;
+var BalanceTransactions;
 var init_BalanceTransactions = __esm({
   "../node_modules/stripe/esm/resources/BalanceTransactions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod91 = StripeResource.method;
     BalanceTransactions = StripeResource.extend({
@@ -5727,12 +5814,11 @@ var init_BalanceTransactions = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Charges.js
-var stripeMethod92, Charges;
+var stripeMethod92;
+var Charges;
 var init_Charges = __esm({
   "../node_modules/stripe/esm/resources/Charges.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod92 = StripeResource.method;
     Charges = StripeResource.extend({
@@ -5756,12 +5842,11 @@ var init_Charges = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/ConfirmationTokens.js
-var stripeMethod93, ConfirmationTokens2;
+var stripeMethod93;
+var ConfirmationTokens2;
 var init_ConfirmationTokens2 = __esm({
   "../node_modules/stripe/esm/resources/ConfirmationTokens.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod93 = StripeResource.method;
     ConfirmationTokens2 = StripeResource.extend({
@@ -5772,12 +5857,11 @@ var init_ConfirmationTokens2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/CountrySpecs.js
-var stripeMethod94, CountrySpecs;
+var stripeMethod94;
+var CountrySpecs;
 var init_CountrySpecs = __esm({
   "../node_modules/stripe/esm/resources/CountrySpecs.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod94 = StripeResource.method;
     CountrySpecs = StripeResource.extend({
@@ -5793,12 +5877,11 @@ var init_CountrySpecs = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Coupons.js
-var stripeMethod95, Coupons;
+var stripeMethod95;
+var Coupons;
 var init_Coupons = __esm({
   "../node_modules/stripe/esm/resources/Coupons.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod95 = StripeResource.method;
     Coupons = StripeResource.extend({
@@ -5814,12 +5897,11 @@ var init_Coupons = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/CreditNotes.js
-var stripeMethod96, CreditNotes;
+var stripeMethod96;
+var CreditNotes;
 var init_CreditNotes = __esm({
   "../node_modules/stripe/esm/resources/CreditNotes.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod96 = StripeResource.method;
     CreditNotes = StripeResource.extend({
@@ -5849,12 +5931,11 @@ var init_CreditNotes = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/CustomerSessions.js
-var stripeMethod97, CustomerSessions;
+var stripeMethod97;
+var CustomerSessions;
 var init_CustomerSessions = __esm({
   "../node_modules/stripe/esm/resources/CustomerSessions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod97 = StripeResource.method;
     CustomerSessions = StripeResource.extend({
@@ -5862,12 +5943,11 @@ var init_CustomerSessions = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Customers.js
-var stripeMethod98, Customers2;
+var stripeMethod98;
+var Customers2;
 var init_Customers2 = __esm({
   "../node_modules/stripe/esm/resources/Customers.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod98 = StripeResource.method;
     Customers2 = StripeResource.extend({
@@ -5981,12 +6061,11 @@ var init_Customers2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Disputes.js
-var stripeMethod99, Disputes2;
+var stripeMethod99;
+var Disputes2;
 var init_Disputes2 = __esm({
   "../node_modules/stripe/esm/resources/Disputes.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod99 = StripeResource.method;
     Disputes2 = StripeResource.extend({
@@ -6004,19 +6083,18 @@ var init_Disputes2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/EphemeralKeys.js
-var stripeMethod100, EphemeralKeys;
+var stripeMethod100;
+var EphemeralKeys;
 var init_EphemeralKeys = __esm({
   "../node_modules/stripe/esm/resources/EphemeralKeys.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod100 = StripeResource.method;
     EphemeralKeys = StripeResource.extend({
       create: stripeMethod100({
         method: "POST",
         fullPath: "/v1/ephemeral_keys",
-        validator: /* @__PURE__ */ __name((data, options) => {
+        validator: /* @__PURE__ */ __name2((data, options) => {
           if (!options.headers || !options.headers["Stripe-Version"]) {
             throw new Error("Passing apiVersion in a separate options hash is required to create an ephemeral key. See https://stripe.com/docs/api/versioning?lang=node");
           }
@@ -6026,12 +6104,11 @@ var init_EphemeralKeys = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Events.js
-var stripeMethod101, Events2;
+var stripeMethod101;
+var Events2;
 var init_Events2 = __esm({
   "../node_modules/stripe/esm/resources/Events.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod101 = StripeResource.method;
     Events2 = StripeResource.extend({
@@ -6044,12 +6121,11 @@ var init_Events2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/ExchangeRates.js
-var stripeMethod102, ExchangeRates;
+var stripeMethod102;
+var ExchangeRates;
 var init_ExchangeRates = __esm({
   "../node_modules/stripe/esm/resources/ExchangeRates.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod102 = StripeResource.method;
     ExchangeRates = StripeResource.extend({
@@ -6065,12 +6141,11 @@ var init_ExchangeRates = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/FileLinks.js
-var stripeMethod103, FileLinks;
+var stripeMethod103;
+var FileLinks;
 var init_FileLinks = __esm({
   "../node_modules/stripe/esm/resources/FileLinks.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod103 = StripeResource.method;
     FileLinks = StripeResource.extend({
@@ -6085,8 +6160,6 @@ var init_FileLinks = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/multipart.js
 function multipartRequestDataProcessor(method, data, headers, callback) {
   data = data || {};
   if (method !== "POST") {
@@ -6097,12 +6170,13 @@ function multipartRequestDataProcessor(method, data, headers, callback) {
     return callback(null, buffer);
   }).catch((err) => callback(err, null));
 }
+__name(multipartRequestDataProcessor, "multipartRequestDataProcessor");
 var multipartDataGenerator;
 var init_multipart = __esm({
   "../node_modules/stripe/esm/multipart.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_utils();
-    multipartDataGenerator = /* @__PURE__ */ __name((method, data, headers) => {
+    multipartDataGenerator = /* @__PURE__ */ __name2((method, data, headers) => {
       const segno = (Math.round(Math.random() * 1e16) + Math.round(Math.random() * 1e16)).toString();
       headers["Content-Type"] = `multipart/form-data; boundary=${segno}`;
       const textEncoder = new TextEncoder();
@@ -6117,10 +6191,12 @@ var init_multipart = __esm({
         buffer.set(endBuffer, buffer.length - 2);
       }
       __name(push, "push");
+      __name2(push, "push");
       function q(s) {
         return `"${s.replace(/"|"/g, "%22").replace(/\r\n|\r|\n/g, " ")}"`;
       }
       __name(q, "q");
+      __name2(q, "q");
       const flattenedData = flattenAndStringify(data);
       for (const k in flattenedData) {
         if (!Object.prototype.hasOwnProperty.call(flattenedData, k)) {
@@ -6143,15 +6219,14 @@ var init_multipart = __esm({
       push(`--${segno}--`);
       return buffer;
     }, "multipartDataGenerator");
-    __name(multipartRequestDataProcessor, "multipartRequestDataProcessor");
+    __name2(multipartRequestDataProcessor, "multipartRequestDataProcessor");
   }
 });
-
-// ../node_modules/stripe/esm/resources/Files.js
-var stripeMethod104, Files;
+var stripeMethod104;
+var Files;
 var init_Files = __esm({
   "../node_modules/stripe/esm/resources/Files.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_multipart();
     init_StripeResource();
     stripeMethod104 = StripeResource.method;
@@ -6174,12 +6249,11 @@ var init_Files = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/InvoiceItems.js
-var stripeMethod105, InvoiceItems;
+var stripeMethod105;
+var InvoiceItems;
 var init_InvoiceItems = __esm({
   "../node_modules/stripe/esm/resources/InvoiceItems.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod105 = StripeResource.method;
     InvoiceItems = StripeResource.extend({
@@ -6204,12 +6278,11 @@ var init_InvoiceItems = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/InvoicePayments.js
-var stripeMethod106, InvoicePayments;
+var stripeMethod106;
+var InvoicePayments;
 var init_InvoicePayments = __esm({
   "../node_modules/stripe/esm/resources/InvoicePayments.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod106 = StripeResource.method;
     InvoicePayments = StripeResource.extend({
@@ -6225,12 +6298,11 @@ var init_InvoicePayments = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/InvoiceRenderingTemplates.js
-var stripeMethod107, InvoiceRenderingTemplates;
+var stripeMethod107;
+var InvoiceRenderingTemplates;
 var init_InvoiceRenderingTemplates = __esm({
   "../node_modules/stripe/esm/resources/InvoiceRenderingTemplates.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod107 = StripeResource.method;
     InvoiceRenderingTemplates = StripeResource.extend({
@@ -6254,12 +6326,11 @@ var init_InvoiceRenderingTemplates = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Invoices.js
-var stripeMethod108, Invoices;
+var stripeMethod108;
+var Invoices;
 var init_Invoices = __esm({
   "../node_modules/stripe/esm/resources/Invoices.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod108 = StripeResource.method;
     Invoices = StripeResource.extend({
@@ -6326,12 +6397,11 @@ var init_Invoices = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Mandates.js
-var stripeMethod109, Mandates;
+var stripeMethod109;
+var Mandates;
 var init_Mandates = __esm({
   "../node_modules/stripe/esm/resources/Mandates.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod109 = StripeResource.method;
     Mandates = StripeResource.extend({
@@ -6339,13 +6409,13 @@ var init_Mandates = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/OAuth.js
-var stripeMethod110, oAuthHost, OAuth;
+var stripeMethod110;
+var oAuthHost;
+var OAuth;
 var init_OAuth = __esm({
   "../node_modules/stripe/esm/resources/OAuth.js"() {
     "use strict";
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     init_utils();
     stripeMethod110 = StripeResource.method;
@@ -6388,12 +6458,11 @@ var init_OAuth = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/PaymentAttemptRecords.js
-var stripeMethod111, PaymentAttemptRecords;
+var stripeMethod111;
+var PaymentAttemptRecords;
 var init_PaymentAttemptRecords = __esm({
   "../node_modules/stripe/esm/resources/PaymentAttemptRecords.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod111 = StripeResource.method;
     PaymentAttemptRecords = StripeResource.extend({
@@ -6409,12 +6478,11 @@ var init_PaymentAttemptRecords = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/PaymentIntents.js
-var stripeMethod112, PaymentIntents;
+var stripeMethod112;
+var PaymentIntents;
 var init_PaymentIntents = __esm({
   "../node_modules/stripe/esm/resources/PaymentIntents.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod112 = StripeResource.method;
     PaymentIntents = StripeResource.extend({
@@ -6469,12 +6537,11 @@ var init_PaymentIntents = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/PaymentLinks.js
-var stripeMethod113, PaymentLinks;
+var stripeMethod113;
+var PaymentLinks;
 var init_PaymentLinks = __esm({
   "../node_modules/stripe/esm/resources/PaymentLinks.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod113 = StripeResource.method;
     PaymentLinks = StripeResource.extend({
@@ -6500,12 +6567,11 @@ var init_PaymentLinks = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/PaymentMethodConfigurations.js
-var stripeMethod114, PaymentMethodConfigurations;
+var stripeMethod114;
+var PaymentMethodConfigurations;
 var init_PaymentMethodConfigurations = __esm({
   "../node_modules/stripe/esm/resources/PaymentMethodConfigurations.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod114 = StripeResource.method;
     PaymentMethodConfigurations = StripeResource.extend({
@@ -6529,12 +6595,11 @@ var init_PaymentMethodConfigurations = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/PaymentMethodDomains.js
-var stripeMethod115, PaymentMethodDomains;
+var stripeMethod115;
+var PaymentMethodDomains;
 var init_PaymentMethodDomains = __esm({
   "../node_modules/stripe/esm/resources/PaymentMethodDomains.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod115 = StripeResource.method;
     PaymentMethodDomains = StripeResource.extend({
@@ -6562,12 +6627,11 @@ var init_PaymentMethodDomains = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/PaymentMethods.js
-var stripeMethod116, PaymentMethods;
+var stripeMethod116;
+var PaymentMethods;
 var init_PaymentMethods = __esm({
   "../node_modules/stripe/esm/resources/PaymentMethods.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod116 = StripeResource.method;
     PaymentMethods = StripeResource.extend({
@@ -6596,12 +6660,11 @@ var init_PaymentMethods = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/PaymentRecords.js
-var stripeMethod117, PaymentRecords;
+var stripeMethod117;
+var PaymentRecords;
 var init_PaymentRecords = __esm({
   "../node_modules/stripe/esm/resources/PaymentRecords.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod117 = StripeResource.method;
     PaymentRecords = StripeResource.extend({
@@ -6637,12 +6700,11 @@ var init_PaymentRecords = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Payouts.js
-var stripeMethod118, Payouts;
+var stripeMethod118;
+var Payouts;
 var init_Payouts = __esm({
   "../node_modules/stripe/esm/resources/Payouts.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod118 = StripeResource.method;
     Payouts = StripeResource.extend({
@@ -6665,12 +6727,11 @@ var init_Payouts = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Plans.js
-var stripeMethod119, Plans;
+var stripeMethod119;
+var Plans;
 var init_Plans = __esm({
   "../node_modules/stripe/esm/resources/Plans.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod119 = StripeResource.method;
     Plans = StripeResource.extend({
@@ -6686,12 +6747,11 @@ var init_Plans = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Prices.js
-var stripeMethod120, Prices;
+var stripeMethod120;
+var Prices;
 var init_Prices = __esm({
   "../node_modules/stripe/esm/resources/Prices.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod120 = StripeResource.method;
     Prices = StripeResource.extend({
@@ -6711,12 +6771,11 @@ var init_Prices = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Products.js
-var stripeMethod121, Products2;
+var stripeMethod121;
+var Products2;
 var init_Products2 = __esm({
   "../node_modules/stripe/esm/resources/Products.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod121 = StripeResource.method;
     Products2 = StripeResource.extend({
@@ -6754,12 +6813,11 @@ var init_Products2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/PromotionCodes.js
-var stripeMethod122, PromotionCodes;
+var stripeMethod122;
+var PromotionCodes;
 var init_PromotionCodes = __esm({
   "../node_modules/stripe/esm/resources/PromotionCodes.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod122 = StripeResource.method;
     PromotionCodes = StripeResource.extend({
@@ -6780,12 +6838,11 @@ var init_PromotionCodes = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Quotes.js
-var stripeMethod123, Quotes;
+var stripeMethod123;
+var Quotes;
 var init_Quotes = __esm({
   "../node_modules/stripe/esm/resources/Quotes.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod123 = StripeResource.method;
     Quotes = StripeResource.extend({
@@ -6822,12 +6879,11 @@ var init_Quotes = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Refunds.js
-var stripeMethod124, Refunds2;
+var stripeMethod124;
+var Refunds2;
 var init_Refunds2 = __esm({
   "../node_modules/stripe/esm/resources/Refunds.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod124 = StripeResource.method;
     Refunds2 = StripeResource.extend({
@@ -6846,12 +6902,11 @@ var init_Refunds2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Reviews.js
-var stripeMethod125, Reviews;
+var stripeMethod125;
+var Reviews;
 var init_Reviews = __esm({
   "../node_modules/stripe/esm/resources/Reviews.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod125 = StripeResource.method;
     Reviews = StripeResource.extend({
@@ -6868,12 +6923,11 @@ var init_Reviews = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/SetupAttempts.js
-var stripeMethod126, SetupAttempts;
+var stripeMethod126;
+var SetupAttempts;
 var init_SetupAttempts = __esm({
   "../node_modules/stripe/esm/resources/SetupAttempts.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod126 = StripeResource.method;
     SetupAttempts = StripeResource.extend({
@@ -6885,12 +6939,11 @@ var init_SetupAttempts = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/SetupIntents.js
-var stripeMethod127, SetupIntents;
+var stripeMethod127;
+var SetupIntents;
 var init_SetupIntents = __esm({
   "../node_modules/stripe/esm/resources/SetupIntents.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod127 = StripeResource.method;
     SetupIntents = StripeResource.extend({
@@ -6923,12 +6976,11 @@ var init_SetupIntents = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/ShippingRates.js
-var stripeMethod128, ShippingRates;
+var stripeMethod128;
+var ShippingRates;
 var init_ShippingRates = __esm({
   "../node_modules/stripe/esm/resources/ShippingRates.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod128 = StripeResource.method;
     ShippingRates = StripeResource.extend({
@@ -6949,12 +7001,11 @@ var init_ShippingRates = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Sources.js
-var stripeMethod129, Sources;
+var stripeMethod129;
+var Sources;
 var init_Sources = __esm({
   "../node_modules/stripe/esm/resources/Sources.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod129 = StripeResource.method;
     Sources = StripeResource.extend({
@@ -6973,12 +7024,11 @@ var init_Sources = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/SubscriptionItems.js
-var stripeMethod130, SubscriptionItems;
+var stripeMethod130;
+var SubscriptionItems;
 var init_SubscriptionItems = __esm({
   "../node_modules/stripe/esm/resources/SubscriptionItems.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod130 = StripeResource.method;
     SubscriptionItems = StripeResource.extend({
@@ -7003,12 +7053,11 @@ var init_SubscriptionItems = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/SubscriptionSchedules.js
-var stripeMethod131, SubscriptionSchedules;
+var stripeMethod131;
+var SubscriptionSchedules;
 var init_SubscriptionSchedules = __esm({
   "../node_modules/stripe/esm/resources/SubscriptionSchedules.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod131 = StripeResource.method;
     SubscriptionSchedules = StripeResource.extend({
@@ -7040,12 +7089,11 @@ var init_SubscriptionSchedules = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Subscriptions.js
-var stripeMethod132, Subscriptions;
+var stripeMethod132;
+var Subscriptions;
 var init_Subscriptions = __esm({
   "../node_modules/stripe/esm/resources/Subscriptions.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod132 = StripeResource.method;
     Subscriptions = StripeResource.extend({
@@ -7087,12 +7135,11 @@ var init_Subscriptions = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TaxCodes.js
-var stripeMethod133, TaxCodes;
+var stripeMethod133;
+var TaxCodes;
 var init_TaxCodes = __esm({
   "../node_modules/stripe/esm/resources/TaxCodes.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod133 = StripeResource.method;
     TaxCodes = StripeResource.extend({
@@ -7105,12 +7152,11 @@ var init_TaxCodes = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TaxIds.js
-var stripeMethod134, TaxIds;
+var stripeMethod134;
+var TaxIds;
 var init_TaxIds = __esm({
   "../node_modules/stripe/esm/resources/TaxIds.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod134 = StripeResource.method;
     TaxIds = StripeResource.extend({
@@ -7125,12 +7171,11 @@ var init_TaxIds = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/TaxRates.js
-var stripeMethod135, TaxRates;
+var stripeMethod135;
+var TaxRates;
 var init_TaxRates = __esm({
   "../node_modules/stripe/esm/resources/TaxRates.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod135 = StripeResource.method;
     TaxRates = StripeResource.extend({
@@ -7145,12 +7190,11 @@ var init_TaxRates = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Tokens.js
-var stripeMethod136, Tokens2;
+var stripeMethod136;
+var Tokens2;
 var init_Tokens2 = __esm({
   "../node_modules/stripe/esm/resources/Tokens.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod136 = StripeResource.method;
     Tokens2 = StripeResource.extend({
@@ -7159,12 +7203,11 @@ var init_Tokens2 = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Topups.js
-var stripeMethod137, Topups;
+var stripeMethod137;
+var Topups;
 var init_Topups = __esm({
   "../node_modules/stripe/esm/resources/Topups.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod137 = StripeResource.method;
     Topups = StripeResource.extend({
@@ -7180,12 +7223,11 @@ var init_Topups = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/Transfers.js
-var stripeMethod138, Transfers;
+var stripeMethod138;
+var Transfers;
 var init_Transfers = __esm({
   "../node_modules/stripe/esm/resources/Transfers.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod138 = StripeResource.method;
     Transfers = StripeResource.extend({
@@ -7217,12 +7259,11 @@ var init_Transfers = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources/WebhookEndpoints.js
-var stripeMethod139, WebhookEndpoints;
+var stripeMethod139;
+var WebhookEndpoints;
 var init_WebhookEndpoints = __esm({
   "../node_modules/stripe/esm/resources/WebhookEndpoints.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_StripeResource();
     stripeMethod139 = StripeResource.method;
     WebhookEndpoints = StripeResource.extend({
@@ -7247,90 +7288,105 @@ var init_WebhookEndpoints = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/resources.js
 var resources_exports = {};
 __export(resources_exports, {
-  Account: () => Accounts3,
-  AccountLinks: () => AccountLinks2,
-  AccountSessions: () => AccountSessions,
-  Accounts: () => Accounts3,
-  ApplePayDomains: () => ApplePayDomains,
-  ApplicationFees: () => ApplicationFees,
-  Apps: () => Apps,
-  Balance: () => Balance,
-  BalanceSettings: () => BalanceSettings,
-  BalanceTransactions: () => BalanceTransactions,
-  Billing: () => Billing,
-  BillingPortal: () => BillingPortal,
-  Charges: () => Charges,
-  Checkout: () => Checkout,
-  Climate: () => Climate,
-  ConfirmationTokens: () => ConfirmationTokens2,
-  CountrySpecs: () => CountrySpecs,
-  Coupons: () => Coupons,
-  CreditNotes: () => CreditNotes,
-  CustomerSessions: () => CustomerSessions,
-  Customers: () => Customers2,
-  Disputes: () => Disputes2,
-  Entitlements: () => Entitlements,
-  EphemeralKeys: () => EphemeralKeys,
-  Events: () => Events2,
-  ExchangeRates: () => ExchangeRates,
-  FileLinks: () => FileLinks,
-  Files: () => Files,
-  FinancialConnections: () => FinancialConnections,
-  Forwarding: () => Forwarding,
-  Identity: () => Identity,
-  InvoiceItems: () => InvoiceItems,
-  InvoicePayments: () => InvoicePayments,
-  InvoiceRenderingTemplates: () => InvoiceRenderingTemplates,
-  Invoices: () => Invoices,
-  Issuing: () => Issuing,
-  Mandates: () => Mandates,
-  OAuth: () => OAuth,
-  PaymentAttemptRecords: () => PaymentAttemptRecords,
-  PaymentIntents: () => PaymentIntents,
-  PaymentLinks: () => PaymentLinks,
-  PaymentMethodConfigurations: () => PaymentMethodConfigurations,
-  PaymentMethodDomains: () => PaymentMethodDomains,
-  PaymentMethods: () => PaymentMethods,
-  PaymentRecords: () => PaymentRecords,
-  Payouts: () => Payouts,
-  Plans: () => Plans,
-  Prices: () => Prices,
-  Products: () => Products2,
-  PromotionCodes: () => PromotionCodes,
-  Quotes: () => Quotes,
-  Radar: () => Radar,
-  Refunds: () => Refunds2,
-  Reporting: () => Reporting,
-  Reviews: () => Reviews,
-  SetupAttempts: () => SetupAttempts,
-  SetupIntents: () => SetupIntents,
-  ShippingRates: () => ShippingRates,
-  Sigma: () => Sigma,
-  Sources: () => Sources,
-  SubscriptionItems: () => SubscriptionItems,
-  SubscriptionSchedules: () => SubscriptionSchedules,
-  Subscriptions: () => Subscriptions,
-  Tax: () => Tax,
-  TaxCodes: () => TaxCodes,
-  TaxIds: () => TaxIds,
-  TaxRates: () => TaxRates,
-  Terminal: () => Terminal,
-  TestHelpers: () => TestHelpers,
-  Tokens: () => Tokens2,
-  Topups: () => Topups,
-  Transfers: () => Transfers,
-  Treasury: () => Treasury,
-  V2: () => V2,
-  WebhookEndpoints: () => WebhookEndpoints
+  Account: /* @__PURE__ */ __name(() => Accounts3, "Account"),
+  AccountLinks: /* @__PURE__ */ __name(() => AccountLinks2, "AccountLinks"),
+  AccountSessions: /* @__PURE__ */ __name(() => AccountSessions, "AccountSessions"),
+  Accounts: /* @__PURE__ */ __name(() => Accounts3, "Accounts"),
+  ApplePayDomains: /* @__PURE__ */ __name(() => ApplePayDomains, "ApplePayDomains"),
+  ApplicationFees: /* @__PURE__ */ __name(() => ApplicationFees, "ApplicationFees"),
+  Apps: /* @__PURE__ */ __name(() => Apps, "Apps"),
+  Balance: /* @__PURE__ */ __name(() => Balance, "Balance"),
+  BalanceSettings: /* @__PURE__ */ __name(() => BalanceSettings, "BalanceSettings"),
+  BalanceTransactions: /* @__PURE__ */ __name(() => BalanceTransactions, "BalanceTransactions"),
+  Billing: /* @__PURE__ */ __name(() => Billing, "Billing"),
+  BillingPortal: /* @__PURE__ */ __name(() => BillingPortal, "BillingPortal"),
+  Charges: /* @__PURE__ */ __name(() => Charges, "Charges"),
+  Checkout: /* @__PURE__ */ __name(() => Checkout, "Checkout"),
+  Climate: /* @__PURE__ */ __name(() => Climate, "Climate"),
+  ConfirmationTokens: /* @__PURE__ */ __name(() => ConfirmationTokens2, "ConfirmationTokens"),
+  CountrySpecs: /* @__PURE__ */ __name(() => CountrySpecs, "CountrySpecs"),
+  Coupons: /* @__PURE__ */ __name(() => Coupons, "Coupons"),
+  CreditNotes: /* @__PURE__ */ __name(() => CreditNotes, "CreditNotes"),
+  CustomerSessions: /* @__PURE__ */ __name(() => CustomerSessions, "CustomerSessions"),
+  Customers: /* @__PURE__ */ __name(() => Customers2, "Customers"),
+  Disputes: /* @__PURE__ */ __name(() => Disputes2, "Disputes"),
+  Entitlements: /* @__PURE__ */ __name(() => Entitlements, "Entitlements"),
+  EphemeralKeys: /* @__PURE__ */ __name(() => EphemeralKeys, "EphemeralKeys"),
+  Events: /* @__PURE__ */ __name(() => Events2, "Events"),
+  ExchangeRates: /* @__PURE__ */ __name(() => ExchangeRates, "ExchangeRates"),
+  FileLinks: /* @__PURE__ */ __name(() => FileLinks, "FileLinks"),
+  Files: /* @__PURE__ */ __name(() => Files, "Files"),
+  FinancialConnections: /* @__PURE__ */ __name(() => FinancialConnections, "FinancialConnections"),
+  Forwarding: /* @__PURE__ */ __name(() => Forwarding, "Forwarding"),
+  Identity: /* @__PURE__ */ __name(() => Identity, "Identity"),
+  InvoiceItems: /* @__PURE__ */ __name(() => InvoiceItems, "InvoiceItems"),
+  InvoicePayments: /* @__PURE__ */ __name(() => InvoicePayments, "InvoicePayments"),
+  InvoiceRenderingTemplates: /* @__PURE__ */ __name(() => InvoiceRenderingTemplates, "InvoiceRenderingTemplates"),
+  Invoices: /* @__PURE__ */ __name(() => Invoices, "Invoices"),
+  Issuing: /* @__PURE__ */ __name(() => Issuing, "Issuing"),
+  Mandates: /* @__PURE__ */ __name(() => Mandates, "Mandates"),
+  OAuth: /* @__PURE__ */ __name(() => OAuth, "OAuth"),
+  PaymentAttemptRecords: /* @__PURE__ */ __name(() => PaymentAttemptRecords, "PaymentAttemptRecords"),
+  PaymentIntents: /* @__PURE__ */ __name(() => PaymentIntents, "PaymentIntents"),
+  PaymentLinks: /* @__PURE__ */ __name(() => PaymentLinks, "PaymentLinks"),
+  PaymentMethodConfigurations: /* @__PURE__ */ __name(() => PaymentMethodConfigurations, "PaymentMethodConfigurations"),
+  PaymentMethodDomains: /* @__PURE__ */ __name(() => PaymentMethodDomains, "PaymentMethodDomains"),
+  PaymentMethods: /* @__PURE__ */ __name(() => PaymentMethods, "PaymentMethods"),
+  PaymentRecords: /* @__PURE__ */ __name(() => PaymentRecords, "PaymentRecords"),
+  Payouts: /* @__PURE__ */ __name(() => Payouts, "Payouts"),
+  Plans: /* @__PURE__ */ __name(() => Plans, "Plans"),
+  Prices: /* @__PURE__ */ __name(() => Prices, "Prices"),
+  Products: /* @__PURE__ */ __name(() => Products2, "Products"),
+  PromotionCodes: /* @__PURE__ */ __name(() => PromotionCodes, "PromotionCodes"),
+  Quotes: /* @__PURE__ */ __name(() => Quotes, "Quotes"),
+  Radar: /* @__PURE__ */ __name(() => Radar, "Radar"),
+  Refunds: /* @__PURE__ */ __name(() => Refunds2, "Refunds"),
+  Reporting: /* @__PURE__ */ __name(() => Reporting, "Reporting"),
+  Reviews: /* @__PURE__ */ __name(() => Reviews, "Reviews"),
+  SetupAttempts: /* @__PURE__ */ __name(() => SetupAttempts, "SetupAttempts"),
+  SetupIntents: /* @__PURE__ */ __name(() => SetupIntents, "SetupIntents"),
+  ShippingRates: /* @__PURE__ */ __name(() => ShippingRates, "ShippingRates"),
+  Sigma: /* @__PURE__ */ __name(() => Sigma, "Sigma"),
+  Sources: /* @__PURE__ */ __name(() => Sources, "Sources"),
+  SubscriptionItems: /* @__PURE__ */ __name(() => SubscriptionItems, "SubscriptionItems"),
+  SubscriptionSchedules: /* @__PURE__ */ __name(() => SubscriptionSchedules, "SubscriptionSchedules"),
+  Subscriptions: /* @__PURE__ */ __name(() => Subscriptions, "Subscriptions"),
+  Tax: /* @__PURE__ */ __name(() => Tax, "Tax"),
+  TaxCodes: /* @__PURE__ */ __name(() => TaxCodes, "TaxCodes"),
+  TaxIds: /* @__PURE__ */ __name(() => TaxIds, "TaxIds"),
+  TaxRates: /* @__PURE__ */ __name(() => TaxRates, "TaxRates"),
+  Terminal: /* @__PURE__ */ __name(() => Terminal, "Terminal"),
+  TestHelpers: /* @__PURE__ */ __name(() => TestHelpers, "TestHelpers"),
+  Tokens: /* @__PURE__ */ __name(() => Tokens2, "Tokens"),
+  Topups: /* @__PURE__ */ __name(() => Topups, "Topups"),
+  Transfers: /* @__PURE__ */ __name(() => Transfers, "Transfers"),
+  Treasury: /* @__PURE__ */ __name(() => Treasury, "Treasury"),
+  V2: /* @__PURE__ */ __name(() => V2, "V2"),
+  WebhookEndpoints: /* @__PURE__ */ __name(() => WebhookEndpoints, "WebhookEndpoints")
 });
-var Apps, Billing, BillingPortal, Checkout, Climate, Entitlements, FinancialConnections, Forwarding, Identity, Issuing, Radar, Reporting, Sigma, Tax, Terminal, TestHelpers, Treasury, V2;
+var Apps;
+var Billing;
+var BillingPortal;
+var Checkout;
+var Climate;
+var Entitlements;
+var FinancialConnections;
+var Forwarding;
+var Identity;
+var Issuing;
+var Radar;
+var Reporting;
+var Sigma;
+var Tax;
+var Terminal;
+var TestHelpers;
+var Treasury;
+var V2;
 var init_resources = __esm({
   "../node_modules/stripe/esm/resources.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_ResourceNamespace();
     init_AccountLinks();
     init_AccountTokens();
@@ -7595,8 +7651,6 @@ var init_resources = __esm({
     });
   }
 });
-
-// ../node_modules/stripe/esm/stripe.core.js
 function createStripe(platformFunctions, requestSender = defaultRequestSenderFactory) {
   Stripe2.PACKAGE_VERSION = "20.4.0";
   Stripe2.API_VERSION = ApiVersion;
@@ -7655,7 +7709,8 @@ function createStripe(platformFunctions, requestSender = defaultRequestSenderFac
     this._requestSender = requestSender(this);
     this.StripeResource = Stripe2.StripeResource;
   }
-  __name(Stripe2, "Stripe");
+  __name(Stripe2, "Stripe2");
+  __name2(Stripe2, "Stripe");
   Stripe2.errors = Error_exports;
   Stripe2.createNodeHttpClient = platformFunctions.createNodeHttpClient;
   Stripe2.createFetchHttpClient = platformFunctions.createFetchHttpClient;
@@ -7742,7 +7797,7 @@ function createStripe(platformFunctions, requestSender = defaultRequestSenderFac
      *
      * It may be deprecated and removed in the future.
      */
-    getConstant: /* @__PURE__ */ __name((c) => {
+    getConstant: /* @__PURE__ */ __name2((c) => {
       switch (c) {
         case "DEFAULT_HOST":
           return DEFAULT_HOST;
@@ -7904,10 +7959,20 @@ function createStripe(platformFunctions, requestSender = defaultRequestSenderFac
   };
   return Stripe2;
 }
-var DEFAULT_HOST, DEFAULT_PORT, DEFAULT_BASE_PATH, DEFAULT_API_VERSION, DEFAULT_TIMEOUT, MAX_NETWORK_RETRY_DELAY_SEC, INITIAL_NETWORK_RETRY_DELAY_SEC, APP_INFO_PROPERTIES, ALLOWED_CONFIG_PROPERTIES, defaultRequestSenderFactory;
+__name(createStripe, "createStripe");
+var DEFAULT_HOST;
+var DEFAULT_PORT;
+var DEFAULT_BASE_PATH;
+var DEFAULT_API_VERSION;
+var DEFAULT_TIMEOUT;
+var MAX_NETWORK_RETRY_DELAY_SEC;
+var INITIAL_NETWORK_RETRY_DELAY_SEC;
+var APP_INFO_PROPERTIES;
+var ALLOWED_CONFIG_PROPERTIES;
+var defaultRequestSenderFactory;
 var init_stripe_core = __esm({
   "../node_modules/stripe/esm/stripe.core.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_Error();
     init_RequestSender();
     init_StripeResource();
@@ -7942,29 +8007,26 @@ var init_stripe_core = __esm({
       "stripeAccount",
       "stripeContext"
     ];
-    defaultRequestSenderFactory = /* @__PURE__ */ __name((stripe) => new RequestSender(stripe, StripeResource.MAX_BUFFERED_REQUEST_METRICS), "defaultRequestSenderFactory");
-    __name(createStripe, "createStripe");
+    defaultRequestSenderFactory = /* @__PURE__ */ __name2((stripe) => new RequestSender(stripe, StripeResource.MAX_BUFFERED_REQUEST_METRICS), "defaultRequestSenderFactory");
+    __name2(createStripe, "createStripe");
   }
 });
-
-// ../node_modules/stripe/esm/stripe.esm.worker.js
 var stripe_esm_worker_exports = {};
 __export(stripe_esm_worker_exports, {
-  Stripe: () => Stripe,
-  default: () => stripe_esm_worker_default
+  Stripe: /* @__PURE__ */ __name(() => Stripe, "Stripe"),
+  default: /* @__PURE__ */ __name(() => stripe_esm_worker_default, "default")
 });
-var Stripe, stripe_esm_worker_default;
+var Stripe;
+var stripe_esm_worker_default;
 var init_stripe_esm_worker = __esm({
   "../node_modules/stripe/esm/stripe.esm.worker.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_WebPlatformFunctions();
     init_stripe_core();
     Stripe = createStripe(new WebPlatformFunctions());
     stripe_esm_worker_default = Stripe;
   }
 });
-
-// api/checkout-session-status.js
 function json11(body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -7974,9 +8036,11 @@ function json11(body, status = 200) {
     }
   });
 }
+__name(json11, "json11");
 async function onRequestOptions6() {
   return new Response(null, { status: 204, headers: CORS_HEADERS6 });
 }
+__name(onRequestOptions6, "onRequestOptions6");
 async function onRequestGet4({ request, env }) {
   try {
     const secretKey = String(env?.STRIPE_SECRET_KEY || "").trim();
@@ -8003,32 +8067,33 @@ async function onRequestGet4({ request, env }) {
     return json11({ error: String(err?.message || "Server error retrieving checkout session.") }, 500);
   }
 }
+__name(onRequestGet4, "onRequestGet4");
 var CORS_HEADERS6;
 var init_checkout_session_status = __esm({
   "api/checkout-session-status.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_stripe_esm_worker();
     CORS_HEADERS6 = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type"
     };
-    __name(json11, "json");
-    __name(onRequestOptions6, "onRequestOptions");
-    __name(onRequestGet4, "onRequestGet");
+    __name2(json11, "json");
+    __name2(onRequestOptions6, "onRequestOptions");
+    __name2(onRequestGet4, "onRequestGet");
   }
 });
-
-// api/collections/index.js
 function json12(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...CORS_HEADERS7, ...extraHeaders }
   });
 }
+__name(json12, "json12");
 function slugify2(input) {
   return String(input || "").trim().toLowerCase().replace(/['"]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
 }
+__name(slugify2, "slugify2");
 async function requireAdmin9(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -8038,9 +8103,11 @@ async function requireAdmin9(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
+__name(requireAdmin9, "requireAdmin9");
 async function onRequestOptions7() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS7 } });
 }
+__name(onRequestOptions7, "onRequestOptions7");
 async function onRequestGet5({ env }) {
   try {
     const res = await env.DB.prepare(
@@ -8052,6 +8119,7 @@ async function onRequestGet5({ env }) {
     return json12({ ok: false, error: "Server error." }, 500);
   }
 }
+__name(onRequestGet5, "onRequestGet5");
 async function onRequestPost6({ request, env }) {
   const auth = await requireAdmin9(request, env);
   if (!auth.ok) return json12({ ok: false, error: auth.error }, auth.status);
@@ -8126,26 +8194,25 @@ async function onRequestPost6({ request, env }) {
     return json12({ ok: false, error: "Server error." }, 500);
   }
 }
+__name(onRequestPost6, "onRequestPost6");
 var CORS_HEADERS7;
 var init_collections = __esm({
   "api/collections/index.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
     CORS_HEADERS7 = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type"
     };
-    __name(json12, "json");
-    __name(slugify2, "slugify");
-    __name(requireAdmin9, "requireAdmin");
-    __name(onRequestOptions7, "onRequestOptions");
-    __name(onRequestGet5, "onRequestGet");
-    __name(onRequestPost6, "onRequestPost");
+    __name2(json12, "json");
+    __name2(slugify2, "slugify");
+    __name2(requireAdmin9, "requireAdmin");
+    __name2(onRequestOptions7, "onRequestOptions");
+    __name2(onRequestGet5, "onRequestGet");
+    __name2(onRequestPost6, "onRequestPost");
   }
 });
-
-// api/contact.js
 function json13(body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -8155,9 +8222,11 @@ function json13(body, status = 200) {
     }
   });
 }
+__name(json13, "json13");
 async function onRequestOptions8() {
   return new Response(null, { status: 204, headers: CORS_HEADERS8 });
 }
+__name(onRequestOptions8, "onRequestOptions8");
 async function onRequestPost7({ request, env }) {
   try {
     const body = await request.json().catch(() => ({}));
@@ -8220,22 +8289,21 @@ async function onRequestPost7({ request, env }) {
     return json13({ ok: false, error: "Server error." }, 500);
   }
 }
+__name(onRequestPost7, "onRequestPost7");
 var CORS_HEADERS8;
 var init_contact = __esm({
   "api/contact.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     CORS_HEADERS8 = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type"
     };
-    __name(json13, "json");
-    __name(onRequestOptions8, "onRequestOptions");
-    __name(onRequestPost7, "onRequestPost");
+    __name2(json13, "json");
+    __name2(onRequestOptions8, "onRequestOptions");
+    __name2(onRequestPost7, "onRequestPost");
   }
 });
-
-// api/create-checkout-session.js
 function json14(body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -8245,6 +8313,7 @@ function json14(body, status = 200) {
     }
   });
 }
+__name(json14, "json14");
 function parseUnitPrice(item) {
   const sizeText = String(item?.size || "");
   const sampleKitLike = /sample\s*kit/i.test(sizeText) || /sample\s*kit/i.test(String(item?.profileName || ""));
@@ -8258,6 +8327,7 @@ function parseUnitPrice(item) {
   if (Number.isFinite(explicitPrice) && explicitPrice >= 0) return explicitPrice;
   return 0;
 }
+__name(parseUnitPrice, "parseUnitPrice");
 function sanitizeItems(items) {
   return (Array.isArray(items) ? items : []).map((item) => {
     const quantity = Math.max(1, Math.floor(Number(item?.quantity || 1)));
@@ -8273,9 +8343,11 @@ function sanitizeItems(items) {
     };
   }).filter((item) => item.quantity > 0 && item.unitPrice > 0);
 }
+__name(sanitizeItems, "sanitizeItems");
 async function onRequestOptions9() {
   return new Response(null, { status: 204, headers: CORS_HEADERS9 });
 }
+__name(onRequestOptions9, "onRequestOptions9");
 async function onRequestPost8({ request, env }) {
   try {
     const cookieHeader = request.headers.get("Cookie") || "";
@@ -8330,10 +8402,11 @@ async function onRequestPost8({ request, env }) {
     return json14({ error: String(err?.message || "Server error creating checkout session.") }, 500);
   }
 }
+__name(onRequestPost8, "onRequestPost8");
 var CORS_HEADERS9;
 var init_create_checkout_session = __esm({
   "api/create-checkout-session.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_stripe_esm_worker();
     init_auth();
     CORS_HEADERS9 = {
@@ -8341,15 +8414,13 @@ var init_create_checkout_session = __esm({
       "Access-Control-Allow-Methods": "POST,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type"
     };
-    __name(json14, "json");
-    __name(parseUnitPrice, "parseUnitPrice");
-    __name(sanitizeItems, "sanitizeItems");
-    __name(onRequestOptions9, "onRequestOptions");
-    __name(onRequestPost8, "onRequestPost");
+    __name2(json14, "json");
+    __name2(parseUnitPrice, "parseUnitPrice");
+    __name2(sanitizeItems, "sanitizeItems");
+    __name2(onRequestOptions9, "onRequestOptions");
+    __name2(onRequestPost8, "onRequestPost");
   }
 });
-
-// api/purchase.js
 function json15(body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -8359,37 +8430,39 @@ function json15(body, status = 200) {
     }
   });
 }
+__name(json15, "json15");
 async function onRequestOptions10() {
   return new Response(null, { status: 204, headers: CORS_HEADERS10 });
 }
+__name(onRequestOptions10, "onRequestOptions10");
 async function onRequestPost9() {
   return json15({
     ok: true,
     message: "Stripe checkout now uses Checkout Sessions directly. This endpoint is no longer required for the cart flow."
   });
 }
+__name(onRequestPost9, "onRequestPost9");
 var CORS_HEADERS10;
 var init_purchase = __esm({
   "api/purchase.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     CORS_HEADERS10 = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type"
     };
-    __name(json15, "json");
-    __name(onRequestOptions10, "onRequestOptions");
-    __name(onRequestPost9, "onRequestPost");
+    __name2(json15, "json");
+    __name2(onRequestOptions10, "onRequestOptions");
+    __name2(onRequestPost9, "onRequestPost");
   }
 });
-
-// api/stripe-webhook.js
 function json16(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...extraHeaders }
   });
 }
+__name(json16, "json16");
 async function onRequestPost10({ request, env }) {
   const rawBody = await request.arrayBuffer();
   const sig = request.headers.get("stripe-signature");
@@ -8423,30 +8496,32 @@ async function onRequestPost10({ request, env }) {
   }
   return json16({ ok: true, ignored: true });
 }
+__name(onRequestPost10, "onRequestPost10");
 async function onRequestOptions11() {
   return new Response(null, { status: 204 });
 }
+__name(onRequestOptions11, "onRequestOptions11");
 var STRIPE_SECRET_KEY;
 var init_stripe_webhook = __esm({
   "api/stripe-webhook.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     STRIPE_SECRET_KEY = typeof STRIPE_SECRET_KEY !== "undefined" ? STRIPE_SECRET_KEY : void 0;
-    __name(json16, "json");
-    __name(onRequestPost10, "onRequestPost");
-    __name(onRequestOptions11, "onRequestOptions");
+    __name2(json16, "json");
+    __name2(onRequestPost10, "onRequestPost");
+    __name2(onRequestOptions11, "onRequestOptions");
   }
 });
-
-// api/user-purchases.js
 function json17(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...CORS_HEADERS11, ...extraHeaders }
   });
 }
+__name(json17, "json17");
 async function onRequestOptions12() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS11 } });
 }
+__name(onRequestOptions12, "onRequestOptions12");
 async function onRequestGet6({ request, env }) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -8463,23 +8538,22 @@ async function onRequestGet6({ request, env }) {
     return json17({ ok: false, error: "Server error." }, 500);
   }
 }
+__name(onRequestGet6, "onRequestGet6");
 var CORS_HEADERS11;
 var init_user_purchases = __esm({
   "api/user-purchases.js"() {
-    init_functionsRoutes_0_6820790580908853();
+    init_functionsRoutes_0_36703542789728894();
     init_auth();
     CORS_HEADERS11 = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET,OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type"
     };
-    __name(json17, "json");
-    __name(onRequestOptions12, "onRequestOptions");
-    __name(onRequestGet6, "onRequestGet");
+    __name2(json17, "json");
+    __name2(onRequestOptions12, "onRequestOptions");
+    __name2(onRequestGet6, "onRequestGet");
   }
 });
-
-// api/blog.js
 async function onRequest5(context) {
   const { request, env } = context;
   const url = new URL(request.url);
@@ -8520,17 +8594,16 @@ async function onRequest5(context) {
   }
   return new Response("Not found", { status: 404 });
 }
+__name(onRequest5, "onRequest5");
 var init_blog = __esm({
   "api/blog.js"() {
-    init_functionsRoutes_0_6820790580908853();
-    __name(onRequest5, "onRequest");
+    init_functionsRoutes_0_36703542789728894();
+    __name2(onRequest5, "onRequest");
   }
 });
-
-// ../.wrangler/tmp/pages-ahOUnk/functionsRoutes-0.6820790580908853.mjs
 var routes;
-var init_functionsRoutes_0_6820790580908853 = __esm({
-  "../.wrangler/tmp/pages-ahOUnk/functionsRoutes-0.6820790580908853.mjs"() {
+var init_functionsRoutes_0_36703542789728894 = __esm({
+  "../.wrangler/tmp/pages-qHcGvK/functionsRoutes-0.36703542789728894.mjs"() {
     init_download();
     init_download();
     init_upload();
@@ -8815,18 +8888,10 @@ var init_functionsRoutes_0_6820790580908853 = __esm({
     ];
   }
 });
-
-// ../.wrangler/tmp/bundle-bS0K49/middleware-loader.entry.ts
-init_functionsRoutes_0_6820790580908853();
-
-// ../.wrangler/tmp/bundle-bS0K49/middleware-insertion-facade.js
-init_functionsRoutes_0_6820790580908853();
-
-// ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/pages-template-worker.ts
-init_functionsRoutes_0_6820790580908853();
-
-// ../../../../../AppData/Roaming/npm/node_modules/wrangler/node_modules/path-to-regexp/dist.es2015/index.js
-init_functionsRoutes_0_6820790580908853();
+init_functionsRoutes_0_36703542789728894();
+init_functionsRoutes_0_36703542789728894();
+init_functionsRoutes_0_36703542789728894();
+init_functionsRoutes_0_36703542789728894();
 function lexer(str) {
   var tokens = [];
   var i = 0;
@@ -8911,6 +8976,7 @@ function lexer(str) {
   return tokens;
 }
 __name(lexer, "lexer");
+__name2(lexer, "lexer");
 function parse(str, options) {
   if (options === void 0) {
     options = {};
@@ -8921,18 +8987,18 @@ function parse(str, options) {
   var key = 0;
   var i = 0;
   var path = "";
-  var tryConsume = /* @__PURE__ */ __name(function(type) {
+  var tryConsume = /* @__PURE__ */ __name2(function(type) {
     if (i < tokens.length && tokens[i].type === type)
       return tokens[i++].value;
   }, "tryConsume");
-  var mustConsume = /* @__PURE__ */ __name(function(type) {
+  var mustConsume = /* @__PURE__ */ __name2(function(type) {
     var value2 = tryConsume(type);
     if (value2 !== void 0)
       return value2;
     var _a2 = tokens[i], nextType = _a2.type, index = _a2.index;
     throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
   }, "mustConsume");
-  var consumeText = /* @__PURE__ */ __name(function() {
+  var consumeText = /* @__PURE__ */ __name2(function() {
     var result2 = "";
     var value2;
     while (value2 = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
@@ -8940,7 +9006,7 @@ function parse(str, options) {
     }
     return result2;
   }, "consumeText");
-  var isSafe = /* @__PURE__ */ __name(function(value2) {
+  var isSafe = /* @__PURE__ */ __name2(function(value2) {
     for (var _i = 0, delimiter_1 = delimiter; _i < delimiter_1.length; _i++) {
       var char2 = delimiter_1[_i];
       if (value2.indexOf(char2) > -1)
@@ -8948,7 +9014,7 @@ function parse(str, options) {
     }
     return false;
   }, "isSafe");
-  var safePattern = /* @__PURE__ */ __name(function(prefix2) {
+  var safePattern = /* @__PURE__ */ __name2(function(prefix2) {
     var prev = result[result.length - 1];
     var prevText = prefix2 || (prev && typeof prev === "string" ? prev : "");
     if (prev && !prevText) {
@@ -9011,12 +9077,14 @@ function parse(str, options) {
   return result;
 }
 __name(parse, "parse");
+__name2(parse, "parse");
 function match(str, options) {
   var keys = [];
   var re = pathToRegexp(str, keys, options);
   return regexpToFunction(re, keys, options);
 }
 __name(match, "match");
+__name2(match, "match");
 function regexpToFunction(re, keys, options) {
   if (options === void 0) {
     options = {};
@@ -9030,7 +9098,7 @@ function regexpToFunction(re, keys, options) {
       return false;
     var path = m[0], index = m.index;
     var params = /* @__PURE__ */ Object.create(null);
-    var _loop_1 = /* @__PURE__ */ __name(function(i2) {
+    var _loop_1 = /* @__PURE__ */ __name2(function(i2) {
       if (m[i2] === void 0)
         return "continue";
       var key = keys[i2 - 1];
@@ -9049,14 +9117,17 @@ function regexpToFunction(re, keys, options) {
   };
 }
 __name(regexpToFunction, "regexpToFunction");
+__name2(regexpToFunction, "regexpToFunction");
 function escapeString(str) {
   return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1");
 }
 __name(escapeString, "escapeString");
+__name2(escapeString, "escapeString");
 function flags(options) {
   return options && options.sensitive ? "" : "i";
 }
 __name(flags, "flags");
+__name2(flags, "flags");
 function regexpToRegexp(path, keys) {
   if (!keys)
     return path;
@@ -9077,6 +9148,7 @@ function regexpToRegexp(path, keys) {
   return path;
 }
 __name(regexpToRegexp, "regexpToRegexp");
+__name2(regexpToRegexp, "regexpToRegexp");
 function arrayToRegexp(paths, keys, options) {
   var parts = paths.map(function(path) {
     return pathToRegexp(path, keys, options).source;
@@ -9084,10 +9156,12 @@ function arrayToRegexp(paths, keys, options) {
   return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
 }
 __name(arrayToRegexp, "arrayToRegexp");
+__name2(arrayToRegexp, "arrayToRegexp");
 function stringToRegexp(path, keys, options) {
   return tokensToRegexp(parse(path, options), keys, options);
 }
 __name(stringToRegexp, "stringToRegexp");
+__name2(stringToRegexp, "stringToRegexp");
 function tokensToRegexp(tokens, keys, options) {
   if (options === void 0) {
     options = {};
@@ -9143,6 +9217,7 @@ function tokensToRegexp(tokens, keys, options) {
   return new RegExp(route, flags(options));
 }
 __name(tokensToRegexp, "tokensToRegexp");
+__name2(tokensToRegexp, "tokensToRegexp");
 function pathToRegexp(path, keys, options) {
   if (path instanceof RegExp)
     return regexpToRegexp(path, keys);
@@ -9151,8 +9226,7 @@ function pathToRegexp(path, keys, options) {
   return stringToRegexp(path, keys, options);
 }
 __name(pathToRegexp, "pathToRegexp");
-
-// ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/pages-template-worker.ts
+__name2(pathToRegexp, "pathToRegexp");
 var escapeRegex = /[.+?^${}()|[\]\\]/g;
 function* executeRequest(request) {
   const requestPath = new URL(request.url).pathname;
@@ -9203,13 +9277,14 @@ function* executeRequest(request) {
   }
 }
 __name(executeRequest, "executeRequest");
+__name2(executeRequest, "executeRequest");
 var pages_template_worker_default = {
   async fetch(originalRequest, env, workerContext) {
     let request = originalRequest;
     const handlerIterator = executeRequest(request);
     let data = {};
     let isFailOpen = false;
-    const next = /* @__PURE__ */ __name(async (input, init) => {
+    const next = /* @__PURE__ */ __name2(async (input, init) => {
       if (input !== void 0) {
         let url = input;
         if (typeof input === "string") {
@@ -9236,7 +9311,7 @@ var pages_template_worker_default = {
           },
           env,
           waitUntil: workerContext.waitUntil.bind(workerContext),
-          passThroughOnException: /* @__PURE__ */ __name(() => {
+          passThroughOnException: /* @__PURE__ */ __name2(() => {
             isFailOpen = true;
           }, "passThroughOnException")
         };
@@ -9264,17 +9339,15 @@ var pages_template_worker_default = {
     }
   }
 };
-var cloneResponse = /* @__PURE__ */ __name((response) => (
+var cloneResponse = /* @__PURE__ */ __name2((response) => (
   // https://fetch.spec.whatwg.org/#null-body-status
   new Response(
     [101, 204, 205, 304].includes(response.status) ? null : response.body,
     response
   )
 ), "cloneResponse");
-
-// ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
-init_functionsRoutes_0_6820790580908853();
-var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+init_functionsRoutes_0_36703542789728894();
+var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } finally {
@@ -9290,9 +9363,7 @@ var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
   }
 }, "drainBody");
 var middleware_ensure_req_body_drained_default = drainBody;
-
-// ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
-init_functionsRoutes_0_6820790580908853();
+init_functionsRoutes_0_36703542789728894();
 function reduceError(e) {
   return {
     name: e?.name,
@@ -9302,7 +9373,8 @@ function reduceError(e) {
   };
 }
 __name(reduceError, "reduceError");
-var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+__name2(reduceError, "reduceError");
+var jsonError = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } catch (e) {
@@ -9314,21 +9386,18 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
   }
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
-
-// ../.wrangler/tmp/bundle-bS0K49/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
 ];
 var middleware_insertion_facade_default = pages_template_worker_default;
-
-// ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/common.ts
-init_functionsRoutes_0_6820790580908853();
+init_functionsRoutes_0_36703542789728894();
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
   __facade_middleware__.push(...args.flat());
 }
 __name(__facade_register__, "__facade_register__");
+__name2(__facade_register__, "__facade_register__");
 function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   const [head, ...tail] = middlewareChain;
   const middlewareCtx = {
@@ -9340,6 +9409,7 @@ function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   return head(request, env, ctx, middlewareCtx);
 }
 __name(__facade_invokeChain__, "__facade_invokeChain__");
+__name2(__facade_invokeChain__, "__facade_invokeChain__");
 function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   return __facade_invokeChain__(request, env, ctx, dispatch, [
     ...__facade_middleware__,
@@ -9347,16 +9417,18 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   ]);
 }
 __name(__facade_invoke__, "__facade_invoke__");
-
-// ../.wrangler/tmp/bundle-bS0K49/middleware-loader.entry.ts
+__name2(__facade_invoke__, "__facade_invoke__");
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
+  static {
+    __name(this, "___Facade_ScheduledController__");
+  }
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
     this.cron = cron;
     this.#noRetry = noRetry;
   }
   static {
-    __name(this, "__Facade_ScheduledController__");
+    __name2(this, "__Facade_ScheduledController__");
   }
   #noRetry;
   noRetry() {
@@ -9373,7 +9445,7 @@ function wrapExportedHandler(worker) {
   for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__) {
     __facade_register__(middleware);
   }
-  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
+  const fetchDispatcher = /* @__PURE__ */ __name2(function(request, env, ctx) {
     if (worker.fetch === void 0) {
       throw new Error("Handler does not export a fetch() function.");
     }
@@ -9382,7 +9454,7 @@ function wrapExportedHandler(worker) {
   return {
     ...worker,
     fetch(request, env, ctx) {
-      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
+      const dispatcher = /* @__PURE__ */ __name2(function(type, init) {
         if (type === "scheduled" && worker.scheduled !== void 0) {
           const controller = new __Facade_ScheduledController__(
             Date.now(),
@@ -9398,6 +9470,7 @@ function wrapExportedHandler(worker) {
   };
 }
 __name(wrapExportedHandler, "wrapExportedHandler");
+__name2(wrapExportedHandler, "wrapExportedHandler");
 function wrapWorkerEntrypoint(klass) {
   if (__INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0) {
     return klass;
@@ -9406,7 +9479,7 @@ function wrapWorkerEntrypoint(klass) {
     __facade_register__(middleware);
   }
   return class extends klass {
-    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
+    #fetchDispatcher = /* @__PURE__ */ __name2((request, env, ctx) => {
       this.env = env;
       this.ctx = ctx;
       if (super.fetch === void 0) {
@@ -9414,7 +9487,7 @@ function wrapWorkerEntrypoint(klass) {
       }
       return super.fetch(request);
     }, "#fetchDispatcher");
-    #dispatcher = /* @__PURE__ */ __name((type, init) => {
+    #dispatcher = /* @__PURE__ */ __name2((type, init) => {
       if (type === "scheduled" && super.scheduled !== void 0) {
         const controller = new __Facade_ScheduledController__(
           Date.now(),
@@ -9437,6 +9510,7 @@ function wrapWorkerEntrypoint(klass) {
   };
 }
 __name(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
+__name2(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
 var WRAPPED_ENTRY;
 if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapExportedHandler(middleware_insertion_facade_default);
@@ -9444,8 +9518,178 @@ if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapWorkerEntrypoint(middleware_insertion_facade_default);
 }
 var middleware_loader_entry_default = WRAPPED_ENTRY;
-export {
-  __INTERNAL_WRANGLER_MIDDLEWARE__,
-  middleware_loader_entry_default as default
+
+// ../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
+var drainBody2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+  try {
+    return await middlewareCtx.next(request, env);
+  } finally {
+    try {
+      if (request.body !== null && !request.bodyUsed) {
+        const reader = request.body.getReader();
+        while (!(await reader.read()).done) {
+        }
+      }
+    } catch (e) {
+      console.error("Failed to drain the unused request body.", e);
+    }
+  }
+}, "drainBody");
+var middleware_ensure_req_body_drained_default2 = drainBody2;
+
+// ../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
+function reduceError2(e) {
+  return {
+    name: e?.name,
+    message: e?.message ?? String(e),
+    stack: e?.stack,
+    cause: e?.cause === void 0 ? void 0 : reduceError2(e.cause)
+  };
+}
+__name(reduceError2, "reduceError");
+var jsonError2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+  try {
+    return await middlewareCtx.next(request, env);
+  } catch (e) {
+    const error = reduceError2(e);
+    return Response.json(error, {
+      status: 500,
+      headers: { "MF-Experimental-Error-Stack": "true" }
+    });
+  }
+}, "jsonError");
+var middleware_miniflare3_json_error_default2 = jsonError2;
+
+// .wrangler/tmp/bundle-xjeYeW/middleware-insertion-facade.js
+var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
+  middleware_ensure_req_body_drained_default2,
+  middleware_miniflare3_json_error_default2
+];
+var middleware_insertion_facade_default2 = middleware_loader_entry_default;
+
+// ../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/common.ts
+var __facade_middleware__2 = [];
+function __facade_register__2(...args) {
+  __facade_middleware__2.push(...args.flat());
+}
+__name(__facade_register__2, "__facade_register__");
+function __facade_invokeChain__2(request, env, ctx, dispatch, middlewareChain) {
+  const [head, ...tail] = middlewareChain;
+  const middlewareCtx = {
+    dispatch,
+    next(newRequest, newEnv) {
+      return __facade_invokeChain__2(newRequest, newEnv, ctx, dispatch, tail);
+    }
+  };
+  return head(request, env, ctx, middlewareCtx);
+}
+__name(__facade_invokeChain__2, "__facade_invokeChain__");
+function __facade_invoke__2(request, env, ctx, dispatch, finalMiddleware) {
+  return __facade_invokeChain__2(request, env, ctx, dispatch, [
+    ...__facade_middleware__2,
+    finalMiddleware
+  ]);
+}
+__name(__facade_invoke__2, "__facade_invoke__");
+
+// .wrangler/tmp/bundle-xjeYeW/middleware-loader.entry.ts
+var __Facade_ScheduledController__2 = class ___Facade_ScheduledController__2 {
+  constructor(scheduledTime, cron, noRetry) {
+    this.scheduledTime = scheduledTime;
+    this.cron = cron;
+    this.#noRetry = noRetry;
+  }
+  static {
+    __name(this, "__Facade_ScheduledController__");
+  }
+  #noRetry;
+  noRetry() {
+    if (!(this instanceof ___Facade_ScheduledController__2)) {
+      throw new TypeError("Illegal invocation");
+    }
+    this.#noRetry();
+  }
 };
-//# sourceMappingURL=functionsWorker-0.08390825132024138.mjs.map
+function wrapExportedHandler2(worker) {
+  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
+    return worker;
+  }
+  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
+    __facade_register__2(middleware);
+  }
+  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
+    if (worker.fetch === void 0) {
+      throw new Error("Handler does not export a fetch() function.");
+    }
+    return worker.fetch(request, env, ctx);
+  }, "fetchDispatcher");
+  return {
+    ...worker,
+    fetch(request, env, ctx) {
+      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
+        if (type === "scheduled" && worker.scheduled !== void 0) {
+          const controller = new __Facade_ScheduledController__2(
+            Date.now(),
+            init.cron ?? "",
+            () => {
+            }
+          );
+          return worker.scheduled(controller, env, ctx);
+        }
+      }, "dispatcher");
+      return __facade_invoke__2(request, env, ctx, dispatcher, fetchDispatcher);
+    }
+  };
+}
+__name(wrapExportedHandler2, "wrapExportedHandler");
+function wrapWorkerEntrypoint2(klass) {
+  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
+    return klass;
+  }
+  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
+    __facade_register__2(middleware);
+  }
+  return class extends klass {
+    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
+      this.env = env;
+      this.ctx = ctx;
+      if (super.fetch === void 0) {
+        throw new Error("Entrypoint class does not define a fetch() function.");
+      }
+      return super.fetch(request);
+    }, "#fetchDispatcher");
+    #dispatcher = /* @__PURE__ */ __name((type, init) => {
+      if (type === "scheduled" && super.scheduled !== void 0) {
+        const controller = new __Facade_ScheduledController__2(
+          Date.now(),
+          init.cron ?? "",
+          () => {
+          }
+        );
+        return super.scheduled(controller);
+      }
+    }, "#dispatcher");
+    fetch(request) {
+      return __facade_invoke__2(
+        request,
+        this.env,
+        this.ctx,
+        this.#dispatcher,
+        this.#fetchDispatcher
+      );
+    }
+  };
+}
+__name(wrapWorkerEntrypoint2, "wrapWorkerEntrypoint");
+var WRAPPED_ENTRY2;
+if (typeof middleware_insertion_facade_default2 === "object") {
+  WRAPPED_ENTRY2 = wrapExportedHandler2(middleware_insertion_facade_default2);
+} else if (typeof middleware_insertion_facade_default2 === "function") {
+  WRAPPED_ENTRY2 = wrapWorkerEntrypoint2(middleware_insertion_facade_default2);
+}
+var middleware_loader_entry_default2 = WRAPPED_ENTRY2;
+export {
+  __INTERNAL_WRANGLER_MIDDLEWARE__2 as __INTERNAL_WRANGLER_MIDDLEWARE__,
+  middleware_loader_entry_default2 as default
+};
+//# sourceMappingURL=functionsWorker-0.8535893832099155.js.map

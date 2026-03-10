@@ -72,6 +72,7 @@ export function addCartItem(item) {
     const existingQty = toSafeQuantity(merged[matchIndex]?.quantity);
     merged[matchIndex] = {
       ...merged[matchIndex],
+      ...nextItem, // Always update with latest item details (unitPrice, name, etc.)
       quantity: existingQty + nextItem.quantity,
       addedAt: nextItem.addedAt,
     };

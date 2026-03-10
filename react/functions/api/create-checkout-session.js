@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import { parseCookie, getUserFromSession } from "../_lib/auth.js";
+import { parseCookie, getUserFromSession } from '../_lib/auth.js';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -58,14 +58,18 @@ export async function onRequestOptions() {
 
 export async function onRequestPost({ request, env }) {
   try {
-    // Authenticate user from session cookie
-    const cookieHeader = request.headers.get("Cookie") || "";
-    const cookies = parseCookie(cookieHeader);
-    const token = cookies?.el_session || "";
-    const user = await getUserFromSession(env, token);
     const secretKey = String(env?.STRIPE_SECRET_KEY || '').trim();
     if (!secretKey) {
       return json({ error: 'Missing STRIPE_SECRET_KEY on the server.' }, 500);
+    }
+
+    // Authenticate user from session cookie
+    const cookieHeader = request.headers.get('Cookie') || '';
+    const cookies = parseCookie(cookieHeader);
+    const token = cookies?.el_session || '';
+    const user = await getUserFromSession(env, token);
+    if (!user) {
+      return json({ error: 'Not authenticated.' }, 401);
     }
 
     const body = await request.json().catch(() => ({}));
@@ -105,7 +109,7 @@ export async function onRequestPost({ request, env }) {
       phone_number_collection: { enabled: true },
       metadata: {
         cart_source: 'cart-page',
-        user_id: user?.id ? String(user.id) : '',
+        user_id: user.id,
         items: JSON.stringify(items),
       },
     });

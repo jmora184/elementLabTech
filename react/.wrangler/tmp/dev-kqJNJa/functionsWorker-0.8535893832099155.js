@@ -8350,13 +8350,16 @@ async function onRequestOptions9() {
 __name(onRequestOptions9, "onRequestOptions9");
 async function onRequestPost8({ request, env }) {
   try {
+    const secretKey = String(env?.STRIPE_SECRET_KEY || "").trim();
+    if (!secretKey) {
+      return json14({ error: "Missing STRIPE_SECRET_KEY on the server." }, 500);
+    }
     const cookieHeader = request.headers.get("Cookie") || "";
     const cookies = parseCookie(cookieHeader);
     const token = cookies?.el_session || "";
     const user = await getUserFromSession(env, token);
-    const secretKey = String(env?.STRIPE_SECRET_KEY || "").trim();
-    if (!secretKey) {
-      return json14({ error: "Missing STRIPE_SECRET_KEY on the server." }, 500);
+    if (!user) {
+      return json14({ error: "Not authenticated." }, 401);
     }
     const body = await request.json().catch(() => ({}));
     const items = sanitizeItems(body?.items);
@@ -8392,7 +8395,7 @@ async function onRequestPost8({ request, env }) {
       phone_number_collection: { enabled: true },
       metadata: {
         cart_source: "cart-page",
-        user_id: user?.id ? String(user.id) : "",
+        user_id: user.id,
         items: JSON.stringify(items)
       }
     });

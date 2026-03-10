@@ -1715,7 +1715,6 @@ export default function ProductPage() {
                       ));
                     } else {
                       const baseSizes = [
-                        { label: "1mL | 0.92 g", price: 1 }, // New test option
                         { label: "2mL | 1.84 g", price: 20 },
                         { label: "5mL | 4.2g", price: 35 },
                         { label: "24mL | 20g", price: 125 },

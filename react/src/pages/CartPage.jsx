@@ -179,7 +179,7 @@ export default function CartPage() {
       setCheckoutError("Stripe is not configured yet. Add VITE_STRIPE_PUBLISHABLE_KEY to your environment.");
       return;
     }
-
+//test
     setCheckoutLoading(true);
 
     try {

@@ -93,10 +93,10 @@
   width: 100%;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 2px solid #fc3d21 !important;
+  border: 2px solid #22c55e !important;
   background: rgba(255,255,255,0.10);
   color: #fff !important;
-  text-shadow: 0 0 4px #000, 0 0 2px #fc3d21;
+  text-shadow: 0 0 4px #000, 0 0 2px #22c55e;
   cursor: pointer;
 }
 .el-authBtn:disabled{

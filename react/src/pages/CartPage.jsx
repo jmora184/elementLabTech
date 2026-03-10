@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
 import { clearCart, getCartItems, removeCartItem, setCartItems } from "../utils/cart";
-import StripeCheckoutWrapper from '../components/StripeCheckoutWrapper';
 
 const elPageBackgroundStyle = {
   minHeight: "100vh",
@@ -12,10 +12,62 @@ const elPageBackgroundStyle = {
     "linear-gradient(180deg, #070a0d 0%, #06070a 100%)",
 };
 
+const cardStyle = {
+  background: "rgba(7, 10, 13, 0.82)",
+  border: "1px solid rgba(110, 231, 183, 0.16)",
+  borderRadius: 18,
+  boxShadow: "0 18px 50px rgba(0,0,0,0.28)",
+};
+
+const checkoutPanelStyle = {
+  marginTop: 24,
+  padding: 18,
+  borderRadius: 16,
+  border: "1px solid rgba(110, 231, 183, 0.18)",
+  background: "linear-gradient(180deg, rgba(17,24,39,0.82), rgba(6,10,14,0.95))",
+};
+
+function parseUnitPrice(item) {
+  const sizeText = String(item?.size || "");
+  const sampleKitLike = /sample\s*kit/i.test(sizeText) || /sample\s*kit/i.test(String(item?.profileName || ""));
+  if (sampleKitLike) return 199;
+
+  const match = sizeText.match(/\$\s*([0-9]+(?:\.[0-9]{1,2})?)/);
+  if (match) {
+    const parsed = Number(match[1]);
+    if (Number.isFinite(parsed) && parsed >= 0) return parsed;
+  }
+
+  return 0;
+}
+
+function formatCurrency(value) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(Number(value || 0));
+}
+
+function normalizeCartItems(items) {
+  return (Array.isArray(items) ? items : []).map((item) => {
+    const unitPrice = parseUnitPrice(item);
+    const quantity = Math.max(1, Number(item?.quantity || 1));
+    return {
+      ...item,
+      quantity,
+      unitPrice,
+      lineTotal: unitPrice * quantity,
+    };
+  });
+}
 
 export default function CartPage() {
   const [items, setItems] = useState(() => getCartItems());
-  const [showCheckout, setShowCheckout] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+  const [checkoutMessage, setCheckoutMessage] = useState("");
+
+  const normalizedItems = useMemo(() => normalizeCartItems(items), [items]);
 
   useEffect(() => {
     const handleCartUpdated = () => setItems(getCartItems());
@@ -25,9 +77,79 @@ export default function CartPage() {
     };
   }, []);
 
+  useEffect(() => {
+    let ignore = false;
+
+    async function handleStripeReturn() {
+      const params = new URLSearchParams(window.location.search);
+      const checkoutState = params.get("checkout");
+      const sessionId = params.get("session_id");
+
+      if (checkoutState === "cancel") {
+        setCheckoutMessage("Checkout was canceled. Your cart is still saved.");
+        params.delete("checkout");
+        params.delete("session_id");
+        const nextUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}`;
+        window.history.replaceState({}, "", nextUrl);
+        return;
+      }
+
+      if (checkoutState !== "success" || !sessionId) return;
+
+      setCheckoutLoading(true);
+      setCheckoutError("");
+      setCheckoutMessage("Verifying your payment...");
+
+      try {
+        const res = await fetch(`/api/checkout-session-status?session_id=${encodeURIComponent(sessionId)}`);
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          throw new Error(String(data?.error || "Could not verify checkout."));
+        }
+
+        if (ignore) return;
+
+        if (data?.paymentStatus === "paid") {
+          clearCart();
+          setItems([]);
+          setCheckoutMessage("Payment successful. Thank you for your order!");
+        } else {
+          setCheckoutMessage("Your payment session was found, but payment is not marked as paid yet.");
+        }
+      } catch (err) {
+        if (!ignore) {
+          setCheckoutError(err?.message || "Could not verify your payment.");
+        }
+      } finally {
+        if (!ignore) {
+          setCheckoutLoading(false);
+          const cleanParams = new URLSearchParams(window.location.search);
+          cleanParams.delete("checkout");
+          cleanParams.delete("session_id");
+          const nextUrl = `${window.location.pathname}${cleanParams.toString() ? `?${cleanParams.toString()}` : ""}`;
+          window.history.replaceState({}, "", nextUrl);
+        }
+      }
+    }
+
+    handleStripeReturn();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
   const totalItems = useMemo(() => {
-    return items.reduce((sum, item) => sum + Number(item?.quantity || 0), 0);
-  }, [items]);
+    return normalizedItems.reduce((sum, item) => sum + Number(item?.quantity || 0), 0);
+  }, [normalizedItems]);
+
+  const subtotal = useMemo(() => {
+    return normalizedItems.reduce((sum, item) => sum + Number(item?.lineTotal || 0), 0);
+  }, [normalizedItems]);
+
+  const hasUnpricedItems = useMemo(() => {
+    return normalizedItems.some((item) => Number(item?.unitPrice || 0) <= 0);
+  }, [normalizedItems]);
 
   const updateQuantity = (id, nextQty) => {
     const safeQty = Math.max(1, Number(nextQty) || 1);
@@ -38,100 +160,184 @@ export default function CartPage() {
     setCartItems(nextItems);
   };
 
+  const handleStripeCheckout = async () => {
+    setCheckoutError("");
+    setCheckoutMessage("");
+
+    if (normalizedItems.length === 0) {
+      setCheckoutError("Your cart is empty.");
+      return;
+    }
+
+    if (hasUnpricedItems) {
+      setCheckoutError("One or more cart items do not have a valid price yet.");
+      return;
+    }
+
+    const publishableKey = String(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "").trim();
+    if (!publishableKey) {
+      setCheckoutError("Stripe is not configured yet. Add VITE_STRIPE_PUBLISHABLE_KEY to your environment.");
+      return;
+    }
+
+    setCheckoutLoading(true);
+
+    try {
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: normalizedItems }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.sessionId) {
+        throw new Error(String(data?.error || "Unable to start Stripe checkout."));
+      }
+
+      const stripe = await loadStripe(publishableKey);
+      if (!stripe) {
+        throw new Error("Stripe failed to initialize in the browser.");
+      }
+
+      const result = await stripe.redirectToCheckout({ sessionId: data.sessionId });
+      if (result?.error) {
+        throw new Error(result.error.message || "Stripe redirect failed.");
+      }
+    } catch (err) {
+      setCheckoutError(err?.message || "Unable to start Stripe checkout.");
+      setCheckoutLoading(false);
+      return;
+    }
+  };
+
   return (
     <div style={elPageBackgroundStyle}>
       <div className="el-authPage">
-        <br></br>
-      <h1 className="el-authTitle">Cart</h1>
-      <p className="el-authSub">{totalItems} item{totalItems === 1 ? "" : "s"}</p>
+        <br />
+        <h1 className="el-authTitle">Cart</h1>
+        <p className="el-authSub">{totalItems} item{totalItems === 1 ? "" : "s"}</p>
 
-      <div className="el-authCard">
-        {items.length === 0 ? (
-          <p className="el-authSub" style={{ margin: 0 }}>
-            Your cart is empty. <Link to="/">Continue shopping</Link>
-          </p>
-        ) : (
-          <>
-            {items.map((item) => (
-              <div key={item.id} className="el-authRow" style={{ alignItems: "flex-start" }}>
-                <div style={{ textAlign: "left" }}>
-                  <div className="el-authVal">{item.profileName || "Flavor Profile"}</div>
-                  <div className="el-authKey">{item.collectionName || "Collection"}</div>
-                  <div className="el-authKey">Size: {item.size || "N/A"}</div>
+        <div className="el-authCard" style={cardStyle}>
+          {items.length === 0 ? (
+            <p className="el-authSub" style={{ margin: 0 }}>
+              Your cart is empty. <Link to="/">Continue shopping</Link>
+            </p>
+          ) : (
+            <>
+              {normalizedItems.map((item) => (
+                <div key={item.id} className="el-authRow" style={{ alignItems: "flex-start", gap: 18 }}>
+                  <div style={{ textAlign: "left", flex: 1 }}>
+                    <div className="el-authVal">{item.profileName || "Flavor Profile"}</div>
+                    <div className="el-authKey">{item.collectionName || "Collection"}</div>
+                    <div className="el-authKey">Size: {item.size || "N/A"}</div>
+                    <div className="el-authKey" style={{ marginTop: 6 }}>
+                      Unit price: {formatCurrency(item.unitPrice)}
+                    </div>
+                    <div className="el-authKey">Line total: {formatCurrency(item.lineTotal)}</div>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                    <button
+                      className="el-authBtn"
+                      type="button"
+                      style={{ width: 32, padding: "4px 0" }}
+                      onClick={() => updateQuantity(item.id, Number(item.quantity || 1) - 1)}
+                      aria-label="Decrease quantity"
+                    >
+                      -
+                    </button>
+                    <div style={{ minWidth: 20, textAlign: "center" }}>{item.quantity || 1}</div>
+                    <button
+                      className="el-authBtn"
+                      type="button"
+                      style={{ width: 32, padding: "4px 0" }}
+                      onClick={() => updateQuantity(item.id, Number(item.quantity || 1) + 1)}
+                      aria-label="Increase quantity"
+                    >
+                      +
+                    </button>
+                    <button
+                      className="el-authBtn"
+                      type="button"
+                      style={{ width: "auto", padding: "6px 10px" }}
+                      onClick={() => removeCartItem(item.id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              <div style={checkoutPanelStyle}>
+                <div className="el-authRow" style={{ alignItems: "center", marginBottom: 10 }}>
+                  <div className="el-authVal">Order subtotal</div>
+                  <div className="el-authVal">{formatCurrency(subtotal)}</div>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <button
-                    className="el-authBtn"
-                    type="button"
-                    style={{ width: 32, padding: "4px 0" }}
-                    onClick={() => updateQuantity(item.id, Number(item.quantity || 1) - 1)}
-                    aria-label="Decrease quantity"
+                <div className="el-authSub" style={{ marginBottom: 14, textAlign: "left" }}>
+                  You’ll be redirected to Stripe’s secure checkout page to complete payment.
+                </div>
+
+                {checkoutMessage ? (
+                  <div
+                    style={{
+                      marginBottom: 12,
+                      padding: "10px 12px",
+                      borderRadius: 12,
+                      background: "rgba(34,197,94,0.12)",
+                      border: "1px solid rgba(34,197,94,0.28)",
+                      color: "#d7ffe5",
+                      textAlign: "left",
+                    }}
                   >
-                    -
+                    {checkoutMessage}
+                  </div>
+                ) : null}
+
+                {checkoutError ? (
+                  <div
+                    style={{
+                      marginBottom: 12,
+                      padding: "10px 12px",
+                      borderRadius: 12,
+                      background: "rgba(34,197,94,0.12)",
+                      border: "1px solid rgba(110,231,183,0.18)",
+                      color: "#d7ffe5",
+                      textAlign: "left",
+                    }}
+                  >
+                    {checkoutError}
+                  </div>
+                ) : null}
+
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                  <button className="el-authBtn" type="button" onClick={() => clearCart()} disabled={checkoutLoading}>
+                    Clear cart
                   </button>
-                  <div style={{ minWidth: 20, textAlign: "center" }}>{item.quantity || 1}</div>
                   <button
                     className="el-authBtn"
                     type="button"
-                    style={{ width: 32, padding: "4px 0" }}
-                    onClick={() => updateQuantity(item.id, Number(item.quantity || 1) + 1)}
-                    aria-label="Increase quantity"
+                    disabled={checkoutLoading || hasUnpricedItems}
+                    style={{ background: "#22c55e", color: "#fff", fontWeight: 700 }}
+                    onClick={handleStripeCheckout}
                   >
-                    +
+                    {checkoutLoading ? "Redirecting..." : "Checkout with Stripe"}
                   </button>
                   <button
                     className="el-authBtn"
                     type="button"
-                    style={{ width: "auto", padding: "6px 10px" }}
-                    onClick={() => removeCartItem(item.id)}
+                    style={{ background: "#22c55e", color: "#fff", fontWeight: 700 }}
+                    onClick={() => window.open("https://calendly.com/", "_blank")}
+                    disabled={checkoutLoading}
                   >
-                    Remove
+                    Set Up a Call
                   </button>
                 </div>
               </div>
-            ))}
-
-            <button className="el-authBtn" type="button" onClick={() => clearCart()}>
-              Clear cart
-            </button>
-            {showCheckout && (
-              <div style={{ marginTop: 24 }}>
-                <StripeCheckoutWrapper
-                  items={items}
-                  totalAmount={items.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0)}
-                  onSuccess={() => {
-                    clearCart();
-                    setShowCheckout(false);
-                    alert('Payment successful!');
-                  }}
-                />
-              </div>
-            )}
-            {!showCheckout && (
-              <>
-                <button
-                  className="el-authBtn"
-                  type="button"
-                  style={{ marginTop: 12, background: '#22c55e', color: '#fff', fontWeight: 700 }}
-                  onClick={() => setShowCheckout(true)}
-                >
-                  Pay Now With Stripe
-                </button>
-                <button
-                  className="el-authBtn"
-                  type="button"
-                  style={{ marginTop: 12, background: '#22c55e', color: '#fff', fontWeight: 700 }}
-                  onClick={() => window.open('https://calendly.com/', '_blank')}
-                >
-                  Set Up a Call
-                </button>
-              </>
-            )}
-          </>
-        )}
+            </>
+          )}
+        </div>
       </div>
-    </div>
     </div>
   );
 }

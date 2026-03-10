@@ -93,6 +93,9 @@ export async function onRequestPost({ request, env }) {
       success_url: `${origin}/cart?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/cart?checkout=cancel`,
       billing_address_collection: 'auto',
+      shipping_address_collection: {
+        allowed_countries: ['US', 'CA', 'GB', 'AU', 'NZ', 'IE', 'DE', 'FR', 'NL', 'IT', 'ES', 'SE', 'NO', 'DK', 'FI', 'BE', 'AT', 'CH', 'PT', 'LU'],
+      },
       phone_number_collection: { enabled: true },
       metadata: {
         cart_source: 'cart-page',

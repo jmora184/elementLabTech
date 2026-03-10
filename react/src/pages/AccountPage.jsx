@@ -106,12 +106,18 @@ export default function AccountPage() {
                     <th style={{ textAlign: "left", padding: 8 }}>Items</th>
                     <th style={{ textAlign: "right", padding: 8 }}>Total</th>
                     <th style={{ textAlign: "left", padding: 8 }}>Payment ID</th>
+                    <th style={{ textAlign: "left", padding: 8 }}>Shipping Address</th>
                   </tr>
                 </thead>
                 <tbody>
                   {purchases.map((p) => {
                     let items = [];
+                    let shipping = null;
                     try { items = JSON.parse(p.items || "[]"); } catch {}
+                    try { shipping = p.shipping_address ? JSON.parse(p.shipping_address) : null; } catch {}
+                    const shippingSummary = shipping && shipping.address ?
+                      `${shipping.name || ''}, ${shipping.address.line1 || ''}${shipping.address.line2 ? ', ' + shipping.address.line2 : ''}, ${shipping.address.city || ''}, ${shipping.address.state || ''} ${shipping.address.postal_code || ''}, ${shipping.address.country || ''}`.replace(/, +/g, ', ').replace(/^, |, $/g, '')
+                      : '—';
                     return (
                       <tr key={p.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
                         <td style={{ padding: 8 }}>{new Date(p.purchased_at).toLocaleString()}</td>
@@ -126,6 +132,7 @@ export default function AccountPage() {
                         </td>
                         <td style={{ padding: 8, textAlign: "right" }}>${Number(p.total_amount).toFixed(2)}</td>
                         <td style={{ padding: 8 }}>{p.stripe_payment_id || "—"}</td>
+                        <td style={{ padding: 8 }}>{shippingSummary}</td>
                       </tr>
                     );
                   })}

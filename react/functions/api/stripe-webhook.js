@@ -34,6 +34,7 @@ export async function onRequestPost({ request, env }) {
     const items = session.metadata?.items || '[]';
     const total_amount = session.amount_total ? (session.amount_total / 100).toFixed(2) : null;
     const stripe_payment_id = session.payment_intent || session.id;
+    const shipping_address = session.shipping ? JSON.stringify(session.shipping) : null;
 
     if (!user_id || !total_amount) {
       return json({ ok: false, error: "Missing user_id or amount in session metadata." }, 400);
@@ -41,8 +42,8 @@ export async function onRequestPost({ request, env }) {
 
     try {
       await env.DB.prepare(
-        `INSERT INTO purchases (user_id, items, total_amount, purchased_at, stripe_payment_id) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?)`
-      ).bind(user_id, items, total_amount, stripe_payment_id).run();
+        `INSERT INTO purchases (user_id, items, total_amount, purchased_at, stripe_payment_id, shipping_address) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, ?)`
+      ).bind(user_id, items, total_amount, stripe_payment_id, shipping_address).run();
       return json({ ok: true });
     } catch (err) {
       return json({ ok: false, error: `DB error: ${err.message}` }, 500);

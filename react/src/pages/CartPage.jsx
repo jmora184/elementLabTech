@@ -190,19 +190,11 @@ export default function CartPage() {
       });
 
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data?.sessionId) {
+      if (!res.ok || !data?.url) {
         throw new Error(String(data?.error || "Unable to start Stripe checkout."));
       }
 
-      const stripe = await loadStripe(publishableKey);
-      if (!stripe) {
-        throw new Error("Stripe failed to initialize in the browser.");
-      }
-
-      const result = await stripe.redirectToCheckout({ sessionId: data.sessionId });
-      if (result?.error) {
-        throw new Error(result.error.message || "Stripe redirect failed.");
-      }
+      window.location.href = data.url;
     } catch (err) {
       setCheckoutError(err?.message || "Unable to start Stripe checkout.");
       setCheckoutLoading(false);

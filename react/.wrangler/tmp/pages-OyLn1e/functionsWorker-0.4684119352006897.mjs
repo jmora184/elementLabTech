@@ -8278,6 +8278,10 @@ async function onRequestOptions9() {
 }
 async function onRequestPost8({ request, env }) {
   try {
+    const cookieHeader = request.headers.get("Cookie") || "";
+    const cookies = parseCookie(cookieHeader);
+    const token = cookies?.el_session || "";
+    const user = await getUserFromSession(env, token);
     const secretKey = String(env?.STRIPE_SECRET_KEY || "").trim();
     if (!secretKey) {
       return json14({ error: "Missing STRIPE_SECRET_KEY on the server." }, 500);
@@ -8315,7 +8319,9 @@ async function onRequestPost8({ request, env }) {
       },
       phone_number_collection: { enabled: true },
       metadata: {
-        cart_source: "cart-page"
+        cart_source: "cart-page",
+        user_id: user?.id ? String(user.id) : "",
+        items: JSON.stringify(items)
       }
     });
     return json14({ sessionId: session.id, url: session.url || null });
@@ -8329,6 +8335,7 @@ var init_create_checkout_session = __esm({
   "api/create-checkout-session.js"() {
     init_functionsRoutes_0_11258757125935692();
     init_stripe_esm_worker();
+    init_auth();
     CORS_HEADERS9 = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST,OPTIONS",
@@ -8809,10 +8816,10 @@ var init_functionsRoutes_0_11258757125935692 = __esm({
   }
 });
 
-// ../.wrangler/tmp/bundle-ainDWZ/middleware-loader.entry.ts
+// ../.wrangler/tmp/bundle-KZYUre/middleware-loader.entry.ts
 init_functionsRoutes_0_11258757125935692();
 
-// ../.wrangler/tmp/bundle-ainDWZ/middleware-insertion-facade.js
+// ../.wrangler/tmp/bundle-KZYUre/middleware-insertion-facade.js
 init_functionsRoutes_0_11258757125935692();
 
 // ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/pages-template-worker.ts
@@ -9308,7 +9315,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// ../.wrangler/tmp/bundle-ainDWZ/middleware-insertion-facade.js
+// ../.wrangler/tmp/bundle-KZYUre/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -9341,7 +9348,7 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// ../.wrangler/tmp/bundle-ainDWZ/middleware-loader.entry.ts
+// ../.wrangler/tmp/bundle-KZYUre/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;

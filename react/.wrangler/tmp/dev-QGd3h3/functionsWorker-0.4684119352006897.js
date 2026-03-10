@@ -8350,6 +8350,10 @@ async function onRequestOptions9() {
 __name(onRequestOptions9, "onRequestOptions9");
 async function onRequestPost8({ request, env }) {
   try {
+    const cookieHeader = request.headers.get("Cookie") || "";
+    const cookies = parseCookie(cookieHeader);
+    const token = cookies?.el_session || "";
+    const user = await getUserFromSession(env, token);
     const secretKey = String(env?.STRIPE_SECRET_KEY || "").trim();
     if (!secretKey) {
       return json14({ error: "Missing STRIPE_SECRET_KEY on the server." }, 500);
@@ -8387,7 +8391,9 @@ async function onRequestPost8({ request, env }) {
       },
       phone_number_collection: { enabled: true },
       metadata: {
-        cart_source: "cart-page"
+        cart_source: "cart-page",
+        user_id: user?.id ? String(user.id) : "",
+        items: JSON.stringify(items)
       }
     });
     return json14({ sessionId: session.id, url: session.url || null });
@@ -8402,6 +8408,7 @@ var init_create_checkout_session = __esm({
   "api/create-checkout-session.js"() {
     init_functionsRoutes_0_11258757125935692();
     init_stripe_esm_worker();
+    init_auth();
     CORS_HEADERS9 = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST,OPTIONS",

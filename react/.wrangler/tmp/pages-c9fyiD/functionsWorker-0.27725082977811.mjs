@@ -147,7 +147,7 @@ function timingSafeEqual(a, b) {
 var encoder, DEFAULT_PBKDF2_ITERS;
 var init_auth = __esm({
   "_lib/auth.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     encoder = new TextEncoder();
     __name(json, "json");
     __name(normalizeEmail, "normalizeEmail");
@@ -235,7 +235,7 @@ async function onRequestGet({ request, env, params }) {
 var CORS_HEADERS;
 var init_download = __esm({
   "api/collections/[id]/documents/[docId]/download.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     CORS_HEADERS = {
       "Access-Control-Allow-Origin": "*",
@@ -370,7 +370,7 @@ async function onRequestPost({ request, env, params }) {
 var CORS_HEADERS2;
 var init_upload = __esm({
   "api/collections/[id]/documents/upload.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     CORS_HEADERS2 = {
       "Access-Control-Allow-Origin": "*",
@@ -446,7 +446,7 @@ async function onRequestDelete({ request, env, params }) {
 var CORS_HEADERS3;
 var init_docId = __esm({
   "api/collections/[id]/documents/[docId].js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     CORS_HEADERS3 = {
       "Access-Control-Allow-Origin": "*",
@@ -507,7 +507,7 @@ async function onRequest(context) {
 }
 var init_profileId = __esm({
   "api/collections/[id]/sample-profiles/[profileId].js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     __name(json5, "json");
     __name(requireAdmin3, "requireAdmin");
@@ -639,7 +639,7 @@ async function onRequest2(context) {
 }
 var init_profiles = __esm({
   "api/collections/[id]/profiles.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     __name(json6, "json");
     __name(slugify, "slugify");
@@ -771,7 +771,7 @@ async function onRequest3(context) {
 }
 var init_sample_profiles = __esm({
   "api/collections/[id]/sample-profiles.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     __name(json7, "json");
     __name(nowIso2, "nowIso");
@@ -822,7 +822,7 @@ async function onRequestPost2(context) {
 var SESSION_COOKIE, SESSION_TTL_MS;
 var init_login = __esm({
   "api/auth/login.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     SESSION_COOKIE = "el_session";
     SESSION_TTL_MS = 1e3 * 60 * 60 * 24 * 14;
@@ -849,7 +849,7 @@ async function onRequestPost3(context) {
 var SESSION_COOKIE2;
 var init_logout = __esm({
   "api/auth/logout.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     SESSION_COOKIE2 = "el_session";
     __name(onRequestPost3, "onRequestPost");
@@ -866,7 +866,7 @@ async function onRequestGet2(context) {
 var SESSION_COOKIE3;
 var init_me = __esm({
   "api/auth/me.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     SESSION_COOKIE3 = "el_session";
     __name(onRequestGet2, "onRequestGet");
@@ -922,7 +922,7 @@ async function onRequestPost4(context) {
 }
 var init_register = __esm({
   "api/auth/register.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     __name(onRequestPost4, "onRequestPost");
   }
@@ -996,7 +996,7 @@ async function onRequestPost5({ request, env }) {
 var CORS_HEADERS4;
 var init_direct_upload = __esm({
   "api/images/direct-upload.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     CORS_HEADERS4 = {
       "Access-Control-Allow-Origin": "*",
@@ -1129,7 +1129,7 @@ async function onRequestPut({ request, env, params }) {
 var CORS_HEADERS5;
 var init_id = __esm({
   "api/collections/[id].js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     CORS_HEADERS5 = {
       "Access-Control-Allow-Origin": "*",
@@ -1318,7 +1318,7 @@ async function onRequest4(context) {
 }
 var init_slug = __esm({
   "api/profiles/[slug].js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     __name(json10, "json");
     __name(nowIso3, "nowIso");
@@ -1606,7 +1606,7 @@ function parseHeadersForFetch(headers) {
 var OPTIONS_KEYS, makeURLInterpolator;
 var init_utils = __esm({
   "../node_modules/stripe/esm/utils.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     OPTIONS_KEYS = [
       "apiKey",
       "idempotencyKey",
@@ -1673,7 +1673,7 @@ var init_utils = __esm({
 var HttpClient, HttpClientResponse;
 var init_HttpClient = __esm({
   "../node_modules/stripe/esm/net/HttpClient.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     HttpClient = class _HttpClient {
       static {
         __name(this, "HttpClient");
@@ -1725,7 +1725,7 @@ var init_HttpClient = __esm({
 var FetchHttpClient, FetchHttpClientResponse;
 var init_FetchHttpClient = __esm({
   "../node_modules/stripe/esm/net/FetchHttpClient.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_utils();
     init_HttpClient();
     FetchHttpClient = class _FetchHttpClient extends HttpClient {
@@ -1839,7 +1839,7 @@ var init_FetchHttpClient = __esm({
 var CryptoProvider, CryptoProviderOnlySupportsAsyncError;
 var init_CryptoProvider = __esm({
   "../node_modules/stripe/esm/crypto/CryptoProvider.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     CryptoProvider = class {
       static {
         __name(this, "CryptoProvider");
@@ -1888,7 +1888,7 @@ var init_CryptoProvider = __esm({
 var SubtleCryptoProvider, byteHexMapping;
 var init_SubtleCryptoProvider = __esm({
   "../node_modules/stripe/esm/crypto/SubtleCryptoProvider.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_CryptoProvider();
     SubtleCryptoProvider = class extends CryptoProvider {
       static {
@@ -1933,7 +1933,7 @@ var init_SubtleCryptoProvider = __esm({
 var PlatformFunctions;
 var init_PlatformFunctions = __esm({
   "../node_modules/stripe/esm/platform/PlatformFunctions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_FetchHttpClient();
     init_SubtleCryptoProvider();
     PlatformFunctions = class {
@@ -2033,7 +2033,7 @@ var init_PlatformFunctions = __esm({
 var _StripeEvent, StripeEmitter;
 var init_StripeEmitter = __esm({
   "../node_modules/stripe/esm/StripeEmitter.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     _StripeEvent = class extends Event {
       static {
         __name(this, "_StripeEvent");
@@ -2083,7 +2083,7 @@ var init_StripeEmitter = __esm({
 var WebPlatformFunctions;
 var init_WebPlatformFunctions = __esm({
   "../node_modules/stripe/esm/platform/WebPlatformFunctions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_PlatformFunctions();
     init_StripeEmitter();
     WebPlatformFunctions = class extends PlatformFunctions {
@@ -2147,7 +2147,7 @@ __export(Error_exports, {
 var generateV1Error, generateV2Error, StripeError, StripeCardError, StripeInvalidRequestError, StripeAPIError, StripeAuthenticationError, StripePermissionError, StripeRateLimitError, StripeConnectionError, StripeSignatureVerificationError, StripeIdempotencyError, StripeInvalidGrantError, StripeUnknownError, TemporarySessionExpiredError;
 var init_Error = __esm({
   "../node_modules/stripe/esm/Error.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     generateV1Error = /* @__PURE__ */ __name((rawStripeError) => {
       switch (rawStripeError.type) {
         case "card_error":
@@ -2314,7 +2314,7 @@ var init_Error = __esm({
 var MAX_RETRY_AFTER_WAIT, RequestSender;
 var init_RequestSender = __esm({
   "../node_modules/stripe/esm/RequestSender.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_Error();
     init_HttpClient();
     init_utils();
@@ -2810,7 +2810,7 @@ function isReverseIteration(requestArgs) {
 var V1Iterator, V1ListIterator, V1SearchIterator, V2ListIterator, makeAutoPaginationMethods, makeAutoPaginationMethodsFromIterator;
 var init_autoPagination = __esm({
   "../node_modules/stripe/esm/autoPagination.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_utils();
     V1Iterator = class {
       static {
@@ -2989,7 +2989,7 @@ function stripeMethod(spec) {
 }
 var init_StripeMethod = __esm({
   "../node_modules/stripe/esm/StripeMethod.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_utils();
     init_autoPagination();
     __name(stripeMethod, "stripeMethod");
@@ -3012,7 +3012,7 @@ function StripeResource(stripe, deprecatedUrlData) {
 }
 var init_StripeResource = __esm({
   "../node_modules/stripe/esm/StripeResource.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_utils();
     init_StripeMethod();
     StripeResource.extend = protoExtend;
@@ -3148,7 +3148,7 @@ var init_StripeResource = __esm({
 var StripeContext;
 var init_StripeContext = __esm({
   "../node_modules/stripe/esm/StripeContext.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     StripeContext = class _StripeContext {
       static {
         __name(this, "StripeContext");
@@ -3389,7 +3389,7 @@ function createWebhooks(platformFunctions) {
 }
 var init_Webhooks = __esm({
   "../node_modules/stripe/esm/Webhooks.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_Error();
     init_CryptoProvider();
     __name(createWebhooks, "createWebhooks");
@@ -3400,7 +3400,7 @@ var init_Webhooks = __esm({
 var ApiVersion;
 var init_apiVersion = __esm({
   "../node_modules/stripe/esm/apiVersion.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     ApiVersion = "2026-02-25.clover";
   }
 });
@@ -3423,7 +3423,7 @@ function resourceNamespace(namespace, resources) {
 }
 var init_ResourceNamespace = __esm({
   "../node_modules/stripe/esm/ResourceNamespace.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     __name(ResourceNamespace, "ResourceNamespace");
     __name(resourceNamespace, "resourceNamespace");
   }
@@ -3433,7 +3433,7 @@ var init_ResourceNamespace = __esm({
 var stripeMethod2, AccountLinks;
 var init_AccountLinks = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/AccountLinks.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod2 = StripeResource.method;
     AccountLinks = StripeResource.extend({
@@ -3446,7 +3446,7 @@ var init_AccountLinks = __esm({
 var stripeMethod3, AccountTokens;
 var init_AccountTokens = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/AccountTokens.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod3 = StripeResource.method;
     AccountTokens = StripeResource.extend({
@@ -3463,7 +3463,7 @@ var init_AccountTokens = __esm({
 var stripeMethod4, Accounts;
 var init_Accounts = __esm({
   "../node_modules/stripe/esm/resources/FinancialConnections/Accounts.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod4 = StripeResource.method;
     Accounts = StripeResource.extend({
@@ -3505,7 +3505,7 @@ var init_Accounts = __esm({
 var stripeMethod5, Persons;
 var init_Persons = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/Accounts/Persons.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod5 = StripeResource.method;
     Persons = StripeResource.extend({
@@ -3538,7 +3538,7 @@ var init_Persons = __esm({
 var stripeMethod6, PersonTokens;
 var init_PersonTokens = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/Accounts/PersonTokens.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod6 = StripeResource.method;
     PersonTokens = StripeResource.extend({
@@ -3558,7 +3558,7 @@ var init_PersonTokens = __esm({
 var stripeMethod7, Accounts2;
 var init_Accounts2 = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/Accounts.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     init_Persons();
     init_PersonTokens();
@@ -3589,7 +3589,7 @@ var init_Accounts2 = __esm({
 var stripeMethod8, ActiveEntitlements;
 var init_ActiveEntitlements = __esm({
   "../node_modules/stripe/esm/resources/Entitlements/ActiveEntitlements.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod8 = StripeResource.method;
     ActiveEntitlements = StripeResource.extend({
@@ -3610,7 +3610,7 @@ var init_ActiveEntitlements = __esm({
 var stripeMethod9, Alerts;
 var init_Alerts = __esm({
   "../node_modules/stripe/esm/resources/Billing/Alerts.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod9 = StripeResource.method;
     Alerts = StripeResource.extend({
@@ -3641,7 +3641,7 @@ var init_Alerts = __esm({
 var stripeMethod10, Associations;
 var init_Associations = __esm({
   "../node_modules/stripe/esm/resources/Tax/Associations.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod10 = StripeResource.method;
     Associations = StripeResource.extend({
@@ -3654,7 +3654,7 @@ var init_Associations = __esm({
 var stripeMethod11, Authorizations;
 var init_Authorizations = __esm({
   "../node_modules/stripe/esm/resources/Issuing/Authorizations.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod11 = StripeResource.method;
     Authorizations = StripeResource.extend({
@@ -3687,7 +3687,7 @@ var init_Authorizations = __esm({
 var stripeMethod12, Authorizations2;
 var init_Authorizations2 = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Issuing/Authorizations.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod12 = StripeResource.method;
     Authorizations2 = StripeResource.extend({
@@ -3727,7 +3727,7 @@ var init_Authorizations2 = __esm({
 var stripeMethod13, Calculations;
 var init_Calculations = __esm({
   "../node_modules/stripe/esm/resources/Tax/Calculations.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod13 = StripeResource.method;
     Calculations = StripeResource.extend({
@@ -3749,7 +3749,7 @@ var init_Calculations = __esm({
 var stripeMethod14, Cardholders;
 var init_Cardholders = __esm({
   "../node_modules/stripe/esm/resources/Issuing/Cardholders.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod14 = StripeResource.method;
     Cardholders = StripeResource.extend({
@@ -3775,7 +3775,7 @@ var init_Cardholders = __esm({
 var stripeMethod15, Cards;
 var init_Cards = __esm({
   "../node_modules/stripe/esm/resources/Issuing/Cards.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod15 = StripeResource.method;
     Cards = StripeResource.extend({
@@ -3795,7 +3795,7 @@ var init_Cards = __esm({
 var stripeMethod16, Cards2;
 var init_Cards2 = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Issuing/Cards.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod16 = StripeResource.method;
     Cards2 = StripeResource.extend({
@@ -3827,7 +3827,7 @@ var init_Cards2 = __esm({
 var stripeMethod17, Configurations;
 var init_Configurations = __esm({
   "../node_modules/stripe/esm/resources/BillingPortal/Configurations.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod17 = StripeResource.method;
     Configurations = StripeResource.extend({
@@ -3856,7 +3856,7 @@ var init_Configurations = __esm({
 var stripeMethod18, Configurations2;
 var init_Configurations2 = __esm({
   "../node_modules/stripe/esm/resources/Terminal/Configurations.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod18 = StripeResource.method;
     Configurations2 = StripeResource.extend({
@@ -3889,7 +3889,7 @@ var init_Configurations2 = __esm({
 var stripeMethod19, ConfirmationTokens;
 var init_ConfirmationTokens = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/ConfirmationTokens.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod19 = StripeResource.method;
     ConfirmationTokens = StripeResource.extend({
@@ -3905,7 +3905,7 @@ var init_ConfirmationTokens = __esm({
 var stripeMethod20, ConnectionTokens;
 var init_ConnectionTokens = __esm({
   "../node_modules/stripe/esm/resources/Terminal/ConnectionTokens.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod20 = StripeResource.method;
     ConnectionTokens = StripeResource.extend({
@@ -3921,7 +3921,7 @@ var init_ConnectionTokens = __esm({
 var stripeMethod21, CreditBalanceSummary;
 var init_CreditBalanceSummary = __esm({
   "../node_modules/stripe/esm/resources/Billing/CreditBalanceSummary.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod21 = StripeResource.method;
     CreditBalanceSummary = StripeResource.extend({
@@ -3937,7 +3937,7 @@ var init_CreditBalanceSummary = __esm({
 var stripeMethod22, CreditBalanceTransactions;
 var init_CreditBalanceTransactions = __esm({
   "../node_modules/stripe/esm/resources/Billing/CreditBalanceTransactions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod22 = StripeResource.method;
     CreditBalanceTransactions = StripeResource.extend({
@@ -3958,7 +3958,7 @@ var init_CreditBalanceTransactions = __esm({
 var stripeMethod23, CreditGrants;
 var init_CreditGrants = __esm({
   "../node_modules/stripe/esm/resources/Billing/CreditGrants.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod23 = StripeResource.method;
     CreditGrants = StripeResource.extend({
@@ -3992,7 +3992,7 @@ var init_CreditGrants = __esm({
 var stripeMethod24, CreditReversals;
 var init_CreditReversals = __esm({
   "../node_modules/stripe/esm/resources/Treasury/CreditReversals.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod24 = StripeResource.method;
     CreditReversals = StripeResource.extend({
@@ -4017,7 +4017,7 @@ var init_CreditReversals = __esm({
 var stripeMethod25, Customers;
 var init_Customers = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Customers.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod25 = StripeResource.method;
     Customers = StripeResource.extend({
@@ -4033,7 +4033,7 @@ var init_Customers = __esm({
 var stripeMethod26, DebitReversals;
 var init_DebitReversals = __esm({
   "../node_modules/stripe/esm/resources/Treasury/DebitReversals.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod26 = StripeResource.method;
     DebitReversals = StripeResource.extend({
@@ -4058,7 +4058,7 @@ var init_DebitReversals = __esm({
 var stripeMethod27, Disputes;
 var init_Disputes = __esm({
   "../node_modules/stripe/esm/resources/Issuing/Disputes.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod27 = StripeResource.method;
     Disputes = StripeResource.extend({
@@ -4088,7 +4088,7 @@ var init_Disputes = __esm({
 var stripeMethod28, EarlyFraudWarnings;
 var init_EarlyFraudWarnings = __esm({
   "../node_modules/stripe/esm/resources/Radar/EarlyFraudWarnings.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod28 = StripeResource.method;
     EarlyFraudWarnings = StripeResource.extend({
@@ -4109,7 +4109,7 @@ var init_EarlyFraudWarnings = __esm({
 var stripeMethod29, EventDestinations;
 var init_EventDestinations = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/EventDestinations.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod29 = StripeResource.method;
     EventDestinations = StripeResource.extend({
@@ -4154,7 +4154,7 @@ var init_EventDestinations = __esm({
 var stripeMethod30, Events;
 var init_Events = __esm({
   "../node_modules/stripe/esm/resources/V2/Core/Events.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod30 = StripeResource.method;
     Events = StripeResource.extend({
@@ -4216,7 +4216,7 @@ var init_Events = __esm({
 var stripeMethod31, Features;
 var init_Features = __esm({
   "../node_modules/stripe/esm/resources/Entitlements/Features.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod31 = StripeResource.method;
     Features = StripeResource.extend({
@@ -4242,7 +4242,7 @@ var init_Features = __esm({
 var stripeMethod32, FinancialAccounts;
 var init_FinancialAccounts = __esm({
   "../node_modules/stripe/esm/resources/Treasury/FinancialAccounts.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod32 = StripeResource.method;
     FinancialAccounts = StripeResource.extend({
@@ -4283,7 +4283,7 @@ var init_FinancialAccounts = __esm({
 var stripeMethod33, InboundTransfers;
 var init_InboundTransfers = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Treasury/InboundTransfers.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod33 = StripeResource.method;
     InboundTransfers = StripeResource.extend({
@@ -4307,7 +4307,7 @@ var init_InboundTransfers = __esm({
 var stripeMethod34, InboundTransfers2;
 var init_InboundTransfers2 = __esm({
   "../node_modules/stripe/esm/resources/Treasury/InboundTransfers.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod34 = StripeResource.method;
     InboundTransfers2 = StripeResource.extend({
@@ -4336,7 +4336,7 @@ var init_InboundTransfers2 = __esm({
 var stripeMethod35, Locations;
 var init_Locations = __esm({
   "../node_modules/stripe/esm/resources/Terminal/Locations.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod35 = StripeResource.method;
     Locations = StripeResource.extend({
@@ -4366,7 +4366,7 @@ var init_Locations = __esm({
 var stripeMethod36, MeterEventAdjustments;
 var init_MeterEventAdjustments = __esm({
   "../node_modules/stripe/esm/resources/Billing/MeterEventAdjustments.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod36 = StripeResource.method;
     MeterEventAdjustments = StripeResource.extend({
@@ -4382,7 +4382,7 @@ var init_MeterEventAdjustments = __esm({
 var stripeMethod37, MeterEventAdjustments2;
 var init_MeterEventAdjustments2 = __esm({
   "../node_modules/stripe/esm/resources/V2/Billing/MeterEventAdjustments.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod37 = StripeResource.method;
     MeterEventAdjustments2 = StripeResource.extend({
@@ -4398,7 +4398,7 @@ var init_MeterEventAdjustments2 = __esm({
 var stripeMethod38, MeterEventSession;
 var init_MeterEventSession = __esm({
   "../node_modules/stripe/esm/resources/V2/Billing/MeterEventSession.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod38 = StripeResource.method;
     MeterEventSession = StripeResource.extend({
@@ -4414,7 +4414,7 @@ var init_MeterEventSession = __esm({
 var stripeMethod39, MeterEventStream;
 var init_MeterEventStream = __esm({
   "../node_modules/stripe/esm/resources/V2/Billing/MeterEventStream.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod39 = StripeResource.method;
     MeterEventStream = StripeResource.extend({
@@ -4431,7 +4431,7 @@ var init_MeterEventStream = __esm({
 var stripeMethod40, MeterEvents;
 var init_MeterEvents = __esm({
   "../node_modules/stripe/esm/resources/Billing/MeterEvents.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod40 = StripeResource.method;
     MeterEvents = StripeResource.extend({
@@ -4444,7 +4444,7 @@ var init_MeterEvents = __esm({
 var stripeMethod41, MeterEvents2;
 var init_MeterEvents2 = __esm({
   "../node_modules/stripe/esm/resources/V2/Billing/MeterEvents.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod41 = StripeResource.method;
     MeterEvents2 = StripeResource.extend({
@@ -4457,7 +4457,7 @@ var init_MeterEvents2 = __esm({
 var stripeMethod42, Meters;
 var init_Meters = __esm({
   "../node_modules/stripe/esm/resources/Billing/Meters.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod42 = StripeResource.method;
     Meters = StripeResource.extend({
@@ -4490,7 +4490,7 @@ var init_Meters = __esm({
 var stripeMethod43, OnboardingLinks;
 var init_OnboardingLinks = __esm({
   "../node_modules/stripe/esm/resources/Terminal/OnboardingLinks.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod43 = StripeResource.method;
     OnboardingLinks = StripeResource.extend({
@@ -4506,7 +4506,7 @@ var init_OnboardingLinks = __esm({
 var stripeMethod44, Orders;
 var init_Orders = __esm({
   "../node_modules/stripe/esm/resources/Climate/Orders.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod44 = StripeResource.method;
     Orders = StripeResource.extend({
@@ -4536,7 +4536,7 @@ var init_Orders = __esm({
 var stripeMethod45, OutboundPayments;
 var init_OutboundPayments = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Treasury/OutboundPayments.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod45 = StripeResource.method;
     OutboundPayments = StripeResource.extend({
@@ -4564,7 +4564,7 @@ var init_OutboundPayments = __esm({
 var stripeMethod46, OutboundPayments2;
 var init_OutboundPayments2 = __esm({
   "../node_modules/stripe/esm/resources/Treasury/OutboundPayments.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod46 = StripeResource.method;
     OutboundPayments2 = StripeResource.extend({
@@ -4593,7 +4593,7 @@ var init_OutboundPayments2 = __esm({
 var stripeMethod47, OutboundTransfers;
 var init_OutboundTransfers = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Treasury/OutboundTransfers.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod47 = StripeResource.method;
     OutboundTransfers = StripeResource.extend({
@@ -4621,7 +4621,7 @@ var init_OutboundTransfers = __esm({
 var stripeMethod48, OutboundTransfers2;
 var init_OutboundTransfers2 = __esm({
   "../node_modules/stripe/esm/resources/Treasury/OutboundTransfers.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod48 = StripeResource.method;
     OutboundTransfers2 = StripeResource.extend({
@@ -4650,7 +4650,7 @@ var init_OutboundTransfers2 = __esm({
 var stripeMethod49, PaymentEvaluations;
 var init_PaymentEvaluations = __esm({
   "../node_modules/stripe/esm/resources/Radar/PaymentEvaluations.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod49 = StripeResource.method;
     PaymentEvaluations = StripeResource.extend({
@@ -4666,7 +4666,7 @@ var init_PaymentEvaluations = __esm({
 var stripeMethod50, PersonalizationDesigns;
 var init_PersonalizationDesigns = __esm({
   "../node_modules/stripe/esm/resources/Issuing/PersonalizationDesigns.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod50 = StripeResource.method;
     PersonalizationDesigns = StripeResource.extend({
@@ -4695,7 +4695,7 @@ var init_PersonalizationDesigns = __esm({
 var stripeMethod51, PersonalizationDesigns2;
 var init_PersonalizationDesigns2 = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Issuing/PersonalizationDesigns.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod51 = StripeResource.method;
     PersonalizationDesigns2 = StripeResource.extend({
@@ -4719,7 +4719,7 @@ var init_PersonalizationDesigns2 = __esm({
 var stripeMethod52, PhysicalBundles;
 var init_PhysicalBundles = __esm({
   "../node_modules/stripe/esm/resources/Issuing/PhysicalBundles.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod52 = StripeResource.method;
     PhysicalBundles = StripeResource.extend({
@@ -4740,7 +4740,7 @@ var init_PhysicalBundles = __esm({
 var stripeMethod53, Products;
 var init_Products = __esm({
   "../node_modules/stripe/esm/resources/Climate/Products.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod53 = StripeResource.method;
     Products = StripeResource.extend({
@@ -4761,7 +4761,7 @@ var init_Products = __esm({
 var stripeMethod54, Readers;
 var init_Readers = __esm({
   "../node_modules/stripe/esm/resources/Terminal/Readers.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod54 = StripeResource.method;
     Readers = StripeResource.extend({
@@ -4823,7 +4823,7 @@ var init_Readers = __esm({
 var stripeMethod55, Readers2;
 var init_Readers2 = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Terminal/Readers.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod55 = StripeResource.method;
     Readers2 = StripeResource.extend({
@@ -4847,7 +4847,7 @@ var init_Readers2 = __esm({
 var stripeMethod56, ReceivedCredits;
 var init_ReceivedCredits = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Treasury/ReceivedCredits.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod56 = StripeResource.method;
     ReceivedCredits = StripeResource.extend({
@@ -4863,7 +4863,7 @@ var init_ReceivedCredits = __esm({
 var stripeMethod57, ReceivedCredits2;
 var init_ReceivedCredits2 = __esm({
   "../node_modules/stripe/esm/resources/Treasury/ReceivedCredits.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod57 = StripeResource.method;
     ReceivedCredits2 = StripeResource.extend({
@@ -4884,7 +4884,7 @@ var init_ReceivedCredits2 = __esm({
 var stripeMethod58, ReceivedDebits;
 var init_ReceivedDebits = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Treasury/ReceivedDebits.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod58 = StripeResource.method;
     ReceivedDebits = StripeResource.extend({
@@ -4900,7 +4900,7 @@ var init_ReceivedDebits = __esm({
 var stripeMethod59, ReceivedDebits2;
 var init_ReceivedDebits2 = __esm({
   "../node_modules/stripe/esm/resources/Treasury/ReceivedDebits.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod59 = StripeResource.method;
     ReceivedDebits2 = StripeResource.extend({
@@ -4921,7 +4921,7 @@ var init_ReceivedDebits2 = __esm({
 var stripeMethod60, Refunds;
 var init_Refunds = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Refunds.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod60 = StripeResource.method;
     Refunds = StripeResource.extend({
@@ -4937,7 +4937,7 @@ var init_Refunds = __esm({
 var stripeMethod61, Registrations;
 var init_Registrations = __esm({
   "../node_modules/stripe/esm/resources/Tax/Registrations.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod61 = StripeResource.method;
     Registrations = StripeResource.extend({
@@ -4963,7 +4963,7 @@ var init_Registrations = __esm({
 var stripeMethod62, ReportRuns;
 var init_ReportRuns = __esm({
   "../node_modules/stripe/esm/resources/Reporting/ReportRuns.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod62 = StripeResource.method;
     ReportRuns = StripeResource.extend({
@@ -4985,7 +4985,7 @@ var init_ReportRuns = __esm({
 var stripeMethod63, ReportTypes;
 var init_ReportTypes = __esm({
   "../node_modules/stripe/esm/resources/Reporting/ReportTypes.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod63 = StripeResource.method;
     ReportTypes = StripeResource.extend({
@@ -5006,7 +5006,7 @@ var init_ReportTypes = __esm({
 var stripeMethod64, Requests;
 var init_Requests = __esm({
   "../node_modules/stripe/esm/resources/Forwarding/Requests.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod64 = StripeResource.method;
     Requests = StripeResource.extend({
@@ -5028,7 +5028,7 @@ var init_Requests = __esm({
 var stripeMethod65, ScheduledQueryRuns;
 var init_ScheduledQueryRuns = __esm({
   "../node_modules/stripe/esm/resources/Sigma/ScheduledQueryRuns.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod65 = StripeResource.method;
     ScheduledQueryRuns = StripeResource.extend({
@@ -5049,7 +5049,7 @@ var init_ScheduledQueryRuns = __esm({
 var stripeMethod66, Secrets;
 var init_Secrets = __esm({
   "../node_modules/stripe/esm/resources/Apps/Secrets.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod66 = StripeResource.method;
     Secrets = StripeResource.extend({
@@ -5072,7 +5072,7 @@ var init_Secrets = __esm({
 var stripeMethod67, Sessions;
 var init_Sessions = __esm({
   "../node_modules/stripe/esm/resources/BillingPortal/Sessions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod67 = StripeResource.method;
     Sessions = StripeResource.extend({
@@ -5088,7 +5088,7 @@ var init_Sessions = __esm({
 var stripeMethod68, Sessions2;
 var init_Sessions2 = __esm({
   "../node_modules/stripe/esm/resources/Checkout/Sessions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod68 = StripeResource.method;
     Sessions2 = StripeResource.extend({
@@ -5123,7 +5123,7 @@ var init_Sessions2 = __esm({
 var stripeMethod69, Sessions3;
 var init_Sessions3 = __esm({
   "../node_modules/stripe/esm/resources/FinancialConnections/Sessions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod69 = StripeResource.method;
     Sessions3 = StripeResource.extend({
@@ -5143,7 +5143,7 @@ var init_Sessions3 = __esm({
 var stripeMethod70, Settings;
 var init_Settings = __esm({
   "../node_modules/stripe/esm/resources/Tax/Settings.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod70 = StripeResource.method;
     Settings = StripeResource.extend({
@@ -5157,7 +5157,7 @@ var init_Settings = __esm({
 var stripeMethod71, Suppliers;
 var init_Suppliers = __esm({
   "../node_modules/stripe/esm/resources/Climate/Suppliers.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod71 = StripeResource.method;
     Suppliers = StripeResource.extend({
@@ -5178,7 +5178,7 @@ var init_Suppliers = __esm({
 var stripeMethod72, TestClocks;
 var init_TestClocks = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/TestClocks.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod72 = StripeResource.method;
     TestClocks = StripeResource.extend({
@@ -5211,7 +5211,7 @@ var init_TestClocks = __esm({
 var stripeMethod73, Tokens;
 var init_Tokens = __esm({
   "../node_modules/stripe/esm/resources/Issuing/Tokens.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod73 = StripeResource.method;
     Tokens = StripeResource.extend({
@@ -5236,7 +5236,7 @@ var init_Tokens = __esm({
 var stripeMethod74, TransactionEntries;
 var init_TransactionEntries = __esm({
   "../node_modules/stripe/esm/resources/Treasury/TransactionEntries.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod74 = StripeResource.method;
     TransactionEntries = StripeResource.extend({
@@ -5257,7 +5257,7 @@ var init_TransactionEntries = __esm({
 var stripeMethod75, Transactions;
 var init_Transactions = __esm({
   "../node_modules/stripe/esm/resources/FinancialConnections/Transactions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod75 = StripeResource.method;
     Transactions = StripeResource.extend({
@@ -5278,7 +5278,7 @@ var init_Transactions = __esm({
 var stripeMethod76, Transactions2;
 var init_Transactions2 = __esm({
   "../node_modules/stripe/esm/resources/Issuing/Transactions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod76 = StripeResource.method;
     Transactions2 = StripeResource.extend({
@@ -5303,7 +5303,7 @@ var init_Transactions2 = __esm({
 var stripeMethod77, Transactions3;
 var init_Transactions3 = __esm({
   "../node_modules/stripe/esm/resources/Tax/Transactions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod77 = StripeResource.method;
     Transactions3 = StripeResource.extend({
@@ -5332,7 +5332,7 @@ var init_Transactions3 = __esm({
 var stripeMethod78, Transactions4;
 var init_Transactions4 = __esm({
   "../node_modules/stripe/esm/resources/TestHelpers/Issuing/Transactions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod78 = StripeResource.method;
     Transactions4 = StripeResource.extend({
@@ -5356,7 +5356,7 @@ var init_Transactions4 = __esm({
 var stripeMethod79, Transactions5;
 var init_Transactions5 = __esm({
   "../node_modules/stripe/esm/resources/Treasury/Transactions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod79 = StripeResource.method;
     Transactions5 = StripeResource.extend({
@@ -5377,7 +5377,7 @@ var init_Transactions5 = __esm({
 var stripeMethod80, ValueListItems;
 var init_ValueListItems = __esm({
   "../node_modules/stripe/esm/resources/Radar/ValueListItems.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod80 = StripeResource.method;
     ValueListItems = StripeResource.extend({
@@ -5406,7 +5406,7 @@ var init_ValueListItems = __esm({
 var stripeMethod81, ValueLists;
 var init_ValueLists = __esm({
   "../node_modules/stripe/esm/resources/Radar/ValueLists.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod81 = StripeResource.method;
     ValueLists = StripeResource.extend({
@@ -5436,7 +5436,7 @@ var init_ValueLists = __esm({
 var stripeMethod82, VerificationReports;
 var init_VerificationReports = __esm({
   "../node_modules/stripe/esm/resources/Identity/VerificationReports.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod82 = StripeResource.method;
     VerificationReports = StripeResource.extend({
@@ -5457,7 +5457,7 @@ var init_VerificationReports = __esm({
 var stripeMethod83, VerificationSessions;
 var init_VerificationSessions = __esm({
   "../node_modules/stripe/esm/resources/Identity/VerificationSessions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod83 = StripeResource.method;
     VerificationSessions = StripeResource.extend({
@@ -5494,7 +5494,7 @@ var init_VerificationSessions = __esm({
 var stripeMethod84, Accounts3;
 var init_Accounts3 = __esm({
   "../node_modules/stripe/esm/resources/Accounts.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod84 = StripeResource.method;
     Accounts3 = StripeResource.extend({
@@ -5594,7 +5594,7 @@ var init_Accounts3 = __esm({
 var stripeMethod85, AccountLinks2;
 var init_AccountLinks2 = __esm({
   "../node_modules/stripe/esm/resources/AccountLinks.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod85 = StripeResource.method;
     AccountLinks2 = StripeResource.extend({
@@ -5607,7 +5607,7 @@ var init_AccountLinks2 = __esm({
 var stripeMethod86, AccountSessions;
 var init_AccountSessions = __esm({
   "../node_modules/stripe/esm/resources/AccountSessions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod86 = StripeResource.method;
     AccountSessions = StripeResource.extend({
@@ -5620,7 +5620,7 @@ var init_AccountSessions = __esm({
 var stripeMethod87, ApplePayDomains;
 var init_ApplePayDomains = __esm({
   "../node_modules/stripe/esm/resources/ApplePayDomains.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod87 = StripeResource.method;
     ApplePayDomains = StripeResource.extend({
@@ -5646,7 +5646,7 @@ var init_ApplePayDomains = __esm({
 var stripeMethod88, ApplicationFees;
 var init_ApplicationFees = __esm({
   "../node_modules/stripe/esm/resources/ApplicationFees.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod88 = StripeResource.method;
     ApplicationFees = StripeResource.extend({
@@ -5684,7 +5684,7 @@ var init_ApplicationFees = __esm({
 var stripeMethod89, Balance;
 var init_Balance = __esm({
   "../node_modules/stripe/esm/resources/Balance.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod89 = StripeResource.method;
     Balance = StripeResource.extend({
@@ -5697,7 +5697,7 @@ var init_Balance = __esm({
 var stripeMethod90, BalanceSettings;
 var init_BalanceSettings = __esm({
   "../node_modules/stripe/esm/resources/BalanceSettings.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod90 = StripeResource.method;
     BalanceSettings = StripeResource.extend({
@@ -5711,7 +5711,7 @@ var init_BalanceSettings = __esm({
 var stripeMethod91, BalanceTransactions;
 var init_BalanceTransactions = __esm({
   "../node_modules/stripe/esm/resources/BalanceTransactions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod91 = StripeResource.method;
     BalanceTransactions = StripeResource.extend({
@@ -5732,7 +5732,7 @@ var init_BalanceTransactions = __esm({
 var stripeMethod92, Charges;
 var init_Charges = __esm({
   "../node_modules/stripe/esm/resources/Charges.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod92 = StripeResource.method;
     Charges = StripeResource.extend({
@@ -5761,7 +5761,7 @@ var init_Charges = __esm({
 var stripeMethod93, ConfirmationTokens2;
 var init_ConfirmationTokens2 = __esm({
   "../node_modules/stripe/esm/resources/ConfirmationTokens.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod93 = StripeResource.method;
     ConfirmationTokens2 = StripeResource.extend({
@@ -5777,7 +5777,7 @@ var init_ConfirmationTokens2 = __esm({
 var stripeMethod94, CountrySpecs;
 var init_CountrySpecs = __esm({
   "../node_modules/stripe/esm/resources/CountrySpecs.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod94 = StripeResource.method;
     CountrySpecs = StripeResource.extend({
@@ -5798,7 +5798,7 @@ var init_CountrySpecs = __esm({
 var stripeMethod95, Coupons;
 var init_Coupons = __esm({
   "../node_modules/stripe/esm/resources/Coupons.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod95 = StripeResource.method;
     Coupons = StripeResource.extend({
@@ -5819,7 +5819,7 @@ var init_Coupons = __esm({
 var stripeMethod96, CreditNotes;
 var init_CreditNotes = __esm({
   "../node_modules/stripe/esm/resources/CreditNotes.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod96 = StripeResource.method;
     CreditNotes = StripeResource.extend({
@@ -5854,7 +5854,7 @@ var init_CreditNotes = __esm({
 var stripeMethod97, CustomerSessions;
 var init_CustomerSessions = __esm({
   "../node_modules/stripe/esm/resources/CustomerSessions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod97 = StripeResource.method;
     CustomerSessions = StripeResource.extend({
@@ -5867,7 +5867,7 @@ var init_CustomerSessions = __esm({
 var stripeMethod98, Customers2;
 var init_Customers2 = __esm({
   "../node_modules/stripe/esm/resources/Customers.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod98 = StripeResource.method;
     Customers2 = StripeResource.extend({
@@ -5986,7 +5986,7 @@ var init_Customers2 = __esm({
 var stripeMethod99, Disputes2;
 var init_Disputes2 = __esm({
   "../node_modules/stripe/esm/resources/Disputes.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod99 = StripeResource.method;
     Disputes2 = StripeResource.extend({
@@ -6009,7 +6009,7 @@ var init_Disputes2 = __esm({
 var stripeMethod100, EphemeralKeys;
 var init_EphemeralKeys = __esm({
   "../node_modules/stripe/esm/resources/EphemeralKeys.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod100 = StripeResource.method;
     EphemeralKeys = StripeResource.extend({
@@ -6031,7 +6031,7 @@ var init_EphemeralKeys = __esm({
 var stripeMethod101, Events2;
 var init_Events2 = __esm({
   "../node_modules/stripe/esm/resources/Events.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod101 = StripeResource.method;
     Events2 = StripeResource.extend({
@@ -6049,7 +6049,7 @@ var init_Events2 = __esm({
 var stripeMethod102, ExchangeRates;
 var init_ExchangeRates = __esm({
   "../node_modules/stripe/esm/resources/ExchangeRates.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod102 = StripeResource.method;
     ExchangeRates = StripeResource.extend({
@@ -6070,7 +6070,7 @@ var init_ExchangeRates = __esm({
 var stripeMethod103, FileLinks;
 var init_FileLinks = __esm({
   "../node_modules/stripe/esm/resources/FileLinks.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod103 = StripeResource.method;
     FileLinks = StripeResource.extend({
@@ -6100,7 +6100,7 @@ function multipartRequestDataProcessor(method, data, headers, callback) {
 var multipartDataGenerator;
 var init_multipart = __esm({
   "../node_modules/stripe/esm/multipart.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_utils();
     multipartDataGenerator = /* @__PURE__ */ __name((method, data, headers) => {
       const segno = (Math.round(Math.random() * 1e16) + Math.round(Math.random() * 1e16)).toString();
@@ -6151,7 +6151,7 @@ var init_multipart = __esm({
 var stripeMethod104, Files;
 var init_Files = __esm({
   "../node_modules/stripe/esm/resources/Files.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_multipart();
     init_StripeResource();
     stripeMethod104 = StripeResource.method;
@@ -6179,7 +6179,7 @@ var init_Files = __esm({
 var stripeMethod105, InvoiceItems;
 var init_InvoiceItems = __esm({
   "../node_modules/stripe/esm/resources/InvoiceItems.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod105 = StripeResource.method;
     InvoiceItems = StripeResource.extend({
@@ -6209,7 +6209,7 @@ var init_InvoiceItems = __esm({
 var stripeMethod106, InvoicePayments;
 var init_InvoicePayments = __esm({
   "../node_modules/stripe/esm/resources/InvoicePayments.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod106 = StripeResource.method;
     InvoicePayments = StripeResource.extend({
@@ -6230,7 +6230,7 @@ var init_InvoicePayments = __esm({
 var stripeMethod107, InvoiceRenderingTemplates;
 var init_InvoiceRenderingTemplates = __esm({
   "../node_modules/stripe/esm/resources/InvoiceRenderingTemplates.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod107 = StripeResource.method;
     InvoiceRenderingTemplates = StripeResource.extend({
@@ -6259,7 +6259,7 @@ var init_InvoiceRenderingTemplates = __esm({
 var stripeMethod108, Invoices;
 var init_Invoices = __esm({
   "../node_modules/stripe/esm/resources/Invoices.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod108 = StripeResource.method;
     Invoices = StripeResource.extend({
@@ -6331,7 +6331,7 @@ var init_Invoices = __esm({
 var stripeMethod109, Mandates;
 var init_Mandates = __esm({
   "../node_modules/stripe/esm/resources/Mandates.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod109 = StripeResource.method;
     Mandates = StripeResource.extend({
@@ -6345,7 +6345,7 @@ var stripeMethod110, oAuthHost, OAuth;
 var init_OAuth = __esm({
   "../node_modules/stripe/esm/resources/OAuth.js"() {
     "use strict";
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     init_utils();
     stripeMethod110 = StripeResource.method;
@@ -6393,7 +6393,7 @@ var init_OAuth = __esm({
 var stripeMethod111, PaymentAttemptRecords;
 var init_PaymentAttemptRecords = __esm({
   "../node_modules/stripe/esm/resources/PaymentAttemptRecords.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod111 = StripeResource.method;
     PaymentAttemptRecords = StripeResource.extend({
@@ -6414,7 +6414,7 @@ var init_PaymentAttemptRecords = __esm({
 var stripeMethod112, PaymentIntents;
 var init_PaymentIntents = __esm({
   "../node_modules/stripe/esm/resources/PaymentIntents.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod112 = StripeResource.method;
     PaymentIntents = StripeResource.extend({
@@ -6474,7 +6474,7 @@ var init_PaymentIntents = __esm({
 var stripeMethod113, PaymentLinks;
 var init_PaymentLinks = __esm({
   "../node_modules/stripe/esm/resources/PaymentLinks.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod113 = StripeResource.method;
     PaymentLinks = StripeResource.extend({
@@ -6505,7 +6505,7 @@ var init_PaymentLinks = __esm({
 var stripeMethod114, PaymentMethodConfigurations;
 var init_PaymentMethodConfigurations = __esm({
   "../node_modules/stripe/esm/resources/PaymentMethodConfigurations.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod114 = StripeResource.method;
     PaymentMethodConfigurations = StripeResource.extend({
@@ -6534,7 +6534,7 @@ var init_PaymentMethodConfigurations = __esm({
 var stripeMethod115, PaymentMethodDomains;
 var init_PaymentMethodDomains = __esm({
   "../node_modules/stripe/esm/resources/PaymentMethodDomains.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod115 = StripeResource.method;
     PaymentMethodDomains = StripeResource.extend({
@@ -6567,7 +6567,7 @@ var init_PaymentMethodDomains = __esm({
 var stripeMethod116, PaymentMethods;
 var init_PaymentMethods = __esm({
   "../node_modules/stripe/esm/resources/PaymentMethods.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod116 = StripeResource.method;
     PaymentMethods = StripeResource.extend({
@@ -6601,7 +6601,7 @@ var init_PaymentMethods = __esm({
 var stripeMethod117, PaymentRecords;
 var init_PaymentRecords = __esm({
   "../node_modules/stripe/esm/resources/PaymentRecords.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod117 = StripeResource.method;
     PaymentRecords = StripeResource.extend({
@@ -6642,7 +6642,7 @@ var init_PaymentRecords = __esm({
 var stripeMethod118, Payouts;
 var init_Payouts = __esm({
   "../node_modules/stripe/esm/resources/Payouts.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod118 = StripeResource.method;
     Payouts = StripeResource.extend({
@@ -6670,7 +6670,7 @@ var init_Payouts = __esm({
 var stripeMethod119, Plans;
 var init_Plans = __esm({
   "../node_modules/stripe/esm/resources/Plans.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod119 = StripeResource.method;
     Plans = StripeResource.extend({
@@ -6691,7 +6691,7 @@ var init_Plans = __esm({
 var stripeMethod120, Prices;
 var init_Prices = __esm({
   "../node_modules/stripe/esm/resources/Prices.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod120 = StripeResource.method;
     Prices = StripeResource.extend({
@@ -6716,7 +6716,7 @@ var init_Prices = __esm({
 var stripeMethod121, Products2;
 var init_Products2 = __esm({
   "../node_modules/stripe/esm/resources/Products.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod121 = StripeResource.method;
     Products2 = StripeResource.extend({
@@ -6759,7 +6759,7 @@ var init_Products2 = __esm({
 var stripeMethod122, PromotionCodes;
 var init_PromotionCodes = __esm({
   "../node_modules/stripe/esm/resources/PromotionCodes.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod122 = StripeResource.method;
     PromotionCodes = StripeResource.extend({
@@ -6785,7 +6785,7 @@ var init_PromotionCodes = __esm({
 var stripeMethod123, Quotes;
 var init_Quotes = __esm({
   "../node_modules/stripe/esm/resources/Quotes.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod123 = StripeResource.method;
     Quotes = StripeResource.extend({
@@ -6827,7 +6827,7 @@ var init_Quotes = __esm({
 var stripeMethod124, Refunds2;
 var init_Refunds2 = __esm({
   "../node_modules/stripe/esm/resources/Refunds.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod124 = StripeResource.method;
     Refunds2 = StripeResource.extend({
@@ -6851,7 +6851,7 @@ var init_Refunds2 = __esm({
 var stripeMethod125, Reviews;
 var init_Reviews = __esm({
   "../node_modules/stripe/esm/resources/Reviews.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod125 = StripeResource.method;
     Reviews = StripeResource.extend({
@@ -6873,7 +6873,7 @@ var init_Reviews = __esm({
 var stripeMethod126, SetupAttempts;
 var init_SetupAttempts = __esm({
   "../node_modules/stripe/esm/resources/SetupAttempts.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod126 = StripeResource.method;
     SetupAttempts = StripeResource.extend({
@@ -6890,7 +6890,7 @@ var init_SetupAttempts = __esm({
 var stripeMethod127, SetupIntents;
 var init_SetupIntents = __esm({
   "../node_modules/stripe/esm/resources/SetupIntents.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod127 = StripeResource.method;
     SetupIntents = StripeResource.extend({
@@ -6928,7 +6928,7 @@ var init_SetupIntents = __esm({
 var stripeMethod128, ShippingRates;
 var init_ShippingRates = __esm({
   "../node_modules/stripe/esm/resources/ShippingRates.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod128 = StripeResource.method;
     ShippingRates = StripeResource.extend({
@@ -6954,7 +6954,7 @@ var init_ShippingRates = __esm({
 var stripeMethod129, Sources;
 var init_Sources = __esm({
   "../node_modules/stripe/esm/resources/Sources.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod129 = StripeResource.method;
     Sources = StripeResource.extend({
@@ -6978,7 +6978,7 @@ var init_Sources = __esm({
 var stripeMethod130, SubscriptionItems;
 var init_SubscriptionItems = __esm({
   "../node_modules/stripe/esm/resources/SubscriptionItems.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod130 = StripeResource.method;
     SubscriptionItems = StripeResource.extend({
@@ -7008,7 +7008,7 @@ var init_SubscriptionItems = __esm({
 var stripeMethod131, SubscriptionSchedules;
 var init_SubscriptionSchedules = __esm({
   "../node_modules/stripe/esm/resources/SubscriptionSchedules.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod131 = StripeResource.method;
     SubscriptionSchedules = StripeResource.extend({
@@ -7045,7 +7045,7 @@ var init_SubscriptionSchedules = __esm({
 var stripeMethod132, Subscriptions;
 var init_Subscriptions = __esm({
   "../node_modules/stripe/esm/resources/Subscriptions.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod132 = StripeResource.method;
     Subscriptions = StripeResource.extend({
@@ -7092,7 +7092,7 @@ var init_Subscriptions = __esm({
 var stripeMethod133, TaxCodes;
 var init_TaxCodes = __esm({
   "../node_modules/stripe/esm/resources/TaxCodes.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod133 = StripeResource.method;
     TaxCodes = StripeResource.extend({
@@ -7110,7 +7110,7 @@ var init_TaxCodes = __esm({
 var stripeMethod134, TaxIds;
 var init_TaxIds = __esm({
   "../node_modules/stripe/esm/resources/TaxIds.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod134 = StripeResource.method;
     TaxIds = StripeResource.extend({
@@ -7130,7 +7130,7 @@ var init_TaxIds = __esm({
 var stripeMethod135, TaxRates;
 var init_TaxRates = __esm({
   "../node_modules/stripe/esm/resources/TaxRates.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod135 = StripeResource.method;
     TaxRates = StripeResource.extend({
@@ -7150,7 +7150,7 @@ var init_TaxRates = __esm({
 var stripeMethod136, Tokens2;
 var init_Tokens2 = __esm({
   "../node_modules/stripe/esm/resources/Tokens.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod136 = StripeResource.method;
     Tokens2 = StripeResource.extend({
@@ -7164,7 +7164,7 @@ var init_Tokens2 = __esm({
 var stripeMethod137, Topups;
 var init_Topups = __esm({
   "../node_modules/stripe/esm/resources/Topups.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod137 = StripeResource.method;
     Topups = StripeResource.extend({
@@ -7185,7 +7185,7 @@ var init_Topups = __esm({
 var stripeMethod138, Transfers;
 var init_Transfers = __esm({
   "../node_modules/stripe/esm/resources/Transfers.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod138 = StripeResource.method;
     Transfers = StripeResource.extend({
@@ -7222,7 +7222,7 @@ var init_Transfers = __esm({
 var stripeMethod139, WebhookEndpoints;
 var init_WebhookEndpoints = __esm({
   "../node_modules/stripe/esm/resources/WebhookEndpoints.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_StripeResource();
     stripeMethod139 = StripeResource.method;
     WebhookEndpoints = StripeResource.extend({
@@ -7330,7 +7330,7 @@ __export(resources_exports, {
 var Apps, Billing, BillingPortal, Checkout, Climate, Entitlements, FinancialConnections, Forwarding, Identity, Issuing, Radar, Reporting, Sigma, Tax, Terminal, TestHelpers, Treasury, V2;
 var init_resources = __esm({
   "../node_modules/stripe/esm/resources.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_ResourceNamespace();
     init_AccountLinks();
     init_AccountTokens();
@@ -7907,7 +7907,7 @@ function createStripe(platformFunctions, requestSender = defaultRequestSenderFac
 var DEFAULT_HOST, DEFAULT_PORT, DEFAULT_BASE_PATH, DEFAULT_API_VERSION, DEFAULT_TIMEOUT, MAX_NETWORK_RETRY_DELAY_SEC, INITIAL_NETWORK_RETRY_DELAY_SEC, APP_INFO_PROPERTIES, ALLOWED_CONFIG_PROPERTIES, defaultRequestSenderFactory;
 var init_stripe_core = __esm({
   "../node_modules/stripe/esm/stripe.core.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_Error();
     init_RequestSender();
     init_StripeResource();
@@ -7956,7 +7956,7 @@ __export(stripe_esm_worker_exports, {
 var Stripe, stripe_esm_worker_default;
 var init_stripe_esm_worker = __esm({
   "../node_modules/stripe/esm/stripe.esm.worker.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_WebPlatformFunctions();
     init_stripe_core();
     Stripe = createStripe(new WebPlatformFunctions());
@@ -8006,7 +8006,7 @@ async function onRequestGet4({ request, env }) {
 var CORS_HEADERS6;
 var init_checkout_session_status = __esm({
   "api/checkout-session-status.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_stripe_esm_worker();
     CORS_HEADERS6 = {
       "Access-Control-Allow-Origin": "*",
@@ -8129,7 +8129,7 @@ async function onRequestPost6({ request, env }) {
 var CORS_HEADERS7;
 var init_collections = __esm({
   "api/collections/index.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     CORS_HEADERS7 = {
       "Access-Control-Allow-Origin": "*",
@@ -8223,7 +8223,7 @@ async function onRequestPost7({ request, env }) {
 var CORS_HEADERS8;
 var init_contact = __esm({
   "api/contact.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     CORS_HEADERS8 = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST,OPTIONS",
@@ -8333,7 +8333,7 @@ async function onRequestPost8({ request, env }) {
 var CORS_HEADERS9;
 var init_create_checkout_session = __esm({
   "api/create-checkout-session.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_stripe_esm_worker();
     init_auth();
     CORS_HEADERS9 = {
@@ -8371,7 +8371,7 @@ async function onRequestPost9() {
 var CORS_HEADERS10;
 var init_purchase = __esm({
   "api/purchase.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     CORS_HEADERS10 = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST,OPTIONS",
@@ -8429,7 +8429,7 @@ async function onRequestOptions11() {
 var STRIPE_SECRET_KEY;
 var init_stripe_webhook = __esm({
   "api/stripe-webhook.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     STRIPE_SECRET_KEY = typeof STRIPE_SECRET_KEY !== "undefined" ? STRIPE_SECRET_KEY : void 0;
     __name(json16, "json");
     __name(onRequestPost10, "onRequestPost");
@@ -8466,7 +8466,7 @@ async function onRequestGet6({ request, env }) {
 var CORS_HEADERS11;
 var init_user_purchases = __esm({
   "api/user-purchases.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     init_auth();
     CORS_HEADERS11 = {
       "Access-Control-Allow-Origin": "*",
@@ -8522,15 +8522,15 @@ async function onRequest5(context) {
 }
 var init_blog = __esm({
   "api/blog.js"() {
-    init_functionsRoutes_0_11258757125935692();
+    init_functionsRoutes_0_7157080303585999();
     __name(onRequest5, "onRequest");
   }
 });
 
-// ../.wrangler/tmp/pages-OyLn1e/functionsRoutes-0.11258757125935692.mjs
+// ../.wrangler/tmp/pages-c9fyiD/functionsRoutes-0.7157080303585999.mjs
 var routes;
-var init_functionsRoutes_0_11258757125935692 = __esm({
-  "../.wrangler/tmp/pages-OyLn1e/functionsRoutes-0.11258757125935692.mjs"() {
+var init_functionsRoutes_0_7157080303585999 = __esm({
+  "../.wrangler/tmp/pages-c9fyiD/functionsRoutes-0.7157080303585999.mjs"() {
     init_download();
     init_download();
     init_upload();
@@ -8816,17 +8816,17 @@ var init_functionsRoutes_0_11258757125935692 = __esm({
   }
 });
 
-// ../.wrangler/tmp/bundle-KZYUre/middleware-loader.entry.ts
-init_functionsRoutes_0_11258757125935692();
+// ../.wrangler/tmp/bundle-JCsuOJ/middleware-loader.entry.ts
+init_functionsRoutes_0_7157080303585999();
 
-// ../.wrangler/tmp/bundle-KZYUre/middleware-insertion-facade.js
-init_functionsRoutes_0_11258757125935692();
+// ../.wrangler/tmp/bundle-JCsuOJ/middleware-insertion-facade.js
+init_functionsRoutes_0_7157080303585999();
 
 // ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/pages-template-worker.ts
-init_functionsRoutes_0_11258757125935692();
+init_functionsRoutes_0_7157080303585999();
 
 // ../../../../../AppData/Roaming/npm/node_modules/wrangler/node_modules/path-to-regexp/dist.es2015/index.js
-init_functionsRoutes_0_11258757125935692();
+init_functionsRoutes_0_7157080303585999();
 function lexer(str) {
   var tokens = [];
   var i = 0;
@@ -9273,7 +9273,7 @@ var cloneResponse = /* @__PURE__ */ __name((response) => (
 ), "cloneResponse");
 
 // ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
-init_functionsRoutes_0_11258757125935692();
+init_functionsRoutes_0_7157080303585999();
 var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
@@ -9292,7 +9292,7 @@ var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 var middleware_ensure_req_body_drained_default = drainBody;
 
 // ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
-init_functionsRoutes_0_11258757125935692();
+init_functionsRoutes_0_7157080303585999();
 function reduceError(e) {
   return {
     name: e?.name,
@@ -9315,7 +9315,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// ../.wrangler/tmp/bundle-KZYUre/middleware-insertion-facade.js
+// ../.wrangler/tmp/bundle-JCsuOJ/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -9323,7 +9323,7 @@ var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
 var middleware_insertion_facade_default = pages_template_worker_default;
 
 // ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/common.ts
-init_functionsRoutes_0_11258757125935692();
+init_functionsRoutes_0_7157080303585999();
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
   __facade_middleware__.push(...args.flat());
@@ -9348,7 +9348,7 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// ../.wrangler/tmp/bundle-KZYUre/middleware-loader.entry.ts
+// ../.wrangler/tmp/bundle-JCsuOJ/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
@@ -9448,4 +9448,4 @@ export {
   __INTERNAL_WRANGLER_MIDDLEWARE__,
   middleware_loader_entry_default as default
 };
-//# sourceMappingURL=functionsWorker-0.4684119352006897.mjs.map
+//# sourceMappingURL=functionsWorker-0.27725082977811.mjs.map

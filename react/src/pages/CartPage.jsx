@@ -27,20 +27,8 @@ const checkoutPanelStyle = {
 };
 
 function parseUnitPrice(item) {
-  const sizeText = String(item?.size || "");
-  const sampleKitLike = /sample\s*kit/i.test(sizeText) || /sample\s*kit/i.test(String(item?.profileName || ""));
-  if (sampleKitLike) return 199;
-
-  const match = sizeText.match(/\$\s*([0-9]+(?:\.[0-9]{1,2})?)/);
-  if (match) {
-    const parsed = Number(match[1]);
-    if (Number.isFinite(parsed) && parsed >= 0) return parsed;
-  }
-
-  const explicitPrice = Number(item?.unitPrice);
-  if (Number.isFinite(explicitPrice) && explicitPrice >= 0) return explicitPrice;
-
-  return 0;
+  // FORCE ALL ITEMS TO $1 FOR TESTING
+  return 1;
 }
 
 function formatCurrency(value) {

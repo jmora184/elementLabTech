@@ -54,6 +54,7 @@ export function addCartItem(item) {
     profileName: String(item?.profileName || ""),
     size: String(item?.size || ""),
     quantity: toSafeQuantity(item?.quantity),
+    unitPrice: typeof item?.unitPrice === 'number' ? item.unitPrice : undefined,
     addedAt: new Date().toISOString(),
   };
 

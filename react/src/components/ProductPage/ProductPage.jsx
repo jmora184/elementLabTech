@@ -1815,6 +1815,12 @@ export default function ProductPage() {
                   fontSize: 16,
                 }}
                 onClick={() => {
+                  // Parse price from selectedSize string
+                  let unitPrice = 0;
+                  const match = String(selectedSize).match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
+                  if (match) {
+                    unitPrice = Number(match[1]);
+                  }
                   addCartItem({
                     productId: String(collection?.id || id || ""),
                     collectionName: String(collection?.name || "Product"),
@@ -1822,6 +1828,7 @@ export default function ProductPage() {
                     profileName: String(flavorInfo?.name || selectedSlug || ""),
                     size: String(selectedSize || ""),
                     quantity,
+                    unitPrice,
                   });
                   alert(`Added ${quantity} × ${selectedSize} to cart!`);
                 }}

@@ -1715,7 +1715,7 @@ export default function ProductPage() {
                       ));
                     } else {
                       const baseSizes = [
-                        { label: "2mL | 1.84 g", price: 1 }, // Set first item to $1 for testing
+                        { label: "2mL | 1.84 g", price: 20 },
                         { label: "5mL | 4.2g", price: 35 },
                         { label: "24mL | 20g", price: 125 },
                         { label: "60mL | 50g | 2oz", price: 276 },
@@ -1815,12 +1815,6 @@ export default function ProductPage() {
                   fontSize: 16,
                 }}
                 onClick={() => {
-                  // Parse price from selectedSize string
-                  let unitPrice = 0;
-                  const match = String(selectedSize).match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
-                  if (match) {
-                    unitPrice = Number(match[1]);
-                  }
                   addCartItem({
                     productId: String(collection?.id || id || ""),
                     collectionName: String(collection?.name || "Product"),
@@ -1828,7 +1822,6 @@ export default function ProductPage() {
                     profileName: String(flavorInfo?.name || selectedSlug || ""),
                     size: String(selectedSize || ""),
                     quantity,
-                    unitPrice,
                   });
                   alert(`Added ${quantity} × ${selectedSize} to cart!`);
                 }}

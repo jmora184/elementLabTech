@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
 import { clearCart, getCartItems, removeCartItem, setCartItems } from "../utils/cart";
 
 const elPageBackgroundStyle = {
@@ -27,8 +28,17 @@ const checkoutPanelStyle = {
 };
 
 function parseUnitPrice(item) {
-  // FORCE ALL ITEMS TO $1 FOR TESTING
-  return 1;
+  const sizeText = String(item?.size || "");
+  const sampleKitLike = /sample\s*kit/i.test(sizeText) || /sample\s*kit/i.test(String(item?.profileName || ""));
+  if (sampleKitLike) return 199;
+
+  const match = sizeText.match(/\$\s*([0-9]+(?:\.[0-9]{1,2})?)/);
+  if (match) {
+    const parsed = Number(match[1]);
+    if (Number.isFinite(parsed) && parsed >= 0) return parsed;
+  }
+
+  return 0;
 }
 
 function formatCurrency(value) {
@@ -164,6 +174,12 @@ export default function CartPage() {
       return;
     }
 
+    const publishableKey = String(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "").trim();
+    if (!publishableKey) {
+      setCheckoutError("Stripe is not configured yet. Add VITE_STRIPE_PUBLISHABLE_KEY to your environment.");
+      return;
+    }
+
     setCheckoutLoading(true);
 
     try {
@@ -174,19 +190,23 @@ export default function CartPage() {
       });
 
       const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
+      if (!res.ok || !data?.sessionId) {
         throw new Error(String(data?.error || "Unable to start Stripe checkout."));
       }
 
-      if (!data?.url) {
-        throw new Error("Stripe checkout URL was not returned.");
+      const stripe = await loadStripe(publishableKey);
+      if (!stripe) {
+        throw new Error("Stripe failed to initialize in the browser.");
       }
 
-      window.location.href = data.url;
+      const result = await stripe.redirectToCheckout({ sessionId: data.sessionId });
+      if (result?.error) {
+        throw new Error(result.error.message || "Stripe redirect failed.");
+      }
     } catch (err) {
       setCheckoutError(err?.message || "Unable to start Stripe checkout.");
       setCheckoutLoading(false);
+      return;
     }
   };
 

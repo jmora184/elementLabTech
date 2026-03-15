@@ -8,7 +8,8 @@
     {
       "binding": "DB",
       "database_name": "elementlab-db",
-      "database_id": "3af80c02-2d78-49ea-9de2-87001b212d6d"
+      "database_id": "3af80c02-2d78-49ea-9de2-87001b212d6d",
+      "preview_database_id": "DB"
     }
   ],
 
@@ -20,6 +21,6 @@
   ],
 
   "vars": {
-    "ENV": "local"
+    "ENV": "production"
   }
 }

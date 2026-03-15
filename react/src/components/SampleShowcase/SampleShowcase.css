@@ -219,11 +219,12 @@
 
 .ss-chipWrap{
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
   gap: 8px;
 }
 
-.ss-chip{
+
+.ss-chip {
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
@@ -236,6 +237,34 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.ss-chipBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 48px;
+  font-size: 14px;
+  border-radius: 12px;
+  background: #111;
+  color: #fff;
+  font-weight: 900;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.ss-chipBtn:last-child {
+  margin-right: 0;
+}
+.ss-chipBtn:hover, .ss-chipBtn:focus {
+  background: #222;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
 }
 
 .ss-muted{

@@ -37,7 +37,7 @@ export default function FAQPage() {
     },
     {
       q: "What usage percentages do you recommend?",
-      a: "Inclusion levels vary by application and formulation base. Typical ranges are provided upon request to ensure optimal performance and stability.",
+      a: "Infusion rates vary by formulation base and desired intensity; recommended usage ranges are available upon request.",
     },
     {
       q: "Do you offer custom formulation services?",
@@ -49,7 +49,7 @@ export default function FAQPage() {
     },
     {
       q: "Do you provide technical documentation?",
-      a: "Yes. Certificates of Analysis (COA) and Safety Data Sheets (SDS) are available upon request for applicable products.",
+      a: "Yes. Certificates of Analysis (COA) and Safety Data Sheets (SDS) are available upon request.",
     },
   ];
 

@@ -10,6 +10,7 @@ import { addCartItem } from "../../utils/cart";
 
 const MOBILE_PRODUCT_BREAKPOINT = 980;
 
+
 async function fetchJson(url, opts) {
   const res = await fetch(url, opts);
   const data = await res.json().catch(() => null);
@@ -28,6 +29,26 @@ const parseJsonArray = (value, fallback = []) => {
   } catch {
     return fallback;
   }
+};
+
+const getBenchmarkDominantTerpeneText = (option) => {
+  const terpenes = Array.isArray(option?.dominantTerpenes) && option.dominantTerpenes.length
+    ? option.dominantTerpenes
+    : Array.isArray(option?.notes)
+      ? option.notes
+      : [];
+
+  return terpenes
+    .map((item) => String(item || "").trim())
+    .filter(Boolean)
+    .slice(0, 3)
+    .join(" · ");
+};
+
+
+const parsePriceFromLabel = (value, fallback = 20) => {
+  const match = String(value || "").match(/\$\s*(\d+(?:\.\d+)?)/);
+  return match ? Number(match[1]) : fallback;
 };
 
 const collectionDocDownloadUrl = (collectionId, doc) => {
@@ -135,7 +156,58 @@ export default function ProductPage() {
   // Checkout widget state
   const [selectedSize, setSelectedSize] = useState("2mL | 1.84 g - $20");
   const [quantity, setQuantity] = useState(1);
+  const [selectedBenchmarkIds, setSelectedBenchmarkIds] = useState([]);
+  const [benchmarkProfileDetails, setBenchmarkProfileDetails] = useState({});
   const detailsSectionRef = useRef(null);
+
+  function toggleBenchmarkProfile(profileId) {
+    if (!profileId) return;
+    setSelectedBenchmarkIds((prev) => {
+      if (prev.includes(profileId)) return prev.filter((id) => id !== profileId);
+      if (prev.length >= 3) return prev;
+      return [...prev, profileId];
+    });
+  }
+
+  useEffect(() => {
+    const validIds = new Set(dbProfiles.map((profile) => String(profile?.id || profile?.slug || "")));
+    setSelectedBenchmarkIds((prev) => prev.filter((id) => validIds.has(id)).slice(0, 3));
+  }, [dbProfiles]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadBenchmarkProfileDetails() {
+      if (!dbProfiles.length) {
+        if (!cancelled) setBenchmarkProfileDetails({});
+        return;
+      }
+
+      try {
+        const bundles = await Promise.all(
+          dbProfiles.map(async (profile) => {
+            try {
+              const bundle = await fetchJson(`/api/profiles/${encodeURIComponent(profile.slug)}`);
+              return [profile.slug, bundle?.profile || {}];
+            } catch {
+              return [profile.slug, {}];
+            }
+          })
+        );
+
+        if (!cancelled) {
+          setBenchmarkProfileDetails(Object.fromEntries(bundles));
+        }
+      } catch {
+        if (!cancelled) setBenchmarkProfileDetails({});
+      }
+    }
+
+    loadBenchmarkProfileDetails();
+    return () => {
+      cancelled = true;
+    };
+  }, [dbProfiles]);
 
   const scrollToTopOnMobile = () => {
     if (typeof window === "undefined") return;
@@ -451,6 +523,37 @@ export default function ProductPage() {
     const selected = new Set(sampleProfiles.map((sp) => String(sp?.profile_id || "")));
     return dbProfiles.filter((p) => !selected.has(String(p?.id || "")));
   }, [dbProfiles, sampleProfiles]);
+  const benchmarkLibraryOptions = useMemo(() => {
+    return dbProfiles.map((profile) => {
+      const details = benchmarkProfileDetails[profile.slug] || {};
+      const notes = [
+        ...(Array.isArray(details.flavor_aroma) ? details.flavor_aroma : []),
+        ...(Array.isArray(details.dominant_terpenes) ? details.dominant_terpenes : []),
+      ]
+        .map((item) => String(item || "").trim())
+        .filter(Boolean)
+        .slice(0, 3);
+
+      return {
+        id: String(profile.id || profile.slug || ""),
+        slug: String(profile.slug || ""),
+        name: String(details.name || profile.name || profile.slug || "Flavor Profile"),
+        notes,
+        description: String(details.description || "").trim(),
+      };
+    });
+  }, [dbProfiles, benchmarkProfileDetails]);
+
+  const selectedBenchmarkProfiles = useMemo(() => {
+    return benchmarkLibraryOptions.filter((option) => selectedBenchmarkIds.includes(option.id));
+  }, [benchmarkLibraryOptions, selectedBenchmarkIds]);
+
+  const benchmarkUnitPrice = useMemo(() => parsePriceFromLabel(selectedSize, 20), [selectedSize]);
+  const benchmarkBundleSubtotal = selectedBenchmarkProfiles.length * benchmarkUnitPrice;
+  const benchmarkBundleDiscount = selectedBenchmarkProfiles.length >= 3 ? benchmarkBundleSubtotal * 0.1 : 0;
+  const benchmarkBundleTotal = benchmarkBundleSubtotal - benchmarkBundleDiscount;
+  const benchmarkSelectionsRemaining = Math.max(0, 3 - selectedBenchmarkProfiles.length);
+
 
   useEffect(() => {
     if (!availableSampleProfileOptions.length) {
@@ -844,6 +947,19 @@ export default function ProductPage() {
     }
   };
 
+  const starterSetProfiles = (Array.isArray(dbProfiles) ? dbProfiles : [])
+    .slice(0, 3)
+    .map((profile) => String(profile?.name || profile?.slug || "").trim())
+    .filter(Boolean);
+
+  const isolatesHaystack = [id, collection?.id, collection?.name, collection?.tagline]
+    .map((value) => String(value || "").toLowerCase())
+    .join(" ");
+  const isIsolatesCollection = /\bisolates?\b/.test(isolatesHaystack);
+
+  const starterSetHeading = `New to ${collection?.name || "This Collection"} Profiles?`;
+
+
 
   return (
     <>
@@ -851,6 +967,7 @@ export default function ProductPage() {
         <main className="pp-container">
           <div className="pp-topGrid">
           {/* LEFT: Images (smaller column) */}
+          <div className="pp-galleryColumn">
           <section className="pp-card pp-galleryCard" aria-label="Product images">
             <div className="pp-galleryMain">
               {galleryImages.length > 0 && (
@@ -919,7 +1036,36 @@ export default function ProductPage() {
               )}
               <div className="pp-body">{flavorInfo.intro}</div>
             </div>
+
           </section>
+
+            {!isIsolatesCollection && starterSetProfiles.length > 0 && (
+              <aside className="pp-card pp-starterWidget" aria-label="Collection starter set">
+                <div className="pp-starterWidgetIcon" aria-hidden="true">💡</div>
+                <div className="pp-starterWidgetContent">
+                  <h3 className="pp-starterWidgetTitle">{starterSetHeading}</h3>
+                  <p className="pp-starterWidgetSubtitle">Start with these industry staples:</p>
+
+                  <ul className="pp-starterWidgetList">
+                    {starterSetProfiles.map((name, index) => (
+                      <li key={`${name}-${index}`} className="pp-starterWidgetItem">
+                        <span className="pp-starterWidgetDot" aria-hidden="true" />
+                        <span>{name}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <button
+                    type="button"
+                    className="pp-primaryBtn pp-starterWidgetBtn"
+                    onClick={() => navigate(`/samples/${encodeURIComponent(id)}`)}
+                  >
+                    View Starter Set <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+              </aside>
+            )}
+          </div>
 
           {/* MIDDLE: Details / Docs / Info (tabs) */}
           <section
@@ -1831,6 +1977,107 @@ export default function ProductPage() {
                 </svg>
                 Add to cart
               </button>
+
+
+              <div className="pp-benchmarkSection">
+                <div className="pp-benchmarkHeaderRow">
+                  <div>
+                    <div className="pp-benchmarkTitle">Build Your Flavor Library</div>
+                    <div className="pp-benchmarkSubtitle">
+                      Select 3 flavor profiles and <span>Save 10%</span>
+                    </div>
+                  </div>
+                </div>
+
+                {benchmarkLibraryOptions.length === 0 ? (
+                  <div className="pp-muted" style={{ marginTop: 12 }}>No flavor profiles found for this collection yet.</div>
+                ) : null}
+
+                <div className="pp-benchmarkGrid">
+                  {benchmarkLibraryOptions.map((option) => {
+                    const isSelected = selectedBenchmarkIds.includes(option.id);
+                    const selectionLocked = !isSelected && selectedBenchmarkIds.length >= 3;
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        className={`pp-benchmarkOption${isSelected ? " isSelected" : ""}`}
+                        onClick={() => toggleBenchmarkProfile(option.id)}
+                        disabled={selectionLocked}
+                      >
+                        <span className={`pp-benchmarkCheck${isSelected ? " isSelected" : ""}`} aria-hidden="true">
+                          {isSelected ? "✓" : ""}
+                        </span>
+                        <span className="pp-benchmarkOptionBody">
+                          <span className="pp-benchmarkOptionName">{option.name}</span>
+                          <span className="pp-benchmarkOptionMeta">{option.notes.length ? option.notes.join(" · ") : "Flavor profile"}</span>
+                          <span className="pp-benchmarkOptionSize">{selectedSize}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="pp-benchmarkStatusCard">
+                  <div className="pp-benchmarkStatusTop">
+                    <div>
+                      <div className="pp-benchmarkStatusTitle">{selectedBenchmarkProfiles.length} Profile{selectedBenchmarkProfiles.length === 1 ? "" : "s"} Selected</div>
+                      <div className="pp-benchmarkStatusText">
+                        {benchmarkSelectionsRemaining > 0
+                          ? `Add ${benchmarkSelectionsRemaining} more to unlock 10% savings`
+                          : "10% library discount unlocked"}
+                      </div>
+                    </div>
+                    <div className="pp-benchmarkSteps" aria-hidden="true">
+                      {[1, 2, 3].map((step) => (
+                        <span key={step} className={`pp-benchmarkStep${selectedBenchmarkProfiles.length >= step ? " isActive" : ""}`}>
+                          {step === 3 ? "3+" : step}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="pp-benchmarkProgressTrack">
+                    <span
+                      className="pp-benchmarkProgressFill"
+                      style={{ width: `${Math.min(100, (selectedBenchmarkProfiles.length / 3) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="pp-benchmarkTotals">
+                  <div className="pp-benchmarkTotalsRow">
+                    <span>Library Discount</span>
+                    <strong>{benchmarkBundleDiscount > 0 ? `−$${benchmarkBundleDiscount.toFixed(0)}` : "—"}</strong>
+                  </div>
+                  <div className="pp-benchmarkTotalsRow isTotal">
+                    <span>Selected Total</span>
+                    <strong>${benchmarkBundleTotal.toFixed(0)}</strong>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  className="pp-primaryBtn pp-benchmarkAddBtn"
+                  disabled={selectedBenchmarkProfiles.length !== 3}
+                  onClick={() => {
+                    const profileNames = selectedBenchmarkProfiles.map((profile) => profile.name);
+                    addCartItem({
+                      productId: `${String(collection?.id || id || "")}-benchmark-library`,
+                      collectionName: `${String(collection?.name || "Product")} Flavor Library`,
+                      profileSlug: profileNames.map((name) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-")).join("+"),
+                      profileName: `3-Flavor Library: ${profileNames.join(", ")}`,
+                      size: `Flavor Library Bundle - $${benchmarkBundleTotal.toFixed(0)}`,
+                      quantity: 1,
+                    });
+                    alert(`Added 3-flavor library to cart: ${profileNames.join(", ")}`);
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1.4 5.6M17 13l1.4 5.6M9 21a1 1 0 100-2 1 1 0 000 2zm9 0a1 1 0 100-2 1 1 0 000 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Add flavor library to cart
+                </button>
+              </div>
             </div>
           </section>
         </div>

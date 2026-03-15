@@ -87,16 +87,16 @@ export default function SampleShowcase({ HeroBanner }) {
           <div className="ss-heroCopy">
             <div className="ss-kicker">Sample Kits</div>
             <h1 className="ss-title">Still Deciding?</h1>
-            <p className="ss-subtitle">
- Test 10 Profiles in 2mL format for $199 
-            </p>
-                        <p className="ss-subtitle">
-Ten high-impact profiles in one streamlined kit.
-            </p>
+              <p className="ss-subtitle">
+  Test 10 Profiles in 2mL format or 5mL x5 Profiles $199
+              </p>
+              <p className="ss-subtitle">
+  Explore. Evaluate. Formulate.
+              </p>
             <div className="ss-miniRow">
-              <div className="ss-pill">5 profiles per kit</div>
-              <div className="ss-pill">Built for fast evaluation</div>
-              <div className="ss-pill">Consistent &amp; repeatable</div>
+                <div className="ss-pill">Inspire Ideas</div>
+                <div className="ss-pill">Flavor Discovery</div>
+                <div className="ss-pill">Build Blends</div>
             </div>
           </div>
         </div>
@@ -203,7 +203,6 @@ function SampleCollectionCard({ collection, variantIndex = 0 }) {
       aria-label={`Open ${collection.name} sample kit`}
     >
       <div className="ss-cardTop">
-        <div className="ss-cardBadge">{collection.tagline || "Sample Kit"}</div>
         <div className="ss-cardName">
           {collection.name}
           {collection.collectionName && (
@@ -225,22 +224,11 @@ function SampleCollectionCard({ collection, variantIndex = 0 }) {
         </div>
 
         <div className="ss-cardRight">
-          <div className="ss-cardSub">Included profiles</div>
-
-          {loading ? (
-            <div className="ss-muted">Loading samples…</div>
-          ) : sampleProfiles.length ? (
-            <div className="ss-chipWrap">
-              {sampleProfiles.slice(0, 5).map((sp) => (
-                <span key={sp.profile_id} className="ss-chip">
-                  {sp.name || sp.slug}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <div className="ss-muted">No samples selected yet.</div>
-          )}
-
+          <div className="ss-cardSub">Choose format</div>
+          <div className="ss-chipWrap" style={{ marginBottom: 12 }}>
+            <button className="ss-chip ss-chipBtn" type="button">2mL X 10 Flavors</button>
+            <button className="ss-chip ss-chipBtn" type="button">5mL X 5 Flavors</button>
+          </div>
           <div className="ss-cardFooter">
             <div className="ss-meta">Tap to view kit details</div>
             <div className="ss-action">View kit →</div>

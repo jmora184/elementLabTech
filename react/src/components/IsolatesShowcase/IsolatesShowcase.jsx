@@ -445,7 +445,6 @@ export default function IsolatesShowcase() {
                             <tr>
                               <th>Description</th>
                               <th>Natural flavor</th>
-                              <th>Dominant terpenes</th>
                               <th>Flavor and aroma</th>
                               <th>Mood</th>
                             </tr>
@@ -454,13 +453,6 @@ export default function IsolatesShowcase() {
                             <tr>
                               <td className="pp-tdDesc" data-label="Description">{selectedProfile.description}</td>
                               <td className="pp-tdStrong" data-label="Natural flavor">{selectedProfile.flavorCategory}</td>
-                              <td data-label="Dominant terpenes">
-                                <div className="pp-cellList">
-                                  {selectedProfile.dominantTerpenes.map((item) => (
-                                    <span key={item} className="pp-cellPill">{item}</span>
-                                  ))}
-                                </div>
-                              </td>
                               <td data-label="Flavor and aroma">
                                 <div className="pp-cellList">
                                   {selectedProfile.flavorAroma.map((item) => (

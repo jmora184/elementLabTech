@@ -958,6 +958,7 @@ export default function ProductPage() {
   const isIsolatesCollection = /\bisolates?\b/.test(isolatesHaystack);
 
   const starterSetHeading = `New to ${collection?.name || "This Collection"} Profiles?`;
+  const freeSamplesRoute = "/free-samples";
 
 
 
@@ -1809,8 +1810,23 @@ export default function ProductPage() {
             </div>
           </section>
 
-          {/* RIGHT: Checkout widget */}
-          <section className="pp-card pp-buyCard" aria-label="Purchase options">
+          {/* RIGHT: Qualification + Checkout widgets */}
+          <div className="pp-buyColumn">
+            <aside className="pp-card pp-qualifyWidget" aria-label="Free samples qualification">
+              <button
+                type="button"
+                className="pp-qualifyWidgetButton"
+                onClick={() => navigate(freeSamplesRoute)}
+              >
+                <div className="pp-qualifyWidgetIcon" aria-hidden="true">🧪</div>
+                <div className="pp-qualifyWidgetText">
+                  <div className="pp-qualifyWidgetEyebrow">See If You Qualify for</div>
+                  <div className="pp-qualifyWidgetTitle">Free Samples <span aria-hidden="true">→</span></div>
+                </div>
+              </button>
+            </aside>
+
+            <section className="pp-card pp-buyCard" aria-label="Purchase options">
             <div className="pp-buySticky">
               <div style={{ 
                 fontSize: 26, 
@@ -2080,6 +2096,7 @@ export default function ProductPage() {
               </div>
             </div>
           </section>
+          </div>
         </div>
       </main>
     </div>

@@ -44,9 +44,14 @@
 
 .pp-topGrid{
   display: grid;
-  grid-template-columns: minmax(220px, 320px) minmax(320px, 1fr) minmax(240px, 340px);
+  grid-template-columns: 0.50fr 1.75fr 0.50fr;
   gap: 16px;
   align-items: start;
+  justify-content: stretch;
+}
+
+.pp-topGrid > *{
+  min-width: 0;
 }
 
 /* Cards */
@@ -954,7 +959,7 @@
 .pp-starterWidgetTitle{
   margin: 0;
   color: #fff;
-  font-size: clamp(16px, 1.3vw, 22px);
+  font-size: clamp(16px, 1.2vw, 20px);
   line-height: 1.08;
   font-weight: 900;
   letter-spacing: -0.02em;
@@ -1023,6 +1028,87 @@
 
   .pp-starterWidgetBtn{
     min-height: 52px;
+    font-size: 17px;
+  }
+}
+
+
+.pp-buyColumn{
+  display: grid;
+  gap: 14px;
+  align-self: start;
+}
+
+.pp-qualifyWidget{
+  padding: 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(5, 14, 32, 0.98) 0%, rgba(8, 24, 56, 0.98) 58%, rgba(7, 12, 25, 0.98) 100%);
+  border: 1px solid rgba(252, 61, 33, 0.85);
+  box-shadow: 0 12px 30px rgba(3, 10, 24, 0.32);
+}
+
+.pp-qualifyWidgetButton{
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  cursor: pointer;
+}
+
+.pp-qualifyWidgetButton:hover{
+  background: rgba(255,255,255,0.02);
+}
+
+.pp-qualifyWidgetIcon{
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.pp-qualifyWidgetText{
+  min-width: 0;
+}
+
+.pp-qualifyWidgetEyebrow{
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: rgba(255,255,255,0.92);
+}
+
+.pp-qualifyWidgetTitle{
+  margin-top: 4px;
+  font-size: 18px;
+  line-height: 1.15;
+  font-weight: 900;
+  color: var(--accent);
+}
+
+@media (max-width: 980px){
+  .pp-buyColumn{
+    gap: 12px;
+  }
+
+  .pp-qualifyWidgetButton{
+    padding: 14px 16px;
+  }
+
+  .pp-qualifyWidgetEyebrow{
+    font-size: 14px;
+  }
+
+  .pp-qualifyWidgetTitle{
     font-size: 17px;
   }
 }

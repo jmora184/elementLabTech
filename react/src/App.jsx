@@ -14,6 +14,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AccountPage from "./pages/AccountPage";
+import AdminOrdersPage from "./pages/AdminOrdersPage";
 import CartPage from "./pages/CartPage";
 import QnAPage from "./pages/QnAPage";
 import CustomizePage from "./pages/CustomizePage";
@@ -69,6 +70,7 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/account" element={<AccountPage />} />
+          <Route path="/admin/orders" element={<AdminOrdersPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/faq" element={<FAQPage />} />

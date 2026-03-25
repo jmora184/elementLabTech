@@ -135,6 +135,7 @@ function StatusBadge({ label, tone = "neutral" }) {
         background: colors.background,
         border: `1px solid ${colors.border}`,
         color: colors.color,
+        whiteSpace: "nowrap",
       }}
     >
       {label}
@@ -157,6 +158,48 @@ function getOrderTone(status) {
   if (value === "payment_failed" || value === "cancelled" || value === "canceled") return "danger";
   if (value === "pending_payment") return "warning";
   return "neutral";
+}
+
+function ItemsCell({ items, currency }) {
+  if (!items.length) {
+    return <div style={{ opacity: 0.8 }}>—</div>;
+  }
+
+  return (
+    <div style={{ display: "grid", gap: 8, minWidth: 220 }}>
+      {items.map((item, index) => {
+        const quantity = Math.max(1, Number(item?.quantity || 1));
+        const unitPrice = Number(item?.unitPrice || 0);
+        const lineTotal = Number.isFinite(Number(item?.lineTotal))
+          ? Number(item.lineTotal)
+          : unitPrice * quantity;
+
+        return (
+          <div
+            key={`${item?.profileName || item?.name || "item"}-${index}`}
+            style={{
+              padding: 10,
+              borderRadius: 12,
+              border: "1px solid rgba(255,255,255,0.08)",
+              background: "rgba(255,255,255,0.03)",
+            }}
+          >
+            <div style={{ fontWeight: 700 }}>
+              {item?.profileName || item?.name || "Item"}
+            </div>
+            <div style={{ fontSize: 13, opacity: 0.86, marginTop: 2 }}>
+              {[item?.collectionName, item?.size].filter(Boolean).join(" • ") || "Item details unavailable"}
+            </div>
+            <div style={{ fontSize: 13, opacity: 0.86, marginTop: 4 }}>
+              Qty: {quantity}
+              {unitPrice > 0 ? ` • ${formatCurrency(unitPrice, currency || item?.currency || "USD")} each` : ""}
+              {lineTotal > 0 ? ` • Line total: ${formatCurrency(lineTotal, currency || item?.currency || "USD")}` : ""}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 export default function AccountPage() {
@@ -279,149 +322,106 @@ export default function AccountPage() {
           ) : purchases.length === 0 ? (
             <div className="el-authSub">No purchases found yet.</div>
           ) : (
-            <div style={{ display: "grid", gap: 16 }}>
-              {purchases.map((purchase) => {
-                const items = parseItems(purchase?.items);
-                const paymentStatus = purchase?.payment_status || "unknown";
-                const orderStatus = purchase?.order_status || (paymentStatus === "paid" ? "processing" : "pending_payment");
-                const shippingAddress = formatShippingAddress(purchase);
+            <div
+              style={{
+                overflowX: "auto",
+                borderRadius: 16,
+                border: "1px solid rgba(255,255,255,0.10)",
+                background: "linear-gradient(180deg, rgba(17,24,39,0.82), rgba(6,10,14,0.95))",
+              }}
+            >
+              <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1100 }}>
+                <thead>
+                  <tr style={{ background: "rgba(255,255,255,0.03)" }}>
+                    {[
+                      "Order",
+                      "Status",
+                      "Total",
+                      "Payment ID",
+                      "Items Purchased",
+                      "Ship To",
+                      "Tracking",
+                    ].map((heading) => (
+                      <th
+                        key={heading}
+                        style={{
+                          textAlign: "left",
+                          padding: "14px 16px",
+                          fontSize: 12,
+                          letterSpacing: 0.35,
+                          textTransform: "uppercase",
+                          color: "rgba(232,243,236,0.76)",
+                          borderBottom: "1px solid rgba(255,255,255,0.10)",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {heading}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {purchases.map((purchase, index) => {
+                    const items = parseItems(purchase?.items);
+                    const paymentStatus = purchase?.payment_status || "unknown";
+                    const orderStatus = purchase?.order_status || (paymentStatus === "paid" ? "processing" : "pending_payment");
+                    const shippingAddress = formatShippingAddress(purchase);
 
-                return (
-                  <div
-                    key={purchase.id}
-                    style={{
-                      border: "1px solid rgba(255,255,255,0.10)",
-                      borderRadius: 16,
-                      padding: 16,
-                      background: "linear-gradient(180deg, rgba(17,24,39,0.82), rgba(6,10,14,0.95))",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "flex-start",
-                        gap: 12,
-                        flexWrap: "wrap",
-                        marginBottom: 12,
-                      }}
-                    >
-                      <div>
-                        <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>
-                          Order #{purchase.id}
-                        </div>
-                        <div style={{ opacity: 0.82, fontSize: 14 }}>
-                          {purchase?.purchased_at ? new Date(purchase.purchased_at).toLocaleString() : "—"}
-                        </div>
-                      </div>
-
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                        <StatusBadge label={`Payment: ${titleCase(paymentStatus)}`} tone={getPaymentTone(paymentStatus)} />
-                        <StatusBadge label={`Order: ${titleCase(orderStatus)}`} tone={getOrderTone(orderStatus)} />
-                      </div>
-                    </div>
-
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                        gap: 12,
-                        marginBottom: 14,
-                      }}
-                    >
-                      <div>
-                        <div style={{ fontSize: 12, opacity: 0.72, marginBottom: 4 }}>Total</div>
-                        <div style={{ fontWeight: 700 }}>
-                          {formatCurrency(purchase?.total_amount, purchase?.currency || "USD")}
-                        </div>
-                      </div>
-
-                      <div>
-                        <div style={{ fontSize: 12, opacity: 0.72, marginBottom: 4 }}>Payment ID</div>
-                        <div style={{ wordBreak: "break-word" }}>{purchase?.stripe_payment_id || "—"}</div>
-                      </div>
-
-                      <div>
-                        <div style={{ fontSize: 12, opacity: 0.72, marginBottom: 4 }}>Session ID</div>
-                        <div style={{ wordBreak: "break-word" }}>{purchase?.stripe_session_id || "—"}</div>
-                      </div>
-
-                      <div>
-                        <div style={{ fontSize: 12, opacity: 0.72, marginBottom: 4 }}>Customer Email</div>
-                        <div>{purchase?.customer_email || user.email || "—"}</div>
-                      </div>
-                    </div>
-
-                    <div style={{ marginBottom: 14 }}>
-                      <div style={{ fontSize: 12, opacity: 0.72, marginBottom: 6 }}>Items Purchased</div>
-                      {items.length === 0 ? (
-                        <div style={{ opacity: 0.8 }}>—</div>
-                      ) : (
-                        <div style={{ display: "grid", gap: 8 }}>
-                          {items.map((item, index) => {
-                            const quantity = Math.max(1, Number(item?.quantity || 1));
-                            const unitPrice = Number(item?.unitPrice || 0);
-                            const lineTotal = Number.isFinite(Number(item?.lineTotal))
-                              ? Number(item.lineTotal)
-                              : unitPrice * quantity;
-
-                            return (
-                              <div
-                                key={`${purchase.id}-${index}`}
-                                style={{
-                                  padding: 10,
-                                  borderRadius: 12,
-                                  border: "1px solid rgba(255,255,255,0.08)",
-                                  background: "rgba(255,255,255,0.03)",
-                                }}
-                              >
-                                <div style={{ fontWeight: 700 }}>
-                                  {item?.profileName || item?.name || "Item"}
-                                </div>
-                                <div style={{ fontSize: 14, opacity: 0.86, marginTop: 2 }}>
-                                  {[item?.collectionName, item?.size].filter(Boolean).join(" • ") || "Item details unavailable"}
-                                </div>
-                                <div style={{ fontSize: 14, opacity: 0.86, marginTop: 4 }}>
-                                  Qty: {quantity}
-                                  {unitPrice > 0 ? ` • ${formatCurrency(unitPrice, purchase?.currency || item?.currency || "USD")} each` : ""}
-                                  {lineTotal > 0 ? ` • Line total: ${formatCurrency(lineTotal, purchase?.currency || item?.currency || "USD")}` : ""}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                        gap: 12,
-                      }}
-                    >
-                      <div>
-                        <div style={{ fontSize: 12, opacity: 0.72, marginBottom: 4 }}>Ship To</div>
-                        <div style={{ whiteSpace: "pre-wrap" }}>{shippingAddress}</div>
-                      </div>
-
-                      <div>
-                        <div style={{ fontSize: 12, opacity: 0.72, marginBottom: 4 }}>Tracking</div>
-                        <div>
-                          {purchase?.tracking_number
-                            ? `${purchase?.carrier ? `${purchase.carrier}: ` : ""}${purchase.tracking_number}`
-                            : "Not shipped yet"}
-                        </div>
-                        {purchase?.shipped_at ? (
-                          <div style={{ marginTop: 6, fontSize: 14, opacity: 0.78 }}>
-                            Shipped: {new Date(purchase.shipped_at).toLocaleString()}
+                    return (
+                      <tr key={purchase.id} style={{ borderTop: index === 0 ? "none" : "1px solid rgba(255,255,255,0.08)" }}>
+                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 180 }}>
+                          <div style={{ fontWeight: 700, marginBottom: 4 }}>Order #{purchase.id}</div>
+                          <div style={{ fontSize: 14, opacity: 0.82 }}>
+                            {purchase?.purchased_at ? new Date(purchase.purchased_at).toLocaleString() : "—"}
                           </div>
-                        ) : null}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+                        </td>
+
+                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 180 }}>
+                          <div style={{ display: "grid", gap: 8 }}>
+                            <StatusBadge
+                              label={`Payment: ${titleCase(paymentStatus)}`}
+                              tone={getPaymentTone(paymentStatus)}
+                            />
+                            <StatusBadge
+                              label={`Order: ${titleCase(orderStatus)}`}
+                              tone={getOrderTone(orderStatus)}
+                            />
+                          </div>
+                        </td>
+
+                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 120, fontWeight: 700 }}>
+                          {formatCurrency(purchase?.total_amount, purchase?.currency || "USD")}
+                        </td>
+
+                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 220, wordBreak: "break-word" }}>
+                          {purchase?.stripe_payment_id || "—"}
+                        </td>
+
+                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 280 }}>
+                          <ItemsCell items={items} currency={purchase?.currency || "USD"} />
+                        </td>
+
+                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 240 }}>
+                          <div style={{ whiteSpace: "normal", lineHeight: 1.5 }}>{shippingAddress}</div>
+                        </td>
+
+                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 180 }}>
+                          <div>
+                            {purchase?.tracking_number
+                              ? `${purchase?.carrier ? `${purchase.carrier}: ` : ""}${purchase.tracking_number}`
+                              : "Not shipped yet"}
+                          </div>
+                          {purchase?.shipped_at ? (
+                            <div style={{ marginTop: 6, fontSize: 14, opacity: 0.78 }}>
+                              Shipped: {new Date(purchase.shipped_at).toLocaleString()}
+                            </div>
+                          ) : null}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
         </div>

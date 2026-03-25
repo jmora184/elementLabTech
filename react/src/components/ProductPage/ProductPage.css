@@ -667,10 +667,17 @@
   .pp-topGrid{
     grid-template-columns: 1fr;
   }
-  /* Order: images, tabs/info, checkout last (as requested) */
-  .pp-galleryCard{ order: 1; }
+  /* Mobile order: free-samples CTA at top, product content in the middle, checkout card at the bottom. */
+  .pp-mobileTopQualify{ display: block; order: 0; }
+  .pp-galleryColumn{ order: 1; }
   .pp-infoCard{ order: 2; }
-  .pp-buyCard{ order: 3; }
+  .pp-buyColumn{
+    order: 3;
+    display: flex;
+    flex-direction: column;
+  }
+  .pp-desktopSideQualify{ display: none; }
+  .pp-buyCard{ order: 1; }
 
   .pp-mainImg{ height: 260px; }
   .pp-formRow{ grid-template-columns: 1fr; }
@@ -1032,6 +1039,26 @@
   }
 }
 
+
+.pp-mobileTopQualify{
+  display: none;
+}
+
+.pp-desktopSideQualify{
+  display: block;
+}
+
+
+@media (max-width: 980px){
+  .pp-mobileTopQualify{
+    display: block;
+    order: 0;
+  }
+
+  .pp-desktopSideQualify{
+    display: none;
+  }
+}
 
 .pp-buyColumn{
   display: grid;

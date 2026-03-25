@@ -967,6 +967,19 @@ export default function ProductPage() {
       <div className="pp-page">
         <main className="pp-container">
           <div className="pp-topGrid">
+          <aside className="pp-card pp-qualifyWidget pp-mobileTopQualify" aria-label="Free samples qualification">
+            <button
+              type="button"
+              className="pp-qualifyWidgetButton"
+              onClick={() => navigate(freeSamplesRoute)}
+            >
+              <div className="pp-qualifyWidgetIcon" aria-hidden="true">🧪</div>
+              <div className="pp-qualifyWidgetText">
+                <div className="pp-qualifyWidgetEyebrow">See If You Qualify for</div>
+                <div className="pp-qualifyWidgetTitle">Free Samples <span aria-hidden="true">→</span></div>
+              </div>
+            </button>
+          </aside>
           {/* LEFT: Images (smaller column) */}
           <div className="pp-galleryColumn">
           <section className="pp-card pp-galleryCard" aria-label="Product images">
@@ -1812,7 +1825,7 @@ export default function ProductPage() {
 
           {/* RIGHT: Qualification + Checkout widgets */}
           <div className="pp-buyColumn">
-            <aside className="pp-card pp-qualifyWidget" aria-label="Free samples qualification">
+            <aside className="pp-card pp-qualifyWidget pp-desktopSideQualify" aria-label="Free samples qualification">
               <button
                 type="button"
                 className="pp-qualifyWidgetButton"

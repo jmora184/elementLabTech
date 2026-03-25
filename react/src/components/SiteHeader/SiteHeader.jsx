@@ -361,6 +361,17 @@ export default function SiteHeader({
                                 {item.label}
                               </button>
                             ))}
+                            {user?.role === "admin" && (
+                              <button
+                                key="admin-orders"
+                                type="button"
+                                role="menuitem"
+                                className="ts-desktopResourcesItem"
+                                onClick={() => handleResourceItemClick({ label: "Admin Orders", id: "admin-orders", type: "route", route: "/admin/orders" })}
+                              >
+                                Admin Orders
+                              </button>
+                            )}
                           </div>
                         ) : null}
                       </div>

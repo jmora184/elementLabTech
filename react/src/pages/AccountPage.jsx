@@ -98,7 +98,10 @@ function getItemMeta(item) {
 }
 
 function getTrackingLabel(purchase) {
-  return purchase?.tracking_number || "Not shipped yet";
+  const parts = [];
+  if (purchase?.carrier) parts.push(`Carrier: ${purchase.carrier}`);
+  if (purchase?.tracking_number) parts.push(`Tracking: ${purchase.tracking_number}`);
+  return parts.length ? parts.join(" • ") : "—";
 }
 
 function badgeStyle(type, value) {
@@ -232,7 +235,7 @@ function DesktopOrderTable({ purchases }) {
                   </div>
                 </td>
                 <td>
-                  <div className="el-addressCell">{getTrackingLabel(purchase)}</div>
+                  <div className="el-addressCell" style={{ whiteSpace: "pre-line" }}>{getTrackingLabel(purchase)}</div>
                 </td>
               </tr>
             );
@@ -302,7 +305,7 @@ function MobileOrderCards({ purchases }) {
               </div>
               <div className="el-mobileSection">
                 <div className="el-mobileLabel">Tracking</div>
-                <div className="el-mobileValue">{getTrackingLabel(purchase)}</div>
+                <div className="el-mobileValue" style={{ whiteSpace: "pre-line" }}>{getTrackingLabel(purchase)}</div>
               </div>
             </div>
           </div>

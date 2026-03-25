@@ -11,189 +11,299 @@ const elPageBackgroundStyle = {
     "linear-gradient(180deg, #070a0d 0%, #06070a 100%)",
 };
 
-const sectionCardStyle = {
-  background: "rgba(7, 10, 13, 0.82)",
-  border: "1px solid rgba(110, 231, 183, 0.16)",
+const accountPageWideStyle = {
+  width: "min(1200px, 92vw)",
+  maxWidth: 1200,
+  margin: "0 auto",
+  padding: "20px 16px 40px",
+};
+
+const accountCardStyle = {
+  border: "1px solid rgba(255,255,255,0.12)",
   borderRadius: 18,
-  boxShadow: "0 18px 50px rgba(0,0,0,0.28)",
+  padding: 18,
+  background: "rgba(2, 10, 24, 0.55)",
+  backdropFilter: "blur(6px)",
+  boxShadow: "0 18px 40px rgba(0,0,0,0.18)",
 };
 
 function formatCurrency(value, currency = "USD") {
+  const amount = Number(value || 0);
   try {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: String(currency || "USD").toUpperCase(),
-    }).format(Number(value || 0));
+      currency: currency || "USD",
+    }).format(amount);
   } catch {
-    return `$${Number(value || 0).toFixed(2)}`;
+    return `$${amount.toFixed(2)}`;
   }
 }
 
-function titleCase(text) {
-  return String(text || "")
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
-}
-
-function parseItems(itemsValue) {
+function parseJson(value, fallback) {
   try {
-    const parsed = JSON.parse(itemsValue || "[]");
-    return Array.isArray(parsed) ? parsed : [];
+    return value ? JSON.parse(value) : fallback;
   } catch {
-    return [];
+    return fallback;
   }
 }
 
-function parseShippingDetails(purchase) {
-  let raw = null;
-  try {
-    raw = purchase?.shipping_address ? JSON.parse(purchase.shipping_address) : null;
-  } catch {
-    raw = null;
-  }
-
-  if (raw?.address) {
+function normalizeAddress(purchase) {
+  const raw = parseJson(purchase?.shipping_address, null);
+  if (!raw) return null;
+  if (raw.address) {
     return {
-      name: raw?.name || purchase?.shipping_name || "",
+      name: raw.name || purchase?.shipping_name || "",
       address: raw.address,
     };
   }
-
-  if (raw && typeof raw === "object") {
-    return {
-      name: purchase?.shipping_name || "",
-      address: raw,
-    };
-  }
-
-  return null;
-}
-
-function formatShippingAddress(purchase) {
-  const details = parseShippingDetails(purchase);
-  const address = details?.address || null;
-
-  if (!address && purchase?.shipping_address1) {
-    return purchase.shipping_address1;
-  }
-
-  if (!address) return "—";
-
-  return [
-    details?.name || purchase?.shipping_name || null,
-    address.line1 || null,
-    address.line2 || null,
-    [address.city || null, address.state || null].filter(Boolean).join(", ") || null,
-    [address.postal_code || null, address.country || null].filter(Boolean).join(" ") || null,
-  ]
-    .filter(Boolean)
-    .join(", ");
-}
-
-function StatusBadge({ label, tone = "neutral" }) {
-  const palette = {
-    success: {
-      background: "rgba(34,197,94,0.16)",
-      border: "rgba(34,197,94,0.32)",
-      color: "#c7f9d4",
-    },
-    warning: {
-      background: "rgba(245,158,11,0.16)",
-      border: "rgba(245,158,11,0.32)",
-      color: "#fde7bf",
-    },
-    danger: {
-      background: "rgba(239,68,68,0.16)",
-      border: "rgba(239,68,68,0.32)",
-      color: "#ffd2d2",
-    },
-    info: {
-      background: "rgba(59,130,246,0.16)",
-      border: "rgba(59,130,246,0.32)",
-      color: "#d3e5ff",
-    },
-    neutral: {
-      background: "rgba(255,255,255,0.08)",
-      border: "rgba(255,255,255,0.14)",
-      color: "#eaf7ee",
-    },
+  return {
+    name: purchase?.shipping_name || "",
+    address: raw,
   };
+}
 
-  const colors = palette[tone] || palette.neutral;
+function formatShippingLines(purchase) {
+  const details = normalizeAddress(purchase);
+  if (!details?.address) return ["—"];
 
+  const address = details.address;
+  const cityLine = [address.city, address.state, address.postal_code].filter(Boolean).join(", ");
+  const lines = [
+    details.name,
+    address.line1,
+    address.line2,
+    cityLine,
+    address.country,
+  ].filter(Boolean);
+
+  return lines.length ? lines : ["—"];
+}
+
+function getItems(purchase) {
+  const items = parseJson(purchase?.items, []);
+  return Array.isArray(items) ? items : [];
+}
+
+function getItemTitle(item) {
+  return item?.profileName || item?.name || item?.title || "Item";
+}
+
+function getItemMeta(item) {
+  const pieces = [];
+  if (item?.collectionName) pieces.push(item.collectionName);
+  if (item?.sizeLabel) pieces.push(item.sizeLabel);
+  else if (item?.size) pieces.push(item.size);
+  if (item?.price != null) pieces.push(formatCurrency(item.price));
+  return pieces.filter(Boolean).join(" • ");
+}
+
+function getTrackingLabel(purchase) {
+  return purchase?.tracking_number || "Not shipped yet";
+}
+
+function badgeStyle(type, value) {
+  const normalized = String(value || "").toLowerCase();
+
+  if (type === "payment") {
+    if (["paid", "succeeded", "complete"].some((s) => normalized.includes(s))) {
+      return {
+        color: "#b8f7d0",
+        background: "rgba(22, 163, 74, 0.18)",
+        border: "1px solid rgba(34, 197, 94, 0.45)",
+      };
+    }
+    if (["pending", "unpaid", "requires"].some((s) => normalized.includes(s))) {
+      return {
+        color: "#fde68a",
+        background: "rgba(202, 138, 4, 0.16)",
+        border: "1px solid rgba(250, 204, 21, 0.4)",
+      };
+    }
+  }
+
+  if (type === "order") {
+    if (normalized.includes("delivered")) {
+      return {
+        color: "#c7f9cc",
+        background: "rgba(34, 197, 94, 0.14)",
+        border: "1px solid rgba(34, 197, 94, 0.35)",
+      };
+    }
+    if (normalized.includes("shipped")) {
+      return {
+        color: "#bfdbfe",
+        background: "rgba(59, 130, 246, 0.16)",
+        border: "1px solid rgba(96, 165, 250, 0.35)",
+      };
+    }
+  }
+
+  return {
+    color: "#dbeafe",
+    background: "rgba(37, 99, 235, 0.14)",
+    border: "1px solid rgba(96, 165, 250, 0.28)",
+  };
+}
+
+function StatusBadge({ type, value, prefix }) {
+  const label = value || "—";
   return (
     <span
       style={{
         display: "inline-flex",
         alignItems: "center",
+        justifyContent: "center",
         gap: 6,
-        padding: "6px 10px",
+        padding: "8px 12px",
         borderRadius: 999,
-        fontSize: 12,
+        fontSize: 13,
         fontWeight: 700,
-        letterSpacing: 0.2,
-        background: colors.background,
-        border: `1px solid ${colors.border}`,
-        color: colors.color,
+        lineHeight: 1,
         whiteSpace: "nowrap",
+        ...badgeStyle(type, label),
       }}
     >
-      {label}
+      {prefix ? `${prefix}: ${label}` : label}
     </span>
   );
 }
 
-function getPaymentTone(status) {
-  const value = String(status || "").toLowerCase();
-  if (value === "paid") return "success";
-  if (value === "processing" || value === "requires_payment_method") return "warning";
-  if (value === "failed" || value === "unpaid" || value === "no_payment_required") return "danger";
-  return "neutral";
-}
-
-function getOrderTone(status) {
-  const value = String(status || "").toLowerCase();
-  if (value === "processing" || value === "paid") return "info";
-  if (value === "shipped" || value === "delivered") return "success";
-  if (value === "payment_failed" || value === "cancelled" || value === "canceled") return "danger";
-  if (value === "pending_payment") return "warning";
-  return "neutral";
-}
-
-function ItemsCell({ items, currency }) {
-  if (!items.length) {
-    return <div style={{ opacity: 0.8 }}>—</div>;
-  }
-
+function DesktopOrderTable({ purchases }) {
   return (
-    <div style={{ display: "grid", gap: 8, minWidth: 220 }}>
-      {items.map((item, index) => {
-        const quantity = Math.max(1, Number(item?.quantity || 1));
-        const unitPrice = Number(item?.unitPrice || 0);
-        const lineTotal = Number.isFinite(Number(item?.lineTotal))
-          ? Number(item.lineTotal)
-          : unitPrice * quantity;
+    <div className="el-orderTableWrap">
+      <table className="el-orderTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Items Purchased</th>
+            <th>Ship To</th>
+            <th>Tracking</th>
+          </tr>
+        </thead>
+        <tbody>
+          {purchases.map((purchase, index) => {
+            const items = getItems(purchase);
+            const shippingLines = formatShippingLines(purchase);
+            return (
+              <tr key={purchase.id || index}>
+                <td>
+                  <div className="el-orderDate">Order #{index + 1}</div>
+                  <div className="el-orderMuted">{new Date(purchase.purchased_at).toLocaleString()}</div>
+                  {purchase.stripe_payment_id ? (
+                    <div className="el-orderMuted" style={{ marginTop: 8 }}>
+                      Payment ID: {purchase.stripe_payment_id}
+                    </div>
+                  ) : null}
+                </td>
+                <td>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-start" }}>
+                    <StatusBadge type="payment" value={purchase.payment_status || "Paid"} prefix="Payment" />
+                    <StatusBadge type="order" value={purchase.order_status || "Processing"} prefix="Order" />
+                  </div>
+                </td>
+                <td>
+                  <div className="el-orderTotal">{formatCurrency(purchase.total_amount, purchase.currency)}</div>
+                </td>
+                <td>
+                  <div className="el-itemsCell">
+                    {items.length ? (
+                      items.map((item, itemIndex) => (
+                        <div key={itemIndex} className="el-itemRow">
+                          <div className="el-itemTitle">{getItemTitle(item)}</div>
+                          <div className="el-orderMuted">{getItemMeta(item)}</div>
+                          <div className="el-orderMuted">
+                            Qty: {item.quantity || 1}
+                            {item.lineTotal != null ? ` • Line total: ${formatCurrency(item.lineTotal, purchase.currency)}` : ""}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <span className="el-orderMuted">—</span>
+                    )}
+                  </div>
+                </td>
+                <td>
+                  <div className="el-addressCell">
+                    {shippingLines.map((line, lineIndex) => (
+                      <div key={lineIndex}>{line}</div>
+                    ))}
+                  </div>
+                </td>
+                <td>
+                  <div className="el-addressCell">{getTrackingLabel(purchase)}</div>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
+function MobileOrderCards({ purchases }) {
+  return (
+    <div className="el-orderCards">
+      {purchases.map((purchase, index) => {
+        const items = getItems(purchase);
+        const shippingLines = formatShippingLines(purchase);
         return (
-          <div
-            key={`${item?.profileName || item?.name || "item"}-${index}`}
-            style={{
-              padding: 10,
-              borderRadius: 12,
-              border: "1px solid rgba(255,255,255,0.08)",
-              background: "rgba(255,255,255,0.03)",
-            }}
-          >
-            <div style={{ fontWeight: 700 }}>
-              {item?.profileName || item?.name || "Item"}
+          <div key={purchase.id || index} className="el-orderCardMobile">
+            <div className="el-orderCardTop">
+              <div>
+                <div className="el-orderDate">Order #{index + 1}</div>
+                <div className="el-orderMuted">{new Date(purchase.purchased_at).toLocaleString()}</div>
+              </div>
+              <div className="el-mobileTotal">{formatCurrency(purchase.total_amount, purchase.currency)}</div>
             </div>
-            <div style={{ fontSize: 13, opacity: 0.86, marginTop: 2 }}>
-              {[item?.collectionName, item?.size].filter(Boolean).join(" • ") || "Item details unavailable"}
+
+            <div className="el-mobileBadgeRow">
+              <StatusBadge type="payment" value={purchase.payment_status || "Paid"} prefix="Payment" />
+              <StatusBadge type="order" value={purchase.order_status || "Processing"} prefix="Order" />
             </div>
-            <div style={{ fontSize: 13, opacity: 0.86, marginTop: 4 }}>
-              Qty: {quantity}
-              {unitPrice > 0 ? ` • ${formatCurrency(unitPrice, currency || item?.currency || "USD")} each` : ""}
-              {lineTotal > 0 ? ` • Line total: ${formatCurrency(lineTotal, currency || item?.currency || "USD")}` : ""}
+
+            {purchase.stripe_payment_id ? (
+              <div className="el-mobileSection">
+                <div className="el-mobileLabel">Payment ID</div>
+                <div className="el-mobileValue break-anywhere">{purchase.stripe_payment_id}</div>
+              </div>
+            ) : null}
+
+            <div className="el-mobileSection">
+              <div className="el-mobileLabel">Items Purchased</div>
+              <div className="el-itemsCell">
+                {items.length ? (
+                  items.map((item, itemIndex) => (
+                    <div key={itemIndex} className="el-itemRow">
+                      <div className="el-itemTitle">{getItemTitle(item)}</div>
+                      <div className="el-orderMuted">{getItemMeta(item)}</div>
+                      <div className="el-orderMuted">
+                        Qty: {item.quantity || 1}
+                        {item.lineTotal != null ? ` • Line total: ${formatCurrency(item.lineTotal, purchase.currency)}` : ""}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <span className="el-orderMuted">—</span>
+                )}
+              </div>
+            </div>
+
+            <div className="el-mobileGrid2">
+              <div className="el-mobileSection">
+                <div className="el-mobileLabel">Ship To</div>
+                <div className="el-addressCell">
+                  {shippingLines.map((line, lineIndex) => (
+                    <div key={lineIndex}>{line}</div>
+                  ))}
+                </div>
+              </div>
+              <div className="el-mobileSection">
+                <div className="el-mobileLabel">Tracking</div>
+                <div className="el-mobileValue">{getTrackingLabel(purchase)}</div>
+              </div>
             </div>
           </div>
         );
@@ -216,52 +326,31 @@ export default function AccountPage() {
 
   useEffect(() => {
     if (!user) return;
+    setPurchasesLoading(true);
+    setPurchasesError("");
 
-    let cancelled = false;
-
-    async function loadPurchases() {
-      setPurchasesLoading(true);
-      setPurchasesError("");
-
-      try {
-        const res = await fetch("/api/user-purchases");
-        const data = await res.json().catch(() => ({}));
-
-        if (cancelled) return;
-
-        if (!res.ok || !data?.ok) {
-          setPurchasesError(data?.error || "Could not load purchases.");
-          setPurchases([]);
-          return;
+    fetch("/api/user-purchases")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.ok) {
+          setPurchases(data.purchases || []);
+        } else {
+          setPurchasesError(data.error || "Could not load purchases.");
         }
-
-        setPurchases(Array.isArray(data?.purchases) ? data.purchases : []);
-      } catch {
-        if (!cancelled) {
-          setPurchasesError("Could not load purchases.");
-        }
-      } finally {
-        if (!cancelled) {
-          setPurchasesLoading(false);
-        }
-      }
-    }
-
-    loadPurchases();
-
-    return () => {
-      cancelled = true;
-    };
+      })
+      .catch(() => setPurchasesError("Could not load purchases."))
+      .finally(() => setPurchasesLoading(false));
   }, [user]);
 
-  const purchaseCount = useMemo(() => purchases.length, [purchases]);
+  const orderSummaryText = useMemo(() => {
+    if (!purchases.length) return "No purchases yet.";
+    return `${purchases.length} order${purchases.length === 1 ? "" : "s"} found.`;
+  }, [purchases.length]);
 
   if (loading) {
     return (
       <div style={elPageBackgroundStyle}>
-        <div className="el-authPage">
-          <br />
-          <br />
+        <div style={accountPageWideStyle}>
           <h1 className="el-authTitle">Account</h1>
           <p className="el-authSub">Loading...</p>
         </div>
@@ -272,7 +361,7 @@ export default function AccountPage() {
   if (!user) {
     return (
       <div style={elPageBackgroundStyle}>
-        <div className="el-authPage">
+        <div style={accountPageWideStyle}>
           <h1 className="el-authTitle">Account</h1>
           <p className="el-authSub">
             You’re not signed in. <Link to="/login">Login</Link>
@@ -284,145 +373,193 @@ export default function AccountPage() {
 
   return (
     <div style={elPageBackgroundStyle}>
-      <div className="el-authPage">
+      <style>{`
+        .break-anywhere { overflow-wrap: anywhere; word-break: break-word; }
+        .el-accountHeaderRow {
+          display: grid;
+          grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
+          gap: 20px;
+          align-items: start;
+        }
+        .el-orderTableWrap {
+          width: 100%;
+        }
+        .el-orderTable {
+          width: 100%;
+          border-collapse: collapse;
+          table-layout: fixed;
+        }
+        .el-orderTable th,
+        .el-orderTable td {
+          padding: 16px 14px;
+          border-bottom: 1px solid rgba(255,255,255,0.08);
+          vertical-align: top;
+          text-align: left;
+        }
+        .el-orderTable th {
+          color: rgba(232,243,236,0.78);
+          font-size: 13px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+        .el-orderDate {
+          font-weight: 800;
+          color: #f5faf7;
+          margin-bottom: 6px;
+        }
+        .el-orderMuted {
+          color: rgba(232,243,236,0.72);
+          font-size: 14px;
+          line-height: 1.5;
+          overflow-wrap: anywhere;
+        }
+        .el-orderTotal {
+          font-size: 20px;
+          font-weight: 800;
+          color: #f5faf7;
+          white-space: nowrap;
+        }
+        .el-itemsCell,
+        .el-addressCell {
+          display: grid;
+          gap: 10px;
+          line-height: 1.55;
+          overflow-wrap: anywhere;
+        }
+        .el-itemRow {
+          padding: 12px 14px;
+          border-radius: 14px;
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,255,255,0.06);
+        }
+        .el-itemTitle {
+          font-weight: 800;
+          color: #f8fffb;
+          margin-bottom: 4px;
+        }
+        .el-orderCards {
+          display: none;
+        }
+        .el-orderCardMobile {
+          display: grid;
+          gap: 14px;
+          padding: 16px;
+          border-radius: 16px;
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,255,255,0.08);
+        }
+        .el-orderCardTop {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 12px;
+        }
+        .el-mobileTotal {
+          font-size: 18px;
+          font-weight: 800;
+          color: #f5faf7;
+          white-space: nowrap;
+        }
+        .el-mobileBadgeRow {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+        .el-mobileGrid2 {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+        .el-mobileSection {
+          display: grid;
+          gap: 8px;
+        }
+        .el-mobileLabel {
+          color: rgba(232,243,236,0.72);
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+        .el-mobileValue {
+          color: #f5faf7;
+          line-height: 1.55;
+          overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 900px) {
+          .el-accountHeaderRow {
+            grid-template-columns: 1fr;
+          }
+          .el-orderTable th,
+          .el-orderTable td {
+            padding: 14px 10px;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .el-orderTableWrap {
+            display: none;
+          }
+          .el-orderCards {
+            display: grid;
+            gap: 14px;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .el-mobileGrid2 {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+
+      <div style={accountPageWideStyle}>
         <h1 className="el-authTitle">Account</h1>
+        <p className="el-authSub">Manage your profile and review your order history.</p>
 
-        <div className="el-authCard" style={sectionCardStyle}>
-          <div className="el-authRow">
-            <div className="el-authKey">Email</div>
-            <div className="el-authVal">{user.email}</div>
+        <div className="el-accountHeaderRow">
+          <div className="el-authCard" style={accountCardStyle}>
+            <div className="el-authRow">
+              <div className="el-authKey">Email</div>
+              <div className="el-authVal break-anywhere">{user.email}</div>
+            </div>
+
+            <button
+              className="el-authBtn"
+              type="button"
+              onClick={async () => {
+                await logout();
+                navigate("/");
+              }}
+            >
+              Logout
+            </button>
           </div>
 
-          <div className="el-authRow">
-            <div className="el-authKey">Orders</div>
-            <div className="el-authVal">{purchaseCount}</div>
+          <div className="el-authCard" style={accountCardStyle}>
+            <h2 className="el-authTitle" style={{ fontSize: 24, marginBottom: 8 }}>
+              Order History
+            </h2>
+            <p className="el-authSub" style={{ marginBottom: 0 }}>
+              {orderSummaryText}
+            </p>
           </div>
-
-          <button
-            className="el-authBtn"
-            type="button"
-            onClick={async () => {
-              await logout();
-              navigate("/");
-            }}
-          >
-            Logout
-          </button>
         </div>
 
-        <div className="el-authCard" style={{ ...sectionCardStyle, marginTop: 24 }}>
-          <h2 className="el-authTitle" style={{ fontSize: 22, marginBottom: 12 }}>
-            Order History
-          </h2>
-
+        <div className="el-authCard" style={{ ...accountCardStyle, marginTop: 24 }}>
           {purchasesLoading ? (
             <div className="el-authSub">Loading purchases...</div>
           ) : purchasesError ? (
             <div className="el-authError">{purchasesError}</div>
           ) : purchases.length === 0 ? (
-            <div className="el-authSub">No purchases found yet.</div>
+            <div className="el-authSub">No purchases found.</div>
           ) : (
-            <div
-              style={{
-                overflowX: "auto",
-                borderRadius: 16,
-                border: "1px solid rgba(255,255,255,0.10)",
-                background: "linear-gradient(180deg, rgba(17,24,39,0.82), rgba(6,10,14,0.95))",
-              }}
-            >
-              <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1100 }}>
-                <thead>
-                  <tr style={{ background: "rgba(255,255,255,0.03)" }}>
-                    {[
-                      "Order",
-                      "Status",
-                      "Total",
-                      "Payment ID",
-                      "Items Purchased",
-                      "Ship To",
-                      "Tracking",
-                    ].map((heading) => (
-                      <th
-                        key={heading}
-                        style={{
-                          textAlign: "left",
-                          padding: "14px 16px",
-                          fontSize: 12,
-                          letterSpacing: 0.35,
-                          textTransform: "uppercase",
-                          color: "rgba(232,243,236,0.76)",
-                          borderBottom: "1px solid rgba(255,255,255,0.10)",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {heading}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {purchases.map((purchase, index) => {
-                    const items = parseItems(purchase?.items);
-                    const paymentStatus = purchase?.payment_status || "unknown";
-                    const orderStatus = purchase?.order_status || (paymentStatus === "paid" ? "processing" : "pending_payment");
-                    const shippingAddress = formatShippingAddress(purchase);
-
-                    return (
-                      <tr key={purchase.id} style={{ borderTop: index === 0 ? "none" : "1px solid rgba(255,255,255,0.08)" }}>
-                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 180 }}>
-                          <div style={{ fontWeight: 700, marginBottom: 4 }}>Order #{purchase.id}</div>
-                          <div style={{ fontSize: 14, opacity: 0.82 }}>
-                            {purchase?.purchased_at ? new Date(purchase.purchased_at).toLocaleString() : "—"}
-                          </div>
-                        </td>
-
-                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 180 }}>
-                          <div style={{ display: "grid", gap: 8 }}>
-                            <StatusBadge
-                              label={`Payment: ${titleCase(paymentStatus)}`}
-                              tone={getPaymentTone(paymentStatus)}
-                            />
-                            <StatusBadge
-                              label={`Order: ${titleCase(orderStatus)}`}
-                              tone={getOrderTone(orderStatus)}
-                            />
-                          </div>
-                        </td>
-
-                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 120, fontWeight: 700 }}>
-                          {formatCurrency(purchase?.total_amount, purchase?.currency || "USD")}
-                        </td>
-
-                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 220, wordBreak: "break-word" }}>
-                          {purchase?.stripe_payment_id || "—"}
-                        </td>
-
-                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 280 }}>
-                          <ItemsCell items={items} currency={purchase?.currency || "USD"} />
-                        </td>
-
-                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 240 }}>
-                          <div style={{ whiteSpace: "normal", lineHeight: 1.5 }}>{shippingAddress}</div>
-                        </td>
-
-                        <td style={{ padding: 16, verticalAlign: "top", minWidth: 180 }}>
-                          <div>
-                            {purchase?.tracking_number
-                              ? `${purchase?.carrier ? `${purchase.carrier}: ` : ""}${purchase.tracking_number}`
-                              : "Not shipped yet"}
-                          </div>
-                          {purchase?.shipped_at ? (
-                            <div style={{ marginTop: 6, fontSize: 14, opacity: 0.78 }}>
-                              Shipped: {new Date(purchase.shipped_at).toLocaleString()}
-                            </div>
-                          ) : null}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            <>
+              <DesktopOrderTable purchases={purchases} />
+              <MobileOrderCards purchases={purchases} />
+            </>
           )}
         </div>
       </div>

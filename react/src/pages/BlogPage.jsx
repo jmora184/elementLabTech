@@ -623,7 +623,7 @@ export default function BlogPage() {
                       lineHeight: 1.05,
                     }}
                   >
-                    Blog
+                    R&D Journal
                   </h1>
                   <p style={{ margin: "12px 0 0 0", maxWidth: 740, color: "rgba(255,255,255,0.75)", fontSize: 15, lineHeight: 1.6 }}>
                     Product updates, R&amp;D notes, release announcements, and behind-the-scenes stories — including

@@ -13,7 +13,7 @@ const DEFAULT_NAV_LINKS = [
   { label: "Applications", id: "applications" },
   { label: "Q&A", id: "q-and-a" },
   { label: "FAQ", id: "faq", placeholder: true },
-  { label: "Blog", id: "blog", placeholder: true },
+  { label: "R&D Journal", id: "blog", placeholder: true },
   { label: "Contact Sales", id: "contact-sales" },
 ];
 
@@ -74,7 +74,7 @@ const MINI_LINK_ROUTES = {
 
 const RESOURCE_ITEMS = [
   { label: "Applications", id: "applications", type: "section" },
-  { label: "Blog", id: "blog", type: "route", route: "/blog" },
+  { label: "R&D Journal", id: "blog", type: "route", route: "/blog" },
   { label: "Q&A", id: "q-and-a", type: "route", route: "/qna" },
   { label: "FAQ", id: "faq", type: "route", route: "/faq" },
 ];

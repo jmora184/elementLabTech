@@ -157,7 +157,8 @@ export default function ProductPage() {
   const [selectedSize, setSelectedSize] = useState("2mL | 1.84 g - $20");
   const [quantity, setQuantity] = useState(1);
   const [selectedBenchmarkIds, setSelectedBenchmarkIds] = useState([]);
-  const [benchmarkProfileDetails, setBenchmarkProfileDetails] = useState({});
+  const [benchmarkSkuOptions, setBenchmarkSkuOptions] = useState([]);
+  const [loadingBenchmarkSkuOptions, setLoadingBenchmarkSkuOptions] = useState(false);
   const detailsSectionRef = useRef(null);
 
   function toggleBenchmarkProfile(profileId) {
@@ -170,44 +171,37 @@ export default function ProductPage() {
   }
 
   useEffect(() => {
-    const validIds = new Set(dbProfiles.map((profile) => String(profile?.id || profile?.slug || "")));
-    setSelectedBenchmarkIds((prev) => prev.filter((id) => validIds.has(id)).slice(0, 3));
-  }, [dbProfiles]);
-
-  useEffect(() => {
     let cancelled = false;
 
-    async function loadBenchmarkProfileDetails() {
-      if (!dbProfiles.length) {
-        if (!cancelled) setBenchmarkProfileDetails({});
+    async function loadBenchmarkSkuOptions() {
+      if (!selectedSlug) {
+        if (!cancelled) {
+          setBenchmarkSkuOptions([]);
+          setLoadingBenchmarkSkuOptions(false);
+        }
         return;
       }
 
-      try {
-        const bundles = await Promise.all(
-          dbProfiles.map(async (profile) => {
-            try {
-              const bundle = await fetchJson(`/api/profiles/${encodeURIComponent(profile.slug)}`);
-              return [profile.slug, bundle?.profile || {}];
-            } catch {
-              return [profile.slug, {}];
-            }
-          })
-        );
+      if (!cancelled) setLoadingBenchmarkSkuOptions(true);
 
+      try {
+        const out = await fetchJson(`/api/profiles/${encodeURIComponent(selectedSlug)}/sku-options`);
         if (!cancelled) {
-          setBenchmarkProfileDetails(Object.fromEntries(bundles));
+          setBenchmarkSkuOptions(Array.isArray(out?.options) ? out.options : []);
         }
-      } catch {
-        if (!cancelled) setBenchmarkProfileDetails({});
+      } catch (err) {
+        console.warn("Profile SKU options load failed:", err?.message || err);
+        if (!cancelled) setBenchmarkSkuOptions([]);
+      } finally {
+        if (!cancelled) setLoadingBenchmarkSkuOptions(false);
       }
     }
 
-    loadBenchmarkProfileDetails();
+    loadBenchmarkSkuOptions();
     return () => {
       cancelled = true;
     };
-  }, [dbProfiles]);
+  }, [selectedSlug]);
 
   const scrollToTopOnMobile = () => {
     if (typeof window === "undefined") return;
@@ -524,25 +518,29 @@ export default function ProductPage() {
     return dbProfiles.filter((p) => !selected.has(String(p?.id || "")));
   }, [dbProfiles, sampleProfiles]);
   const benchmarkLibraryOptions = useMemo(() => {
-    return dbProfiles.map((profile) => {
-      const details = benchmarkProfileDetails[profile.slug] || {};
+    return benchmarkSkuOptions.map((option) => {
       const notes = [
-        ...(Array.isArray(details.flavor_aroma) ? details.flavor_aroma : []),
-        ...(Array.isArray(details.dominant_terpenes) ? details.dominant_terpenes : []),
+        ...(Array.isArray(option?.flavor_aroma) ? option.flavor_aroma : []),
+        ...(Array.isArray(option?.dominant_terpenes) ? option.dominant_terpenes : []),
       ]
         .map((item) => String(item || "").trim())
         .filter(Boolean)
         .slice(0, 3);
 
       return {
-        id: String(profile.id || profile.slug || ""),
-        slug: String(profile.slug || ""),
-        name: String(details.name || profile.name || profile.slug || "Flavor Profile"),
+        id: String(option?.id || option?.slug || ""),
+        slug: String(option?.slug || ""),
+        name: String(option?.name || option?.slug || "Flavor Profile"),
         notes,
-        description: String(details.description || "").trim(),
+        description: String(option?.description || "").trim(),
       };
     });
-  }, [dbProfiles, benchmarkProfileDetails]);
+  }, [benchmarkSkuOptions]);
+
+  useEffect(() => {
+    const validIds = new Set(benchmarkLibraryOptions.map((option) => String(option?.id || option?.slug || "")));
+    setSelectedBenchmarkIds((prev) => prev.filter((id) => validIds.has(id)).slice(0, 3));
+  }, [benchmarkLibraryOptions]);
 
   const selectedBenchmarkProfiles = useMemo(() => {
     return benchmarkLibraryOptions.filter((option) => selectedBenchmarkIds.includes(option.id));
@@ -2013,13 +2011,29 @@ export default function ProductPage() {
                   <div>
                     <div className="pp-benchmarkTitle">Build Your Flavor Library</div>
                     <div className="pp-benchmarkSubtitle">
-                      Select 3 flavor profiles and <span>Save 10%</span>
+                      {flavorInfo?.name
+                        ? <>Mapped pairings for <span>{flavorInfo.name}</span></>
+                        : <>Select 3 flavor profiles and <span>Save 10%</span></>}
                     </div>
                   </div>
                 </div>
 
-                {benchmarkLibraryOptions.length === 0 ? (
-                  <div className="pp-muted" style={{ marginTop: 12 }}>No flavor profiles found for this collection yet.</div>
+                {loadingBenchmarkSkuOptions ? (
+                  <div className="pp-muted" style={{ marginTop: 12 }}>Loading mapped flavor options…</div>
+                ) : null}
+
+                {!loadingBenchmarkSkuOptions && benchmarkLibraryOptions.length === 0 ? (
+                  <div className="pp-muted" style={{ marginTop: 12 }}>
+                    {flavorInfo?.name
+                      ? `No mapped flavor library options are configured for ${flavorInfo.name} yet.`
+                      : "No flavor profiles found for this collection yet."}
+                  </div>
+                ) : null}
+
+                {benchmarkLibraryOptions.length > 0 ? (
+                  <div className="pp-muted" style={{ marginTop: 12 }}>
+                    Choose up to 3 mapped companion flavors for {flavorInfo?.name || "this profile"}.
+                  </div>
                 ) : null}
 
                 <div className="pp-benchmarkGrid">
@@ -2091,14 +2105,14 @@ export default function ProductPage() {
                   onClick={() => {
                     const profileNames = selectedBenchmarkProfiles.map((profile) => profile.name);
                     addCartItem({
-                      productId: `${String(collection?.id || id || "")}-benchmark-library`,
+                      productId: `${String(collection?.id || id || "")}-benchmark-library-${String(selectedSlug || "bundle")}`,
                       collectionName: `${String(collection?.name || "Product")} Flavor Library`,
                       profileSlug: profileNames.map((name) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-")).join("+"),
-                      profileName: `3-Flavor Library: ${profileNames.join(", ")}`,
+                      profileName: `3-Flavor Library for ${String(flavorInfo?.name || selectedSlug || "Selected Profile")}: ${profileNames.join(", ")}`,
                       size: `Flavor Library Bundle - $${benchmarkBundleTotal.toFixed(0)}`,
                       quantity: 1,
                     });
-                    alert(`Added 3-flavor library to cart: ${profileNames.join(", ")}`);
+                    alert(`Added 3-flavor library for ${String(flavorInfo?.name || selectedSlug || "selected profile")}: ${profileNames.join(", ")}`);
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

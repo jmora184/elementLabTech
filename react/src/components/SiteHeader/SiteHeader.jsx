@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 import { getCartCount } from "../../utils/cart";
@@ -13,7 +13,7 @@ const DEFAULT_NAV_LINKS = [
   { label: "Applications", id: "applications" },
   { label: "Q&A", id: "q-and-a" },
   { label: "FAQ", id: "faq", placeholder: true },
-  { label: "R&D Journal", id: "blog", placeholder: true },
+  { label: "Blog", id: "blog", placeholder: true },
   { label: "Contact Sales", id: "contact-sales" },
 ];
 
@@ -74,10 +74,111 @@ const MINI_LINK_ROUTES = {
 
 const RESOURCE_ITEMS = [
   { label: "Applications", id: "applications", type: "section" },
-  { label: "R&D Journal", id: "blog", type: "route", route: "/blog" },
+  { label: "Blog", id: "blog", type: "route", route: "/blog" },
   { label: "Q&A", id: "q-and-a", type: "route", route: "/qna" },
   { label: "FAQ", id: "faq", type: "route", route: "/faq" },
 ];
+
+function normalizeSearchText(value) {
+  return String(value || "")
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
+function splitTokens(value) {
+  return normalizeSearchText(value).split(" ").filter(Boolean);
+}
+
+function levenshtein(a, b) {
+  const left = String(a || "");
+  const right = String(b || "");
+  if (left === right) return 0;
+  if (!left.length) return right.length;
+  if (!right.length) return left.length;
+
+  const prev = Array.from({ length: right.length + 1 }, (_, i) => i);
+  for (let i = 0; i < left.length; i += 1) {
+    let corner = i;
+    prev[0] = i + 1;
+    for (let j = 0; j < right.length; j += 1) {
+      const upper = prev[j + 1];
+      const cost = left[i] === right[j] ? 0 : 1;
+      prev[j + 1] = Math.min(prev[j + 1] + 1, prev[j] + 1, corner + cost);
+      corner = upper;
+    }
+  }
+  return prev[right.length];
+}
+
+function buildSearchSuggestions(items, query, limit = 8) {
+  const normalizedQuery = normalizeSearchText(query);
+  if (!normalizedQuery) return [];
+
+  const queryTokens = splitTokens(normalizedQuery);
+
+  const ranked = (Array.isArray(items) ? items : [])
+    .map((item) => {
+      const name = normalizeSearchText(item?.name);
+      const slug = normalizeSearchText(item?.slug);
+      const collectionName = normalizeSearchText(item?.collectionName);
+      const flavorType = normalizeSearchText(item?.flavorType);
+      const flavorCategory = normalizeSearchText(item?.flavorCategory);
+      const haystack = [name, slug, collectionName, flavorType, flavorCategory].filter(Boolean);
+      const candidateTokens = Array.from(new Set(haystack.join(" ").split(" ").filter(Boolean)));
+
+      let score = -1;
+
+      if (name === normalizedQuery || slug === normalizedQuery) score = Math.max(score, 1200);
+      if (name.startsWith(normalizedQuery)) score = Math.max(score, 1100);
+      if (candidateTokens.some((token) => token.startsWith(normalizedQuery))) score = Math.max(score, 1040);
+      if (name.includes(normalizedQuery)) score = Math.max(score, 980);
+      if (slug.includes(normalizedQuery)) score = Math.max(score, 960);
+      if (haystack.some((part) => part.includes(normalizedQuery))) score = Math.max(score, 930);
+
+      if (queryTokens.length && queryTokens.every((token) => haystack.some((part) => part.includes(token)))) {
+        score = Math.max(score, 900 - Math.max(0, queryTokens.length - 1) * 10);
+      }
+
+      for (const token of candidateTokens) {
+        if (!token) continue;
+        const distance = levenshtein(normalizedQuery, token);
+        if (distance <= 1) {
+          score = Math.max(score, 880 - distance * 20);
+        } else if (normalizedQuery.length >= 5 && distance === 2) {
+          score = Math.max(score, 840);
+        }
+      }
+
+      if (score < 0) return null;
+
+      return {
+        ...item,
+        _score: score,
+        _name: item?.name || "",
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => {
+      if (b._score !== a._score) return b._score - a._score;
+      return String(a._name || "").localeCompare(String(b._name || ""));
+    });
+
+  return ranked.slice(0, limit);
+}
+
+async function fetchJson(url, opts) {
+  const res = await fetch(url, opts);
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    throw new Error(data?.error || `Request failed (${res.status})`);
+  }
+  return data;
+}
 
 /**
  * Shared Site Header (+ mini header)
@@ -91,7 +192,7 @@ export default function SiteHeader({
   logoSrc = elementLabsLogo,
   searchValue,
   onSearchChange,
-  searchPlaceholder = "Search collections",
+  searchPlaceholder = "Search flavors & isolates",
   navLinks = DEFAULT_NAV_LINKS,
   miniLinks = DEFAULT_MINI_LINKS,
   miniMenuLeft = DEFAULT_MINI_MENU_LEFT,
@@ -111,6 +212,11 @@ export default function SiteHeader({
   const [miniMenuOpen, setMiniMenuOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
   const [cartCount, setCartCount] = useState(() => getCartCount());
+  const [searchCatalog, setSearchCatalog] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchActiveIndex, setSearchActiveIndex] = useState(-1);
+  const searchShellRef = useRef(null);
 
   useEffect(() => {
     const handleCartUpdated = (event) => {
@@ -128,14 +234,65 @@ export default function SiteHeader({
     };
   }, []);
 
+  useEffect(() => {
+    let alive = true;
+
+    async function loadSearchCatalog() {
+      setSearchLoading(true);
+      try {
+        const data = await fetchJson("/api/search");
+        if (!alive) return;
+        setSearchCatalog(Array.isArray(data?.items) ? data.items : []);
+      } catch (err) {
+        if (!alive) return;
+        console.error("SEARCH CATALOG LOAD ERROR:", err);
+        setSearchCatalog([]);
+      } finally {
+        if (alive) setSearchLoading(false);
+      }
+    }
+
+    loadSearchCatalog();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (!searchShellRef.current?.contains(event.target)) {
+        setSearchOpen(false);
+        setSearchActiveIndex(-1);
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+    };
+  }, []);
+
   const resolvedNavLinks = useMemo(() => navLinks ?? DEFAULT_NAV_LINKS, [navLinks]);
   const resolvedMiniLinks = useMemo(() => miniLinks ?? DEFAULT_MINI_LINKS, [miniLinks]);
+  const searchSuggestions = useMemo(() => buildSearchSuggestions(searchCatalog, value), [searchCatalog, value]);
+
+  useEffect(() => {
+    if (!value?.trim()) {
+      setSearchOpen(false);
+      setSearchActiveIndex(-1);
+      return;
+    }
+
+    setSearchOpen(true);
+    setSearchActiveIndex(searchSuggestions.length ? 0 : -1);
+  }, [value, searchSuggestions.length]);
 
   const handleLogoClick = (e) => {
     e.preventDefault();
     setMenuOpen(false);
     setMiniMenuOpen(false);
     setResourcesOpen(false);
+    setSearchOpen(false);
     if (typeof onLogoClick === "function") {
       onLogoClick();
       return;
@@ -149,6 +306,7 @@ export default function SiteHeader({
     setMenuOpen(false);
     setMiniMenuOpen(false);
     setResourcesOpen(false);
+    setSearchOpen(false);
 
     if (typeof onNavToSection === "function") {
       onNavToSection(id);
@@ -162,8 +320,63 @@ export default function SiteHeader({
   const handleSearchChange = (e) => {
     const next = e.target.value;
     setLocalSearch(next);
+    setSearchOpen(Boolean(String(next || "").trim()));
+    setSearchActiveIndex(0);
     if (typeof onSearchChange === "function") {
       onSearchChange(e);
+    }
+  };
+
+  const handleSearchSelect = (item) => {
+    if (!item?.route) return;
+    setLocalSearch(item.name || "");
+    setSearchOpen(false);
+    setSearchActiveIndex(-1);
+    setMenuOpen(false);
+    setMiniMenuOpen(false);
+    setResourcesOpen(false);
+    navigate(item.route);
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (!searchSuggestions.length) {
+      if (e.key === "Escape") {
+        setSearchOpen(false);
+      }
+      return;
+    }
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSearchOpen(true);
+      setSearchActiveIndex((prev) => {
+        if (prev < 0) return 0;
+        return (prev + 1) % searchSuggestions.length;
+      });
+      return;
+    }
+
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSearchOpen(true);
+      setSearchActiveIndex((prev) => {
+        if (prev < 0) return searchSuggestions.length - 1;
+        return (prev - 1 + searchSuggestions.length) % searchSuggestions.length;
+      });
+      return;
+    }
+
+    if (e.key === "Enter") {
+      const candidate = searchSuggestions[Math.max(searchActiveIndex, 0)] || searchSuggestions[0];
+      if (!candidate) return;
+      e.preventDefault();
+      handleSearchSelect(candidate);
+      return;
+    }
+
+    if (e.key === "Escape") {
+      setSearchOpen(false);
+      setSearchActiveIndex(-1);
     }
   };
 
@@ -173,6 +386,7 @@ export default function SiteHeader({
     setMenuOpen(false);
     setMiniMenuOpen(false);
     setResourcesOpen(false);
+    setSearchOpen(false);
     navigate(route);
   };
 
@@ -180,6 +394,7 @@ export default function SiteHeader({
     setMenuOpen(false);
     setMiniMenuOpen(false);
     setResourcesOpen(false);
+    setSearchOpen(false);
     if (typeof onCartClick === "function") {
       onCartClick();
       return;
@@ -191,6 +406,7 @@ export default function SiteHeader({
     setMenuOpen(false);
     setMiniMenuOpen(false);
     setResourcesOpen(false);
+    setSearchOpen(false);
 
     if (item.type === "route" && item.route) {
       navigate(item.route);
@@ -202,7 +418,7 @@ export default function SiteHeader({
 
   // Responsive: precompute mobile rows for flavor archive
   let mobileMiniMenuRows = [];
-  if (typeof window !== 'undefined' && window.innerWidth <= 520) {
+  if (typeof window !== "undefined" && window.innerWidth <= 520) {
     const allLabels = [...miniMenuLeft, ...miniMenuRight];
     for (let i = 0; i < allLabels.length; i += 2) {
       mobileMiniMenuRows.push([
@@ -240,13 +456,13 @@ export default function SiteHeader({
         .ts-desktopResourcesChevron {
           display: inline-block;
           margin-left: 6px;
-          font-size: 0.75em;
+          font-size: 12px;
           transform: translateY(-1px);
         }
 
         .ts-desktopResourcesMenu {
           position: absolute;
-          top: 100%;
+          top: calc(100% + 10px);
           left: 50%;
           transform: translateX(-50%);
           min-width: 180px;
@@ -274,6 +490,64 @@ export default function SiteHeader({
           background: rgba(0, 0, 0, 0.04);
         }
 
+        .ts-searchShell {
+          position: relative;
+          width: 100%;
+        }
+
+        .ts-searchSuggestions {
+          position: absolute;
+          top: calc(100% + 10px);
+          left: 0;
+          right: 0;
+          background: #ffffff;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          border-radius: 14px;
+          box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+          padding: 8px;
+          z-index: 60;
+          max-height: 360px;
+          overflow-y: auto;
+        }
+
+        .ts-searchSuggestionBtn {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 3px;
+          background: transparent;
+          border: 0;
+          border-radius: 10px;
+          padding: 10px 12px;
+          text-align: left;
+          cursor: pointer;
+        }
+
+        .ts-searchSuggestionBtn:hover,
+        .ts-searchSuggestionBtn.isActive {
+          background: rgba(0, 0, 0, 0.05);
+        }
+
+        .ts-searchSuggestionTitle {
+          font-size: 14px;
+          font-weight: 700;
+          color: #111827;
+          line-height: 1.25;
+        }
+
+        .ts-searchSuggestionMeta {
+          font-size: 12px;
+          color: #6b7280;
+          line-height: 1.3;
+        }
+
+        .ts-searchSuggestionEmpty {
+          padding: 12px 14px;
+          font-size: 13px;
+          color: #6b7280;
+        }
+
         @media (min-width: 901px) {
           .ts-desktopOnlyResourceLink {
             display: none !important;
@@ -288,15 +562,54 @@ export default function SiteHeader({
       <header className="ts-siteHeader">
         <nav className="ts-siteNav" aria-label="Primary">
           <div className="ts-jump ts-headerJump">
-            <input
-              id="collectionJump"
-              className="ts-select ts-selectSearch"
-              type="text"
-              value={value}
-              onChange={handleSearchChange}
-              placeholder={searchPlaceholder}
-              aria-label={searchPlaceholder}
-            />
+            <div className="ts-searchShell" ref={searchShellRef}>
+              <input
+                id="collectionJump"
+                className="ts-select ts-selectSearch"
+                type="text"
+                value={value}
+                onChange={handleSearchChange}
+                onFocus={() => setSearchOpen(Boolean(String(value || "").trim()))}
+                onKeyDown={handleSearchKeyDown}
+                placeholder={searchPlaceholder}
+                aria-label={searchPlaceholder}
+                aria-autocomplete="list"
+                aria-expanded={searchOpen && Boolean(value?.trim())}
+                aria-controls="site-search-suggestions"
+                autoComplete="off"
+              />
+
+              {searchOpen && value?.trim() ? (
+                <div id="site-search-suggestions" className="ts-searchSuggestions" role="listbox" aria-label="Search suggestions">
+                  {searchSuggestions.length ? (
+                    searchSuggestions.map((item, index) => (
+                      <button
+                        key={`${item.collectionId}-${item.slug}`}
+                        type="button"
+                        role="option"
+                        className={`ts-searchSuggestionBtn ${index === searchActiveIndex ? "isActive" : ""}`}
+                        aria-selected={index === searchActiveIndex}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          handleSearchSelect(item);
+                        }}
+                        onMouseEnter={() => setSearchActiveIndex(index)}
+                      >
+                        <span className="ts-searchSuggestionTitle">{item.name}</span>
+                        <span className="ts-searchSuggestionMeta">
+                          {item.isIsolate ? "Isolate" : item.collectionName || "Collection"}
+                          {item.flavorCategory ? ` • ${item.flavorCategory}` : item.flavorType ? ` • ${item.flavorType}` : ""}
+                        </span>
+                      </button>
+                    ))
+                  ) : (
+                    <div className="ts-searchSuggestionEmpty">
+                      {searchLoading ? "Loading flavors…" : "No matching flavor profiles or isolates found."}
+                    </div>
+                  )}
+                </div>
+              ) : null}
+            </div>
           </div>
 
           <a

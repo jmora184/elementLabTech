@@ -1,5 +1,6 @@
 
 import React, { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import "../ProductPage/ProductPage.css";
 import { useAuth } from "../../auth/AuthContext";
 import AdminEditProfileModal from "../ProductPage/AdminEditProfileModal";
@@ -48,6 +49,8 @@ const TABS = ["Details", "Specs", "Applications"];
 
 export default function IsolatesShowcase() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const requestedProfileSlug = String(searchParams.get("profile") || "").trim();
   const isAdmin = user?.role === "admin";
 
   const [loading, setLoading] = useState(true);
@@ -99,9 +102,11 @@ export default function IsolatesShowcase() {
     setProfiles(rows);
 
     const nextSlug =
-      preserveSelection && selectedSlug && rows.some((x) => x.slug === selectedSlug)
-        ? selectedSlug
-        : rows[0]?.slug || "";
+      requestedProfileSlug && rows.some((x) => x.slug === requestedProfileSlug)
+        ? requestedProfileSlug
+        : preserveSelection && selectedSlug && rows.some((x) => x.slug === selectedSlug)
+          ? selectedSlug
+          : rows[0]?.slug || "";
     setSelectedSlug(nextSlug);
   }
 
@@ -143,6 +148,12 @@ export default function IsolatesShowcase() {
       alive = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (!requestedProfileSlug || !profiles.length) return;
+    if (!profiles.some((row) => row.slug === requestedProfileSlug)) return;
+    setSelectedSlug((prev) => (prev === requestedProfileSlug ? prev : requestedProfileSlug));
+  }, [requestedProfileSlug, profiles]);
 
   useEffect(() => {
     let alive = true;

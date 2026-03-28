@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
+import { uploadImageFile } from "../utils/cloudflareImages";
 
 function formatDate(iso) {
   if (!iso) return "";
@@ -25,6 +26,92 @@ function bytesToLabel(bytes) {
     u += 1;
   }
   return `${n.toFixed(n >= 10 || u === 0 ? 0 : 1)} ${units[u]}`;
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function stripHtmlToText(value) {
+  const html = String(value || "");
+  if (!html.trim()) return "";
+
+  if (typeof window !== "undefined" && typeof window.DOMParser !== "undefined") {
+    const doc = new window.DOMParser().parseFromString(html, "text/html");
+    return (doc.body?.textContent || "").replace(/\s+/g, " ").trim();
+  }
+
+  return html
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function sanitizeHtml(value) {
+  const raw = String(value || "");
+  if (!raw.trim()) return "";
+
+  if (typeof window === "undefined" || typeof window.DOMParser === "undefined") {
+    return raw
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/<style[\s\S]*?<\/style>/gi, "");
+  }
+
+  const parser = new window.DOMParser();
+  const doc = parser.parseFromString(raw, "text/html");
+  ["script", "style", "iframe", "object", "embed", "link", "meta"].forEach((tag) => {
+    doc.querySelectorAll(tag).forEach((node) => node.remove());
+  });
+
+  doc.querySelectorAll("*").forEach((node) => {
+    [...node.attributes].forEach((attr) => {
+      const name = String(attr.name || "").toLowerCase();
+      const value = String(attr.value || "");
+      if (name.startsWith("on")) {
+        node.removeAttribute(attr.name);
+        return;
+      }
+      if ((name === "href" || name === "src") && /^\s*javascript:/i.test(value)) {
+        node.removeAttribute(attr.name);
+        return;
+      }
+      if (name === "style") node.removeAttribute(attr.name);
+    });
+
+    if (node.tagName === "A") {
+      node.setAttribute("target", "_blank");
+      node.setAttribute("rel", "noreferrer noopener");
+    }
+
+    if (node.tagName === "IMG") {
+      node.setAttribute("loading", "lazy");
+      if (!node.getAttribute("alt")) node.setAttribute("alt", "Blog image");
+    }
+  });
+
+  return doc.body?.innerHTML || "";
+}
+
+function messageToDisplayHtml(value) {
+  const raw = String(value || "");
+  if (!raw.trim()) return "";
+
+  if (/<\/?[a-z][\s\S]*>/i.test(raw)) {
+    return sanitizeHtml(raw);
+  }
+
+  return escapeHtml(raw).replace(/\n/g, "<br />");
+}
+
+function excerptFromMessage(value) {
+  return stripHtmlToText(value);
 }
 
 function normalizePosts(raw) {
@@ -368,7 +455,7 @@ function PostCard({ post, expanded, onToggle, isAdmin, onEdit, onDelete, deletin
               overflow: "hidden",
             }}
           >
-            {post.message}
+            {excerptFromMessage(post.message)}
           </p>
 
           <div
@@ -560,9 +647,11 @@ function PostCard({ post, expanded, onToggle, isAdmin, onEdit, onDelete, deletin
                   Message
                 </div>
                 <div style={{ height: 10 }} />
-                <div style={{ color: "rgba(255,255,255,0.86)", fontSize: 14, lineHeight: 1.75, whiteSpace: "pre-wrap" }}>
-                  {post.message}
-                </div>
+                <div
+                  className="el-blog-message"
+                  style={{ color: "rgba(255,255,255,0.86)", fontSize: 14, lineHeight: 1.75 }}
+                  dangerouslySetInnerHTML={{ __html: messageToDisplayHtml(post.message) }}
+                />
               </div>
 
               <ImageGrid images={post.images} />
@@ -583,10 +672,13 @@ export default function BlogPage() {
 
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [image, setImage] = useState(null);
-  const [attachment, setAttachment] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [inlineImageUploading, setInlineImageUploading] = useState(false);
+  const [editorDragActive, setEditorDragActive] = useState(false);
   const [formError, setFormError] = useState("");
+
+  const editorRef = useRef(null);
+  const imagePickerRef = useRef(null);
 
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -623,13 +715,163 @@ export default function BlogPage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!showForm || !editorRef.current) return;
+    editorRef.current.innerHTML = message || "";
+  }, [showForm, editingId]);
+
+  function syncMessageFromEditor() {
+    if (!editorRef.current) return;
+    setMessage(editorRef.current.innerHTML || "");
+  }
+
+  function focusEditor() {
+    editorRef.current?.focus();
+  }
+
+  function runEditorCommand(command, value = null) {
+    focusEditor();
+    document.execCommand(command, false, value);
+    syncMessageFromEditor();
+  }
+
+  function insertHtmlAtCursor(html) {
+    focusEditor();
+    document.execCommand("insertHTML", false, html);
+    syncMessageFromEditor();
+  }
+
+  function placeCaretFromPoint(clientX, clientY) {
+    const sel = window.getSelection?.();
+    if (!sel) return;
+
+    if (document.caretPositionFromPoint) {
+      const pos = document.caretPositionFromPoint(clientX, clientY);
+      if (pos) {
+        const range = document.createRange();
+        range.setStart(pos.offsetNode, pos.offset);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+      return;
+    }
+
+    if (document.caretRangeFromPoint) {
+      const range = document.caretRangeFromPoint(clientX, clientY);
+      if (range) {
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    }
+  }
+
+  function insertMarkerAtSelection(markerId) {
+    const markerHtml = `<span data-blog-marker="${markerId}" contenteditable="false">&#8203;</span>`;
+    insertHtmlAtCursor(markerHtml);
+  }
+
+  function replaceMarkerWithHtml(markerId, html) {
+    if (!editorRef.current) return;
+    const marker = editorRef.current.querySelector(`[data-blog-marker="${markerId}"]`);
+    if (marker) {
+      marker.outerHTML = html;
+    } else {
+      editorRef.current.insertAdjacentHTML("beforeend", html);
+    }
+    syncMessageFromEditor();
+  }
+
+  async function uploadInlineImages(files, point = null) {
+    const imageFiles = Array.from(files || []).filter((file) => file && /^image\//i.test(file.type || ""));
+    if (!imageFiles.length) return;
+
+    if (!editorRef.current) {
+      setFormError("Open the editor before adding images.");
+      return;
+    }
+
+    setFormError("");
+    setInlineImageUploading(true);
+
+    try {
+      focusEditor();
+      if (point) placeCaretFromPoint(point.x, point.y);
+
+      const markerId = `blog-marker-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      insertMarkerAtSelection(markerId);
+
+      const uploadedHtml = [];
+      for (const file of imageFiles) {
+        const out = await uploadImageFile(file, {
+          metadata: {
+            purpose: "blog-inline",
+            blog_post_id: editingId || "new",
+            file_name: file.name,
+          },
+        });
+        if (out?.url) {
+          const safeAlt = escapeHtml(file.name.replace(/\.[^.]+$/, "") || "Blog image");
+          uploadedHtml.push(
+            `<figure><img src="${out.url}" alt="${safeAlt}" /></figure><p><br></p>`
+          );
+        }
+      }
+
+      if (uploadedHtml.length) replaceMarkerWithHtml(markerId, uploadedHtml.join(""));
+    } catch (err) {
+      setFormError(err?.message || "Could not upload image.");
+    } finally {
+      setInlineImageUploading(false);
+      setEditorDragActive(false);
+    }
+  }
+
+  function handleEditorPaste(e) {
+    const files = Array.from(e.clipboardData?.files || []).filter((file) => /^image\//i.test(file.type || ""));
+    if (!files.length) return;
+    e.preventDefault();
+    uploadInlineImages(files);
+  }
+
+  function handleEditorDrop(e) {
+    e.preventDefault();
+    setEditorDragActive(false);
+    const files = Array.from(e.dataTransfer?.files || []).filter((file) => /^image\//i.test(file.type || ""));
+    if (!files.length) return;
+    uploadInlineImages(files, { x: e.clientX, y: e.clientY });
+  }
+
+  function handleEditorDragOver(e) {
+    e.preventDefault();
+    if (!editorDragActive) setEditorDragActive(true);
+  }
+
+  function handleEditorDragLeave(e) {
+    if (e.currentTarget.contains(e.relatedTarget)) return;
+    setEditorDragActive(false);
+  }
+
+  function handlePickInlineImage(e) {
+    const files = Array.from(e.target.files || []);
+    if (files.length) uploadInlineImages(files);
+    e.target.value = "";
+  }
+
+  function handleInsertLink() {
+    const url = window.prompt("Paste the link URL");
+    if (!url) return;
+    runEditorCommand("createLink", url.trim());
+  }
+
   function resetForm() {
     setEditingId(null);
     setTitle("");
     setMessage("");
-    setImage(null);
-    setAttachment(null);
+    setInlineImageUploading(false);
+    setEditorDragActive(false);
     setFormError("");
+    if (editorRef.current) editorRef.current.innerHTML = "";
   }
 
   function openCreateForm() {
@@ -641,8 +883,8 @@ export default function BlogPage() {
     setEditingId(post.id);
     setTitle(post.title || "");
     setMessage(post.message || "");
-    setImage(null);
-    setAttachment(null);
+    setInlineImageUploading(false);
+    setEditorDragActive(false);
     setFormError("");
     setShowForm(true);
     setExpandedPostId(null);
@@ -664,7 +906,11 @@ export default function BlogPage() {
     setSubmitting(true);
 
     try {
-      const payload = { title, message };
+      const cleanMessage = (editorRef.current?.innerHTML || message || "").trim();
+      if (!title.trim()) throw new Error("Title is required.");
+      if (!stripHtmlToText(cleanMessage)) throw new Error("Message is required.");
+
+      const payload = { title: title.trim(), message: cleanMessage };
       const method = editingId ? "PATCH" : "POST";
       const endpoint = editingId ? `/api/blog/${encodeURIComponent(editingId)}` : "/api/blog";
       const data = await fetchJson(endpoint, {
@@ -721,6 +967,12 @@ export default function BlogPage() {
         .el-btn:hover { border-color: rgba(34,197,94,0.35); background: rgba(34,197,94,0.10); }
         .el-download:hover { border-color: rgba(34,197,94,0.35); background: rgba(34,197,94,0.10); }
         .el-image:hover { border-color: rgba(34,197,94,0.35); }
+        .el-blog-message img, .el-blog-editor img { max-width: 100%; height: auto; border-radius: 16px; display: block; }
+        .el-blog-message figure, .el-blog-editor figure { margin: 16px 0; }
+        .el-blog-message p, .el-blog-editor p { margin: 0 0 14px 0; }
+        .el-blog-message blockquote, .el-blog-editor blockquote { margin: 16px 0; padding-left: 14px; border-left: 3px solid rgba(34,197,94,0.45); color: rgba(255,255,255,0.82); }
+        .el-blog-message a, .el-blog-editor a { color: #86efac; }
+        .el-blog-editor:empty:before { content: attr(data-placeholder); color: rgba(255,255,255,0.34); }
         @media (max-width: 860px) {
           .el-expanded-grid { grid-template-columns: 1fr !important; }
           .el-post-list { max-width: 100% !important; }
@@ -817,8 +1069,8 @@ export default function BlogPage() {
                       ) : null}
                     </div>
 
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                      <div style={{ gridColumn: "1 / -1" }}>
+                    <div style={{ display: "grid", gap: 12 }}>
+                      <div>
                         <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
                           Title
                         </label>
@@ -840,74 +1092,122 @@ export default function BlogPage() {
                         />
                       </div>
 
-                      <div style={{ gridColumn: "1 / -1" }}>
+                      <div>
                         <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
                           Message
                         </label>
-                        <textarea
-                          value={message}
-                          onChange={(e) => setMessage(e.target.value)}
-                          required
-                          rows={5}
-                          placeholder="Write your post…"
-                          style={{
-                            width: "100%",
-                            padding: "12px 12px",
-                            borderRadius: 14,
-                            border: "1px solid rgba(255,255,255,0.14)",
-                            background: "rgba(255,255,255,0.04)",
-                            color: "#fff",
-                            outline: "none",
-                            resize: "vertical",
-                          }}
-                        />
-                      </div>
 
-                      <div>
-                        <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
-                          Image (optional, not saved yet)
-                        </label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => setImage(e.target.files?.[0] || null)}
-                          style={{
-                            width: "100%",
-                            padding: "10px 12px",
-                            borderRadius: 14,
-                            border: "1px solid rgba(255,255,255,0.14)",
-                            background: "rgba(255,255,255,0.03)",
-                            color: "rgba(255,255,255,0.85)",
-                          }}
-                        />
-                        {image ? (
-                          <div style={{ marginTop: 8, color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 800 }}>
-                            Selected: {image.name}
-                          </div>
-                        ) : null}
-                      </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 10 }}>
+                          {[
+                            ["Bold", () => runEditorCommand("bold")],
+                            ["Italic", () => runEditorCommand("italic")],
+                            ["H3", () => runEditorCommand("formatBlock", "<h3>")],
+                            ["Quote", () => runEditorCommand("formatBlock", "<blockquote>")],
+                            ["Bullets", () => runEditorCommand("insertUnorderedList")],
+                          ].map(([label, action]) => (
+                            <button
+                              key={label}
+                              type="button"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={action}
+                              style={{
+                                border: "1px solid rgba(255,255,255,0.14)",
+                                background: "rgba(255,255,255,0.05)",
+                                color: "#fff",
+                                fontWeight: 900,
+                                borderRadius: 12,
+                                padding: "8px 10px",
+                                cursor: "pointer",
+                              }}
+                              className="el-btn"
+                            >
+                              {label}
+                            </button>
+                          ))}
 
-                      <div>
-                        <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
-                          Document (optional, not saved yet)
-                        </label>
-                        <input
-                          type="file"
-                          onChange={(e) => setAttachment(e.target.files?.[0] || null)}
+                          <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={handleInsertLink}
+                            style={{
+                              border: "1px solid rgba(255,255,255,0.14)",
+                              background: "rgba(255,255,255,0.05)",
+                              color: "#fff",
+                              fontWeight: 900,
+                              borderRadius: 12,
+                              padding: "8px 10px",
+                              cursor: "pointer",
+                            }}
+                            className="el-btn"
+                          >
+                            Link
+                          </button>
+
+                          <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => imagePickerRef.current?.click()}
+                            style={{
+                              border: "1px solid rgba(34,197,94,0.30)",
+                              background: "rgba(34,197,94,0.12)",
+                              color: "#fff",
+                              fontWeight: 900,
+                              borderRadius: 12,
+                              padding: "8px 10px",
+                              cursor: inlineImageUploading ? "not-allowed" : "pointer",
+                              opacity: inlineImageUploading ? 0.7 : 1,
+                            }}
+                            className="el-btn"
+                            disabled={inlineImageUploading}
+                          >
+                            {inlineImageUploading ? "Uploading image…" : "Add image"}
+                          </button>
+
+                          <input
+                            ref={imagePickerRef}
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handlePickInlineImage}
+                            style={{ display: "none" }}
+                          />
+                        </div>
+
+                        <div
                           style={{
-                            width: "100%",
-                            padding: "10px 12px",
-                            borderRadius: 14,
-                            border: "1px solid rgba(255,255,255,0.14)",
-                            background: "rgba(255,255,255,0.03)",
-                            color: "rgba(255,255,255,0.85)",
+                            borderRadius: 16,
+                            border: editorDragActive
+                              ? "1px solid rgba(34,197,94,0.55)"
+                              : "1px solid rgba(255,255,255,0.14)",
+                            background: editorDragActive ? "rgba(34,197,94,0.08)" : "rgba(255,255,255,0.04)",
+                            overflow: "hidden",
                           }}
-                        />
-                        {attachment ? (
-                          <div style={{ marginTop: 8, color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 800 }}>
-                            Selected: {attachment.name}
+                        >
+                          <div style={{ padding: "10px 12px", borderBottom: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.62)", fontSize: 12, fontWeight: 800 }}>
+                            Drag and drop images into the editor, paste screenshots, or use Add image.
                           </div>
-                        ) : null}
+                          <div
+                            ref={editorRef}
+                            className="el-blog-editor"
+                            contentEditable
+                            suppressContentEditableWarning
+                            data-placeholder="Write your post…"
+                            onInput={syncMessageFromEditor}
+                            onBlur={syncMessageFromEditor}
+                            onPaste={handleEditorPaste}
+                            onDrop={handleEditorDrop}
+                            onDragOver={handleEditorDragOver}
+                            onDragLeave={handleEditorDragLeave}
+                            style={{
+                              minHeight: 260,
+                              padding: "14px 14px 18px",
+                              color: "#fff",
+                              outline: "none",
+                              lineHeight: 1.7,
+                              fontSize: 14,
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
 

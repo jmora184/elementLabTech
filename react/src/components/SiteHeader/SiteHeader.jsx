@@ -74,7 +74,7 @@ const MINI_LINK_ROUTES = {
 
 const RESOURCE_ITEMS = [
   { label: "Applications", id: "applications", type: "section" },
-  { label: "Blog", id: "blog", type: "route", route: "/blog" },
+  { label: "R&D Journal", id: "blog", type: "route", route: "/blog" },
   { label: "Q&A", id: "q-and-a", type: "route", route: "/qna" },
   { label: "FAQ", id: "faq", type: "route", route: "/faq" },
 ];
@@ -439,8 +439,8 @@ export default function SiteHeader({
           position: relative;
           display: none;
           align-items: center;
-          padding-bottom: 10px;
-          margin-bottom: -10px;
+          padding-bottom: 0;
+          margin-bottom: 0;
         }
 
         .ts-desktopResourcesBtn {
@@ -462,7 +462,7 @@ export default function SiteHeader({
 
         .ts-desktopResourcesMenu {
           position: absolute;
-          top: calc(100% + 10px);
+          top: 100%;
           left: 50%;
           transform: translateX(-50%);
           min-width: 180px;
@@ -497,7 +497,7 @@ export default function SiteHeader({
 
         .ts-searchSuggestions {
           position: absolute;
-          top: calc(100% + 10px);
+          top: 100%;
           left: 0;
           right: 0;
           background: #ffffff;

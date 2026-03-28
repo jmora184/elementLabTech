@@ -93,207 +93,20 @@ async function fetchJson(url, opts) {
   return data;
 }
 
-function PostCard({ post, onOpen }) {
-  const cover = post.images?.[0]?.url;
-
-  return (
-    <article
-      onClick={() => onOpen(post)}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => (e.key === "Enter" ? onOpen(post) : null)}
-      style={{
-        borderRadius: 18,
-        overflow: "hidden",
-        border: "1px solid rgba(255,255,255,0.08)",
-        background: "rgba(10, 14, 18, 0.72)",
-        boxShadow: "0 14px 40px rgba(0,0,0,0.35)",
-        cursor: "pointer",
-        transition: "transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease",
-        outline: "none",
-      }}
-      className="el-blog-card"
-    >
-      {cover ? (
-        <div style={{ position: "relative" }}>
-          <img
-            src={cover}
-            alt={post.images?.[0]?.alt || post.title}
-            style={{ width: "100%", height: 190, objectFit: "cover", display: "block" }}
-            loading="lazy"
-          />
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.8))",
-            }}
-          />
-          <div style={{ position: "absolute", left: 16, right: 16, bottom: 14 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-              {post.createdAt ? (
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 8,
-                    padding: "6px 10px",
-                    borderRadius: 999,
-                    background: "rgba(0,0,0,0.5)",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    color: "rgba(255,255,255,0.85)",
-                    fontSize: 12,
-                    fontWeight: 700,
-                    letterSpacing: 0.2,
-                  }}
-                >
-                  {formatDate(post.createdAt)}
-                </span>
-              ) : null}
-              {post.attachments?.length ? (
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 8,
-                    padding: "6px 10px",
-                    borderRadius: 999,
-                    background: "rgba(0,0,0,0.5)",
-                    border: "1px solid rgba(34,197,94,0.35)",
-                    color: "rgba(232,255,241,0.9)",
-                    fontSize: 12,
-                    fontWeight: 800,
-                    letterSpacing: 0.2,
-                  }}
-                >
-                  {post.attachments.length} file{post.attachments.length === 1 ? "" : "s"}
-                </span>
-              ) : null}
-            </div>
-
-            <h3
-              style={{
-                margin: "10px 0 0 0",
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: 950,
-                lineHeight: 1.15,
-                letterSpacing: -0.2,
-                textShadow: "0 12px 32px rgba(0,0,0,0.55)",
-              }}
-            >
-              {post.title}
-            </h3>
-          </div>
-        </div>
-      ) : null}
-
-      <div style={{ padding: 16 }}>
-        {!cover ? (
-          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
-            <h3 style={{ margin: 0, color: "#fff", fontSize: 18, fontWeight: 950, lineHeight: 1.15 }}>
-              {post.title}
-            </h3>
-            {post.createdAt ? (
-              <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 700 }}>
-                {formatDate(post.createdAt)}
-              </span>
-            ) : null}
-          </div>
-        ) : null}
-
-        <p
-          style={{
-            margin: "10px 0 0 0",
-            color: "rgba(255,255,255,0.78)",
-            fontSize: 14,
-            lineHeight: 1.55,
-            display: "-webkit-box",
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {post.message}
-        </p>
-
-        <div style={{ marginTop: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 999,
-                background: "rgba(34,197,94,0.9)",
-                boxShadow: "0 0 0 4px rgba(34,197,94,0.18)",
-              }}
-            />
-            <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 700 }}>
-              Read post
-            </span>
-          </div>
-
-          {post.images?.length ? (
-            <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 700 }}>
-              {post.images.length} image{post.images.length === 1 ? "" : "s"}
-            </span>
-          ) : null}
-        </div>
-      </div>
-    </article>
-  );
-}
-
-function Modal({ open, onClose, children, ariaLabel }) {
-  useEffect(() => {
-    if (!open) return undefined;
-    const onKey = (e) => (e.key === "Escape" ? onClose() : null);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
-
-  if (!open) return null;
-
-  return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label={ariaLabel}
-      onMouseDown={(e) => (e.target === e.currentTarget ? onClose() : null)}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 9999,
-        background: "rgba(0,0,0,0.72)",
-        backdropFilter: "blur(10px)",
-        display: "grid",
-        placeItems: "center",
-        padding: 18,
-      }}
-    >
-      <div
-        style={{
-          width: "min(980px, 100%)",
-          maxHeight: "min(86vh, 900px)",
-          overflow: "auto",
-          borderRadius: 22,
-          border: "1px solid rgba(255,255,255,0.10)",
-          background: "rgba(10, 14, 18, 0.92)",
-          boxShadow: "0 24px 90px rgba(0,0,0,0.6)",
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
-
 function AttachmentList({ attachments }) {
   if (!attachments?.length) return null;
 
   return (
     <div style={{ marginTop: 18 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 10 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 12,
+          marginBottom: 10,
+        }}
+      >
         <h4 style={{ margin: 0, color: "#fff", fontSize: 14, fontWeight: 900, letterSpacing: 0.2 }}>
           Downloads
         </h4>
@@ -325,10 +138,19 @@ function AttachmentList({ attachments }) {
             className="el-download"
           >
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontWeight: 900, fontSize: 13, letterSpacing: 0.2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              <div
+                style={{
+                  fontWeight: 900,
+                  fontSize: 13,
+                  letterSpacing: 0.2,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
                 {a.name || `Document ${i + 1}`}
               </div>
-              {(a.sizeLabel || a.sizeBytes) ? (
+              {a.sizeLabel || a.sizeBytes ? (
                 <div style={{ marginTop: 4, color: "rgba(255,255,255,0.62)", fontSize: 12, fontWeight: 700 }}>
                   {a.sizeLabel || bytesToLabel(a.sizeBytes)}
                 </div>
@@ -351,7 +173,9 @@ function AttachmentList({ attachments }) {
               }}
             >
               Download
-              <span aria-hidden="true" style={{ transform: "translateY(-1px)" }}>↘</span>
+              <span aria-hidden="true" style={{ transform: "translateY(-1px)" }}>
+                ↘
+              </span>
             </span>
           </a>
         ))}
@@ -364,7 +188,7 @@ function ImageGrid({ images }) {
   if (!images?.length) return null;
 
   const count = images.length;
-  const gridTemplate = count === 1 ? "1fr" : count === 2 ? "1fr 1fr" : "1fr 1fr";
+  const gridTemplate = count === 1 ? "1fr" : "1fr 1fr";
 
   return (
     <div style={{ marginTop: 18 }}>
@@ -414,114 +238,147 @@ function ImageGrid({ images }) {
   );
 }
 
-function PostDetail({ post, onClose, isAdmin, onEdit, onDelete, deletingId }) {
-  return (
-    <div style={{ padding: 18 }}>
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-            {post.createdAt ? (
-              <span style={{ color: "rgba(255,255,255,0.62)", fontSize: 12, fontWeight: 800 }}>
-                {formatDate(post.createdAt)}
-              </span>
-            ) : null}
-            {post.author ? (
-              <span style={{ color: "rgba(255,255,255,0.62)", fontSize: 12, fontWeight: 800 }}>
-                • {post.author}
-              </span>
-            ) : null}
-          </div>
-          <h2 style={{ margin: "10px 0 0 0", color: "#fff", fontSize: 26, fontWeight: 1000, letterSpacing: -0.4, lineHeight: 1.12 }}>
-            {post.title}
-          </h2>
-        </div>
+function PostCard({ post, expanded, onToggle, isAdmin, onEdit, onDelete, deletingId }) {
+  const cover = post.images?.[0]?.url;
 
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          {isAdmin ? (
-            <>
-              <button
-                onClick={() => onEdit(post)}
+  return (
+    <article
+      style={{
+        borderRadius: 18,
+        overflow: "hidden",
+        border: expanded ? "1px solid rgba(34,197,94,0.35)" : "1px solid rgba(255,255,255,0.08)",
+        background: "rgba(10, 14, 18, 0.72)",
+        boxShadow: expanded ? "0 18px 60px rgba(0,0,0,0.45)" : "0 14px 40px rgba(0,0,0,0.35)",
+        transition: "box-shadow 140ms ease, border-color 140ms ease",
+      }}
+      className="el-blog-card"
+    >
+      <button
+        type="button"
+        onClick={() => onToggle(post.id)}
+        style={{
+          display: "block",
+          width: "100%",
+          padding: 0,
+          textAlign: "left",
+          border: 0,
+          background: "transparent",
+          cursor: "pointer",
+          color: "inherit",
+        }}
+        aria-expanded={expanded}
+      >
+        {cover ? (
+          <div style={{ position: "relative" }}>
+            <img
+              src={cover}
+              alt={post.images?.[0]?.alt || post.title}
+              style={{ width: "100%", height: 190, objectFit: "cover", display: "block" }}
+              loading="lazy"
+            />
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.8))",
+              }}
+            />
+            <div style={{ position: "absolute", left: 16, right: 16, bottom: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                {post.createdAt ? (
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 8,
+                      padding: "6px 10px",
+                      borderRadius: 999,
+                      background: "rgba(0,0,0,0.5)",
+                      border: "1px solid rgba(255,255,255,0.12)",
+                      color: "rgba(255,255,255,0.85)",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      letterSpacing: 0.2,
+                    }}
+                  >
+                    {formatDate(post.createdAt)}
+                  </span>
+                ) : null}
+                {post.attachments?.length ? (
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 8,
+                      padding: "6px 10px",
+                      borderRadius: 999,
+                      background: "rgba(0,0,0,0.5)",
+                      border: "1px solid rgba(34,197,94,0.35)",
+                      color: "rgba(232,255,241,0.9)",
+                      fontSize: 12,
+                      fontWeight: 800,
+                      letterSpacing: 0.2,
+                    }}
+                  >
+                    {post.attachments.length} file{post.attachments.length === 1 ? "" : "s"}
+                  </span>
+                ) : null}
+              </div>
+
+              <h3
                 style={{
-                  border: "1px solid rgba(255,255,255,0.14)",
-                  background: "rgba(255,255,255,0.06)",
+                  margin: "10px 0 0 0",
                   color: "#fff",
-                  fontWeight: 900,
-                  borderRadius: 12,
-                  padding: "10px 12px",
-                  cursor: "pointer",
+                  fontSize: 18,
+                  fontWeight: 950,
+                  lineHeight: 1.15,
+                  letterSpacing: -0.2,
+                  textShadow: "0 12px 32px rgba(0,0,0,0.55)",
                 }}
-                className="el-btn"
               >
-                Edit
-              </button>
-              <button
-                onClick={() => onDelete(post)}
-                disabled={deletingId === post.id}
-                style={{
-                  border: "1px solid rgba(248,113,113,0.30)",
-                  background: "rgba(248,113,113,0.12)",
-                  color: "#fff",
-                  fontWeight: 900,
-                  borderRadius: 12,
-                  padding: "10px 12px",
-                  cursor: deletingId === post.id ? "not-allowed" : "pointer",
-                  opacity: deletingId === post.id ? 0.7 : 1,
-                }}
-                className="el-btn"
-              >
-                {deletingId === post.id ? "Deleting..." : "Delete"}
-              </button>
-            </>
+                {post.title}
+              </h3>
+            </div>
+          </div>
+        ) : null}
+
+        <div style={{ padding: 16 }}>
+          {!cover ? (
+            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
+              <h3 style={{ margin: 0, color: "#fff", fontSize: 18, fontWeight: 950, lineHeight: 1.15 }}>
+                {post.title}
+              </h3>
+              {post.createdAt ? (
+                <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 700 }}>
+                  {formatDate(post.createdAt)}
+                </span>
+              ) : null}
+            </div>
           ) : null}
 
-          <button
-            onClick={onClose}
+          <p
             style={{
-              border: "1px solid rgba(255,255,255,0.14)",
-              background: "rgba(255,255,255,0.06)",
-              color: "#fff",
-              fontWeight: 900,
-              borderRadius: 12,
-              padding: "10px 12px",
-              cursor: "pointer",
-            }}
-            aria-label="Close"
-            className="el-btn"
-          >
-            ✕
-          </button>
-        </div>
-      </div>
-
-      <div className="el-modal-grid" style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1.3fr 0.7fr", gap: 16 }}>
-        <div style={{ minWidth: 0 }}>
-          <div
-            style={{
-              borderRadius: 18,
-              border: "1px solid rgba(255,255,255,0.10)",
-              background: "rgba(255,255,255,0.04)",
-              padding: 16,
+              margin: "10px 0 0 0",
+              color: "rgba(255,255,255,0.78)",
+              fontSize: 14,
+              lineHeight: 1.55,
+              display: "-webkit-box",
+              WebkitLineClamp: expanded ? 20 : 3,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
             }}
           >
-            <div style={{ color: "rgba(255,255,255,0.72)", fontSize: 12, fontWeight: 900, letterSpacing: 0.2 }}>
-              Message
-            </div>
-            <div style={{ height: 10 }} />
-            <div style={{ color: "rgba(255,255,255,0.86)", fontSize: 14, lineHeight: 1.75, whiteSpace: "pre-wrap" }}>
-              {post.message}
-            </div>
-          </div>
+            {post.message}
+          </p>
 
-          <ImageGrid images={post.images} />
-        </div>
-
-        <aside style={{ position: "sticky", top: 16, alignSelf: "start" }}>
           <div
             style={{
-              borderRadius: 18,
-              border: "1px solid rgba(255,255,255,0.10)",
-              background: "rgba(255,255,255,0.04)",
-              padding: 16,
+              marginTop: 14,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              flexWrap: "wrap",
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -534,24 +391,186 @@ function PostDetail({ post, onClose, isAdmin, onEdit, onDelete, deletingId }) {
                   boxShadow: "0 0 0 4px rgba(34,197,94,0.18)",
                 }}
               />
-              <div style={{ color: "#fff", fontWeight: 950, letterSpacing: 0.2 }}>
-                Attachments
-              </div>
+              <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 700 }}>
+                {expanded ? "Hide post" : "Read post"}
+              </span>
             </div>
 
-            <AttachmentList attachments={post.attachments} />
-
-            {!post.attachments?.length ? (
-              <div style={{ marginTop: 12, color: "rgba(255,255,255,0.60)", fontSize: 12, fontWeight: 700 }}>
-                No downloads for this post.
-              </div>
-            ) : null}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+              {post.images?.length ? (
+                <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 700 }}>
+                  {post.images.length} image{post.images.length === 1 ? "" : "s"}
+                </span>
+              ) : null}
+              <span style={{ color: "rgba(255,255,255,0.82)", fontSize: 12, fontWeight: 900 }}>
+                {expanded ? "− Collapse" : "+ Expand"}
+              </span>
+            </div>
           </div>
-        </aside>
-      </div>
+        </div>
+      </button>
 
-      <div style={{ height: 10 }} />
-    </div>
+      {expanded ? (
+        <div
+          style={{
+            borderTop: "1px solid rgba(255,255,255,0.08)",
+            padding: 16,
+            background: "rgba(255,255,255,0.03)",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
+              gap: 14,
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                {post.createdAt ? (
+                  <span style={{ color: "rgba(255,255,255,0.62)", fontSize: 12, fontWeight: 800 }}>
+                    {formatDate(post.createdAt)}
+                  </span>
+                ) : null}
+                {post.author ? (
+                  <span style={{ color: "rgba(255,255,255,0.62)", fontSize: 12, fontWeight: 800 }}>
+                    • {post.author}
+                  </span>
+                ) : null}
+              </div>
+              <h2
+                style={{
+                  margin: "10px 0 0 0",
+                  color: "#fff",
+                  fontSize: 26,
+                  fontWeight: 1000,
+                  letterSpacing: -0.4,
+                  lineHeight: 1.12,
+                }}
+              >
+                {post.title}
+              </h2>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+              {isAdmin ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => onEdit(post)}
+                    style={{
+                      border: "1px solid rgba(255,255,255,0.14)",
+                      background: "rgba(255,255,255,0.06)",
+                      color: "#fff",
+                      fontWeight: 900,
+                      borderRadius: 12,
+                      padding: "10px 12px",
+                      cursor: "pointer",
+                    }}
+                    className="el-btn"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onDelete(post)}
+                    disabled={deletingId === post.id}
+                    style={{
+                      border: "1px solid rgba(248,113,113,0.30)",
+                      background: "rgba(248,113,113,0.12)",
+                      color: "#fff",
+                      fontWeight: 900,
+                      borderRadius: 12,
+                      padding: "10px 12px",
+                      cursor: deletingId === post.id ? "not-allowed" : "pointer",
+                      opacity: deletingId === post.id ? 0.7 : 1,
+                    }}
+                    className="el-btn"
+                  >
+                    {deletingId === post.id ? "Deleting..." : "Delete"}
+                  </button>
+                </>
+              ) : null}
+
+              <button
+                type="button"
+                onClick={() => onToggle(post.id)}
+                style={{
+                  border: "1px solid rgba(255,255,255,0.14)",
+                  background: "rgba(255,255,255,0.06)",
+                  color: "#fff",
+                  fontWeight: 900,
+                  borderRadius: 12,
+                  padding: "10px 12px",
+                  cursor: "pointer",
+                }}
+                className="el-btn"
+              >
+                Collapse
+              </button>
+            </div>
+          </div>
+
+          <div className="el-expanded-grid" style={{ marginTop: 16, display: "grid", gap: 16 }}>
+            <div style={{ width: "100%", maxWidth: 1080 }}>
+              <div
+                style={{
+                  borderRadius: 18,
+                  border: "1px solid rgba(255,255,255,0.10)",
+                  background: "rgba(255,255,255,0.04)",
+                  padding: 16,
+                  marginBottom: 16,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: 999,
+                      background: "rgba(34,197,94,0.9)",
+                      boxShadow: "0 0 0 4px rgba(34,197,94,0.18)",
+                    }}
+                  />
+                  <div style={{ color: "#fff", fontWeight: 950, letterSpacing: 0.2 }}>
+                    Attachments
+                  </div>
+                </div>
+
+                <AttachmentList attachments={post.attachments} />
+
+                {!post.attachments?.length ? (
+                  <div style={{ marginTop: 12, color: "rgba(255,255,255,0.60)", fontSize: 12, fontWeight: 700 }}>
+                    No downloads for this post.
+                  </div>
+                ) : null}
+              </div>
+
+              <div
+                style={{
+                  borderRadius: 18,
+                  border: "1px solid rgba(255,255,255,0.10)",
+                  background: "rgba(255,255,255,0.04)",
+                  padding: 16,
+                }}
+              >
+                <div style={{ color: "rgba(255,255,255,0.72)", fontSize: 12, fontWeight: 900, letterSpacing: 0.2 }}>
+                  Message
+                </div>
+                <div style={{ height: 10 }} />
+                <div style={{ color: "rgba(255,255,255,0.86)", fontSize: 14, lineHeight: 1.75, whiteSpace: "pre-wrap" }}>
+                  {post.message}
+                </div>
+              </div>
+
+              <ImageGrid images={post.images} />
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </article>
   );
 }
 
@@ -572,7 +591,7 @@ export default function BlogPage() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const [posts, setPosts] = useState([]);
-  const [activePost, setActivePost] = useState(null);
+  const [expandedPostId, setExpandedPostId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
 
   const filteredCountLabel = useMemo(() => {
@@ -626,13 +645,17 @@ export default function BlogPage() {
     setAttachment(null);
     setFormError("");
     setShowForm(true);
-    setActivePost(null);
+    setExpandedPostId(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function closeForm() {
     setShowForm(false);
     resetForm();
+  }
+
+  function toggleExpanded(postId) {
+    setExpandedPostId((prev) => (prev === postId ? null : postId));
   }
 
   async function handleSubmit(e) {
@@ -657,7 +680,7 @@ export default function BlogPage() {
           const withoutCurrent = prev.filter((p) => p.id !== updatedPost.id);
           return normalizePosts([updatedPost, ...withoutCurrent]);
         });
-        setActivePost(updatedPost);
+        setExpandedPostId(updatedPost.id);
       }
 
       closeForm();
@@ -682,7 +705,7 @@ export default function BlogPage() {
         credentials: "include",
       });
       setPosts((prev) => prev.filter((p) => p.id !== post.id));
-      if (activePost?.id === post.id) setActivePost(null);
+      if (expandedPostId === post.id) setExpandedPostId(null);
       if (editingId === post.id) closeForm();
     } catch (err) {
       setFormError(err.message || "Error deleting post");
@@ -694,13 +717,13 @@ export default function BlogPage() {
   return (
     <div>
       <style>{`
-        .el-blog-card:hover { transform: translateY(-2px); box-shadow: 0 18px 60px rgba(0,0,0,0.45); border-color: rgba(34,197,94,0.35); }
+        .el-blog-card:hover { box-shadow: 0 18px 60px rgba(0,0,0,0.45); }
         .el-btn:hover { border-color: rgba(34,197,94,0.35); background: rgba(34,197,94,0.10); }
         .el-download:hover { border-color: rgba(34,197,94,0.35); background: rgba(34,197,94,0.10); }
         .el-image:hover { border-color: rgba(34,197,94,0.35); }
         @media (max-width: 860px) {
-          .el-modal-grid { grid-template-columns: 1fr !important; }
-          .el-post-grid-item { grid-column: span 12 !important; }
+          .el-expanded-grid { grid-template-columns: 1fr !important; }
+          .el-post-list { max-width: 100% !important; }
         }
       `}</style>
       <div
@@ -927,7 +950,7 @@ export default function BlogPage() {
                         }}
                         className="el-btn"
                       >
-                        {submitting ? (editingId ? "Saving..." : "Publishing...") : (editingId ? "Save changes" : "Publish")}
+                        {submitting ? (editingId ? "Saving..." : "Publishing...") : editingId ? "Save changes" : "Publish"}
                       </button>
                     </div>
                   </form>
@@ -942,11 +965,18 @@ export default function BlogPage() {
                     Loading posts…
                   </div>
                 ) : posts.length ? (
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 14 }}>
+                  <div className="el-post-list" style={{ display: "grid", gap: 14, maxWidth: 1080 }}>
                     {posts.map((p) => (
-                      <div key={p.id} className="el-post-grid-item" style={{ gridColumn: "span 6" }}>
-                        <PostCard post={p} onOpen={setActivePost} />
-                      </div>
+                      <PostCard
+                        key={p.id}
+                        post={p}
+                        expanded={expandedPostId === p.id}
+                        onToggle={toggleExpanded}
+                        isAdmin={isAdmin}
+                        onEdit={openEditForm}
+                        onDelete={handleDelete}
+                        deletingId={deletingId}
+                      />
                     ))}
                   </div>
                 ) : (
@@ -970,19 +1000,6 @@ export default function BlogPage() {
             </div>
           </div>
         </div>
-
-        <Modal open={!!activePost} onClose={() => setActivePost(null)} ariaLabel={activePost?.title || "Blog post"}>
-          {activePost ? (
-            <PostDetail
-              post={activePost}
-              onClose={() => setActivePost(null)}
-              isAdmin={isAdmin}
-              onEdit={openEditForm}
-              onDelete={handleDelete}
-              deletingId={deletingId}
-            />
-          ) : null}
-        </Modal>
       </div>
     </div>
   );

@@ -1,23 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
-import SiteHeader from "../components/SiteHeader/SiteHeader";
-
-/**
- * BlogPage (stylized)
- * - Displays posts with title, message, images, and downloadable documents
- * - Includes an "Add Blog Post" form UI (the API wiring is kept conservative)
- *
- * Expected API shape (recommended):
- *   GET  /api/blog  -> [{ id, title, message, createdAt, images:[{url,alt}], attachments:[{name,url,sizeLabel}] }]
- *   POST /api/blog  -> create post (optional)
- *
- * If your API returns a different shape, adjust the mapping in normalizePosts().
- */
+import { useAuth } from "../auth/AuthContext";
 
 function formatDate(iso) {
   if (!iso) return "";
   try {
     const d = new Date(iso);
-    return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
+    return d.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    });
   } catch {
     return "";
   }
@@ -37,19 +29,24 @@ function bytesToLabel(bytes) {
 
 function normalizePosts(raw) {
   if (!Array.isArray(raw)) return [];
+
   return raw
     .map((p, idx) => {
-      const images =
-        Array.isArray(p.images) ? p.images :
-        Array.isArray(p.imageUrls) ? p.imageUrls.map((url) => ({ url })) :
-        p.imageUrl ? [{ url: p.imageUrl }] :
-        [];
+      const images = Array.isArray(p.images)
+        ? p.images
+        : Array.isArray(p.imageUrls)
+          ? p.imageUrls.map((url) => ({ url }))
+          : p.imageUrl || p.image_url
+            ? [{ url: p.imageUrl || p.image_url }]
+            : [];
 
-      const attachments =
-        Array.isArray(p.attachments) ? p.attachments :
-        Array.isArray(p.documents) ? p.documents :
-        p.attachmentUrl ? [{ url: p.attachmentUrl, name: p.attachmentName || "Download" }] :
-        [];
+      const attachments = Array.isArray(p.attachments)
+        ? p.attachments
+        : Array.isArray(p.documents)
+          ? p.documents
+          : p.attachmentUrl || p.attachment_url
+            ? [{ url: p.attachmentUrl || p.attachment_url, name: p.attachmentName || "Download" }]
+            : [];
 
       return {
         id: p.id ?? p.postId ?? `${idx}`,
@@ -59,11 +56,24 @@ function normalizePosts(raw) {
         author: p.author ?? "",
         images: images
           .filter(Boolean)
-          .map((img, i) => (typeof img === "string" ? { url: img, alt: `${p.title || "Image"} ${i + 1}` } : ({ url: img.url, alt: img.alt || `${p.title || "Image"} ${i + 1}` })))
+          .map((img, i) =>
+            typeof img === "string"
+              ? { url: img, alt: `${p.title || "Image"} ${i + 1}` }
+              : { url: img.url, alt: img.alt || `${p.title || "Image"} ${i + 1}` }
+          )
           .filter((img) => !!img.url),
         attachments: attachments
           .filter(Boolean)
-          .map((a, i) => (typeof a === "string" ? { url: a, name: `Document ${i + 1}` } : ({ url: a.url, name: a.name || `Document ${i + 1}`, sizeLabel: a.sizeLabel, sizeBytes: a.sizeBytes })))
+          .map((a, i) =>
+            typeof a === "string"
+              ? { url: a, name: `Document ${i + 1}` }
+              : {
+                  url: a.url,
+                  name: a.name || `Document ${i + 1}`,
+                  sizeLabel: a.sizeLabel,
+                  sizeBytes: a.sizeBytes,
+                }
+          )
           .filter((a) => !!a.url),
       };
     })
@@ -72,6 +82,15 @@ function normalizePosts(raw) {
       const bd = b.createdAt ? new Date(b.createdAt).getTime() : 0;
       return bd - ad;
     });
+}
+
+async function fetchJson(url, opts) {
+  const res = await fetch(url, opts);
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    throw new Error(data?.error || `Request failed (${res.status})`);
+  }
+  return data;
 }
 
 function PostCard({ post, onOpen }) {
@@ -227,7 +246,7 @@ function PostCard({ post, onOpen }) {
 
 function Modal({ open, onClose, children, ariaLabel }) {
   useEffect(() => {
-    if (!open) return;
+    if (!open) return undefined;
     const onKey = (e) => (e.key === "Escape" ? onClose() : null);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -345,11 +364,7 @@ function ImageGrid({ images }) {
   if (!images?.length) return null;
 
   const count = images.length;
-
-  const gridTemplate =
-    count === 1 ? "1fr" :
-    count === 2 ? "1fr 1fr" :
-    "1fr 1fr";
+  const gridTemplate = count === 1 ? "1fr" : count === 2 ? "1fr 1fr" : "1fr 1fr";
 
   return (
     <div style={{ marginTop: 18 }}>
@@ -399,11 +414,11 @@ function ImageGrid({ images }) {
   );
 }
 
-function PostDetail({ post, onClose }) {
+function PostDetail({ post, onClose, isAdmin, onEdit, onDelete, deletingId }) {
   return (
     <div style={{ padding: 18 }}>
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 14 }}>
-        <div style={{ minWidth: 0 }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+        <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
             {post.createdAt ? (
               <span style={{ color: "rgba(255,255,255,0.62)", fontSize: 12, fontWeight: 800 }}>
@@ -421,25 +436,64 @@ function PostDetail({ post, onClose }) {
           </h2>
         </div>
 
-        <button
-          onClick={onClose}
-          style={{
-            border: "1px solid rgba(255,255,255,0.14)",
-            background: "rgba(255,255,255,0.06)",
-            color: "#fff",
-            fontWeight: 900,
-            borderRadius: 12,
-            padding: "10px 12px",
-            cursor: "pointer",
-          }}
-          aria-label="Close"
-          className="el-btn"
-        >
-          ✕
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          {isAdmin ? (
+            <>
+              <button
+                onClick={() => onEdit(post)}
+                style={{
+                  border: "1px solid rgba(255,255,255,0.14)",
+                  background: "rgba(255,255,255,0.06)",
+                  color: "#fff",
+                  fontWeight: 900,
+                  borderRadius: 12,
+                  padding: "10px 12px",
+                  cursor: "pointer",
+                }}
+                className="el-btn"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => onDelete(post)}
+                disabled={deletingId === post.id}
+                style={{
+                  border: "1px solid rgba(248,113,113,0.30)",
+                  background: "rgba(248,113,113,0.12)",
+                  color: "#fff",
+                  fontWeight: 900,
+                  borderRadius: 12,
+                  padding: "10px 12px",
+                  cursor: deletingId === post.id ? "not-allowed" : "pointer",
+                  opacity: deletingId === post.id ? 0.7 : 1,
+                }}
+                className="el-btn"
+              >
+                {deletingId === post.id ? "Deleting..." : "Delete"}
+              </button>
+            </>
+          ) : null}
+
+          <button
+            onClick={onClose}
+            style={{
+              border: "1px solid rgba(255,255,255,0.14)",
+              background: "rgba(255,255,255,0.06)",
+              color: "#fff",
+              fontWeight: 900,
+              borderRadius: 12,
+              padding: "10px 12px",
+              cursor: "pointer",
+            }}
+            aria-label="Close"
+            className="el-btn"
+          >
+            ✕
+          </button>
+        </div>
       </div>
 
-      <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1.3fr 0.7fr", gap: 16 }}>
+      <div className="el-modal-grid" style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1.3fr 0.7fr", gap: 16 }}>
         <div style={{ minWidth: 0 }}>
           <div
             style={{
@@ -502,55 +556,24 @@ function PostDetail({ post, onClose }) {
 }
 
 export default function BlogPage() {
-    // Blog post form submit handler
-    async function handleSubmit(e) {
-      e.preventDefault();
-      setFormError("");
-      setSubmitting(true);
-      try {
-        // Example payload, adjust as needed for your API
-        const payload = {
-          title,
-          message,
-          // image and attachment are UI-only unless API supports multipart
-        };
-        const res = await fetch("/api/blog", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error("Failed to publish post");
-        setTitle("");
-        setMessage("");
-        setImage(null);
-        setAttachment(null);
-        setShowForm(false);
-        // Optionally reload posts
-        const data = await res.json();
-        setPosts(normalizePosts(data));
-      } catch (err) {
-        setFormError(err.message || "Error publishing post");
-      } finally {
-        setSubmitting(false);
-      }
-    }
-  const [showForm, setShowForm] = useState(false);
+  const { user, loading: authLoading } = useAuth();
+  const isAdmin = user?.role === "admin";
 
-  // form
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [image, setImage] = useState(null); // UI only (not wired unless your API supports)
-  const [attachment, setAttachment] = useState(null); // UI only (not wired unless your API supports)
+  const [image, setImage] = useState(null);
+  const [attachment, setAttachment] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
 
-  // list
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const [posts, setPosts] = useState([]);
-
-  // modal
   const [activePost, setActivePost] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   const filteredCountLabel = useMemo(() => {
     const n = posts.length;
@@ -561,13 +584,12 @@ export default function BlogPage() {
 
   useEffect(() => {
     let mounted = true;
+
     async function load() {
       setLoading(true);
       setLoadError("");
       try {
-        const res = await fetch("/api/blog", { method: "GET" });
-        if (!res.ok) throw new Error("Failed to load blog posts");
-        const data = await res.json();
+        const data = await fetchJson("/api/blog", { method: "GET" });
         if (mounted) setPosts(normalizePosts(data));
       } catch (err) {
         if (mounted) setLoadError(err.message || "Error loading posts");
@@ -575,13 +597,102 @@ export default function BlogPage() {
         if (mounted) setLoading(false);
       }
     }
+
     load();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
+
+  function resetForm() {
+    setEditingId(null);
+    setTitle("");
+    setMessage("");
+    setImage(null);
+    setAttachment(null);
+    setFormError("");
+  }
+
+  function openCreateForm() {
+    resetForm();
+    setShowForm(true);
+  }
+
+  function openEditForm(post) {
+    setEditingId(post.id);
+    setTitle(post.title || "");
+    setMessage(post.message || "");
+    setImage(null);
+    setAttachment(null);
+    setFormError("");
+    setShowForm(true);
+    setActivePost(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function closeForm() {
+    setShowForm(false);
+    resetForm();
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setFormError("");
+    setSubmitting(true);
+
+    try {
+      const payload = { title, message };
+      const method = editingId ? "PATCH" : "POST";
+      const endpoint = editingId ? `/api/blog/${encodeURIComponent(editingId)}` : "/api/blog";
+      const data = await fetchJson(endpoint, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        credentials: "include",
+      });
+
+      const updatedPost = normalizePosts([data?.post])[0];
+      if (updatedPost) {
+        setPosts((prev) => {
+          const withoutCurrent = prev.filter((p) => p.id !== updatedPost.id);
+          return normalizePosts([updatedPost, ...withoutCurrent]);
+        });
+        setActivePost(updatedPost);
+      }
+
+      closeForm();
+    } catch (err) {
+      setFormError(err.message || "Error publishing post");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleDelete(post) {
+    if (!post?.id) return;
+    const ok = window.confirm(`Delete blog post "${post.title}"?`);
+    if (!ok) return;
+
+    setDeletingId(post.id);
+    setFormError("");
+
+    try {
+      await fetchJson(`/api/blog/${encodeURIComponent(post.id)}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      setPosts((prev) => prev.filter((p) => p.id !== post.id));
+      if (activePost?.id === post.id) setActivePost(null);
+      if (editingId === post.id) closeForm();
+    } catch (err) {
+      setFormError(err.message || "Error deleting post");
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   return (
     <div>
-      {/* Tiny CSS to give hover/polish without disrupting your existing CSS pipeline */}
       <style>{`
         .el-blog-card:hover { transform: translateY(-2px); box-shadow: 0 18px 60px rgba(0,0,0,0.45); border-color: rgba(34,197,94,0.35); }
         .el-btn:hover { border-color: rgba(34,197,94,0.35); background: rgba(34,197,94,0.10); }
@@ -589,6 +700,7 @@ export default function BlogPage() {
         .el-image:hover { border-color: rgba(34,197,94,0.35); }
         @media (max-width: 860px) {
           .el-modal-grid { grid-template-columns: 1fr !important; }
+          .el-post-grid-item { grid-column: span 12 !important; }
         }
       `}</style>
       <div
@@ -600,7 +712,6 @@ export default function BlogPage() {
         }}
       >
         <div style={{ maxWidth: 1120, margin: "0 auto" }}>
-          {/* Top hero */}
           <div
             style={{
               borderRadius: 22,
@@ -633,31 +744,33 @@ export default function BlogPage() {
                   <div style={{ marginTop: 14, color: "rgba(255,255,255,0.60)", fontSize: 12, fontWeight: 800 }}>
                     {filteredCountLabel}
                     {loadError ? <span style={{ marginLeft: 10, color: "rgba(248,113,113,0.95)" }}>• {loadError}</span> : null}
+                    {!authLoading && !isAdmin ? <span style={{ marginLeft: 10 }}>• Read-only for non-admin users</span> : null}
                   </div>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <button
-                    onClick={() => setShowForm((v) => !v)}
-                    style={{
-                      background: showForm ? "rgba(255,255,255,0.06)" : "rgba(34,197,94,0.95)",
-                      color: "#fff",
-                      fontWeight: 950,
-                      border: showForm ? "1px solid rgba(255,255,255,0.14)" : "1px solid rgba(34,197,94,0.40)",
-                      borderRadius: 14,
-                      padding: "12px 14px",
-                      cursor: "pointer",
-                      boxShadow: showForm ? "none" : "0 14px 40px rgba(34,197,94,0.20)",
-                    }}
-                    className="el-btn"
-                  >
-                    {showForm ? "Close editor" : "Add post"}
-                  </button>
-                </div>
+                {isAdmin ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <button
+                      onClick={() => (showForm ? closeForm() : openCreateForm())}
+                      style={{
+                        background: showForm ? "rgba(255,255,255,0.06)" : "rgba(34,197,94,0.95)",
+                        color: "#fff",
+                        fontWeight: 950,
+                        border: showForm ? "1px solid rgba(255,255,255,0.14)" : "1px solid rgba(34,197,94,0.40)",
+                        borderRadius: 14,
+                        padding: "12px 14px",
+                        cursor: "pointer",
+                        boxShadow: showForm ? "none" : "0 14px 40px rgba(34,197,94,0.20)",
+                      }}
+                      className="el-btn"
+                    >
+                      {showForm ? "Close editor" : "Add post"}
+                    </button>
+                  </div>
+                ) : null}
               </div>
 
-              {/* Form */}
-              {showForm && (
+              {isAdmin && showForm ? (
                 <div>
                   <form
                     onSubmit={handleSubmit}
@@ -670,6 +783,17 @@ export default function BlogPage() {
                       color: "#fff",
                     }}
                   >
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
+                      <div style={{ fontSize: 18, fontWeight: 1000 }}>
+                        {editingId ? "Edit post" : "Add post"}
+                      </div>
+                      {editingId ? (
+                        <div style={{ color: "rgba(255,255,255,0.60)", fontSize: 12, fontWeight: 800 }}>
+                          Editing post #{editingId}
+                        </div>
+                      ) : null}
+                    </div>
+
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                       <div style={{ gridColumn: "1 / -1" }}>
                         <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
@@ -716,10 +840,9 @@ export default function BlogPage() {
                         />
                       </div>
 
-                      {/* UI-only fields unless your API supports multipart */}
                       <div>
                         <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
-                          Image (optional)
+                          Image (optional, not saved yet)
                         </label>
                         <input
                           type="file"
@@ -743,7 +866,7 @@ export default function BlogPage() {
 
                       <div>
                         <label style={{ fontWeight: 900, display: "block", marginBottom: 6, color: "rgba(255,255,255,0.86)", fontSize: 12, letterSpacing: 0.2 }}>
-                          Document (optional)
+                          Document (optional, not saved yet)
                         </label>
                         <input
                           type="file"
@@ -764,15 +887,17 @@ export default function BlogPage() {
                         ) : null}
                       </div>
                     </div>
+
                     {formError ? (
                       <div style={{ marginTop: 12, color: "rgba(248,113,113,0.95)", fontWeight: 900 }}>
                         {formError}
                       </div>
                     ) : null}
+
                     <div style={{ marginTop: 12, display: "flex", justifyContent: "flex-end", gap: 10, flexWrap: "wrap" }}>
                       <button
                         type="button"
-                        onClick={() => setShowForm(false)}
+                        onClick={closeForm}
                         style={{
                           background: "transparent",
                           color: "rgba(255,255,255,0.85)",
@@ -802,22 +927,16 @@ export default function BlogPage() {
                         }}
                         className="el-btn"
                       >
-                        {submitting ? "Publishing..." : "Publish"}
+                        {submitting ? (editingId ? "Saving..." : "Publishing...") : (editingId ? "Save changes" : "Publish")}
                       </button>
-                    </div>
-                    <div style={{ marginTop: 10, color: "rgba(255,255,255,0.55)", fontSize: 12, fontWeight: 700, lineHeight: 1.5 }}>
-                      Tip: If you want the image + document uploads to actually save, we’ll switch the POST to
-                      <span style={{ color: "rgba(232,255,241,0.9)", fontWeight: 900 }}> multipart/form-data </span>
-                      and store the assets in R2/Cloudflare Images.
                     </div>
                   </form>
                 </div>
-              )}
+              ) : null}
 
-              <div style={{ height: 1, background: "rgba(255,255,255,0.08)" }} />
+              <div style={{ height: 1, marginTop: 18, background: "rgba(255,255,255,0.08)" }} />
 
-              {/* Posts list */}
-              <div style={{ padding: 22 }}>
+              <div style={{ padding: "22px 0 0 0" }}>
                 {loading ? (
                   <div style={{ color: "rgba(255,255,255,0.70)", fontWeight: 900 }}>
                     Loading posts…
@@ -825,7 +944,7 @@ export default function BlogPage() {
                 ) : posts.length ? (
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 14 }}>
                     {posts.map((p) => (
-                      <div key={p.id} style={{ gridColumn: "span 6" }}>
+                      <div key={p.id} className="el-post-grid-item" style={{ gridColumn: "span 6" }}>
                         <PostCard post={p} onOpen={setActivePost} />
                       </div>
                     ))}
@@ -851,10 +970,19 @@ export default function BlogPage() {
             </div>
           </div>
         </div>
+
         <Modal open={!!activePost} onClose={() => setActivePost(null)} ariaLabel={activePost?.title || "Blog post"}>
-          {activePost ? <PostDetail post={activePost} onClose={() => setActivePost(null)} /> : null}
+          {activePost ? (
+            <PostDetail
+              post={activePost}
+              onClose={() => setActivePost(null)}
+              isAdmin={isAdmin}
+              onEdit={openEditForm}
+              onDelete={handleDelete}
+              deletingId={deletingId}
+            />
+          ) : null}
         </Modal>
-        {/* <SiteFooter /> */}
       </div>
     </div>
   );

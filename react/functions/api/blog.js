@@ -1,50 +1,96 @@
-// Blog API endpoints for Cloudflare Workers
-export async function onRequest(context) {
-  const { request, env } = context;
-  const url = new URL(request.url);
-  const method = request.method;
+import { parseCookie, getUserFromSession } from '../_lib/auth.js';
 
-  // GET /api/blog - list all blog posts
-  if (url.pathname === "/api/blog" && method === "GET") {
-    const result = await env.DB.prepare("SELECT * FROM blog_posts ORDER BY created_at DESC").all();
-    return new Response(JSON.stringify(result.results), {
-      headers: { "Content-Type": "application/json" }
-    });
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+function json(body, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      ...CORS_HEADERS,
+    },
+  });
+}
+
+async function requireAdmin(request, env) {
+  const cookieHeader = request.headers.get('Cookie') || '';
+  const cookies = parseCookie(cookieHeader);
+  const token = cookies?.el_session || '';
+  const user = await getUserFromSession(env, token);
+
+  if (!user) return { ok: false, status: 401, error: 'Unauthorized' };
+  if ((user.role || 'user') !== 'admin') return { ok: false, status: 403, error: 'Forbidden' };
+  return { ok: true, user };
+}
+
+function cleanText(value, maxLen = 0) {
+  const out = String(value || '').trim();
+  if (!maxLen) return out;
+  return out.slice(0, maxLen);
+}
+
+export async function onRequestOptions() {
+  return new Response(null, { status: 204, headers: CORS_HEADERS });
+}
+
+export async function onRequestGet({ env }) {
+  try {
+    const result = await env.DB.prepare(
+      `SELECT id, title, message, image_url, attachment_url, created_at
+       FROM blog_posts
+       ORDER BY datetime(created_at) DESC, id DESC`
+    ).all();
+
+    return json(result?.results || []);
+  } catch (err) {
+    console.error('BLOG LIST ERROR:', err);
+    return json({ ok: false, error: 'Server error loading blog posts.' }, 500);
+  }
+}
+
+export async function onRequestPost({ request, env }) {
+  const auth = await requireAdmin(request, env);
+  if (!auth.ok) return json({ ok: false, error: auth.error }, auth.status);
+
+  let payload = {};
+  try {
+    payload = await request.json();
+  } catch {
+    return json({ ok: false, error: 'Invalid JSON body.' }, 400);
   }
 
-  // POST /api/blog - create a new blog post
-  if (url.pathname === "/api/blog" && method === "POST") {
-    const data = await request.json();
-    const { title, message, image_url, attachment_url } = data;
-    if (!title || !message) {
-      return new Response(JSON.stringify({ error: "Title and message required" }), { status: 400 });
-    }
-    const stmt = env.DB.prepare(
-      "INSERT INTO blog_posts (title, message, image_url, attachment_url) VALUES (?, ?, ?, ?)"
-    );
-    await stmt.bind(title, message, image_url || null, attachment_url || null).run();
-    return new Response(JSON.stringify({ success: true }), { status: 201 });
-  }
+  const title = cleanText(payload.title, 200);
+  const message = cleanText(payload.message);
+  const imageUrl = cleanText(payload.image_url || payload.imageUrl, 1200) || null;
+  const attachmentUrl = cleanText(payload.attachment_url || payload.attachmentUrl, 1200) || null;
 
-  // GET /api/blog/:id - get a single blog post
-  const blogIdMatch = url.pathname.match(/^\/api\/blog\/(\d+)$/);
-  if (blogIdMatch && method === "GET") {
-    const id = blogIdMatch[1];
-    const result = await env.DB.prepare("SELECT * FROM blog_posts WHERE id = ?").bind(id).first();
-    if (!result) {
-      return new Response(JSON.stringify({ error: "Not found" }), { status: 404 });
-    }
-    return new Response(JSON.stringify(result), {
-      headers: { "Content-Type": "application/json" }
-    });
-  }
+  if (!title) return json({ ok: false, error: 'Title is required.' }, 400);
+  if (!message) return json({ ok: false, error: 'Message is required.' }, 400);
 
-  // DELETE /api/blog/:id - delete a blog post
-  if (blogIdMatch && method === "DELETE") {
-    const id = blogIdMatch[1];
-    await env.DB.prepare("DELETE FROM blog_posts WHERE id = ?").bind(id).run();
-    return new Response(JSON.stringify({ success: true }), { status: 200 });
-  }
+  try {
+    const createdAt = new Date().toISOString();
+    const inserted = await env.DB.prepare(
+      `INSERT INTO blog_posts (title, message, image_url, attachment_url, created_at)
+       VALUES (?, ?, ?, ?, ?)`
+    ).bind(title, message, imageUrl, attachmentUrl, createdAt).run();
 
-  return new Response("Not found", { status: 404 });
+    const newId = inserted?.meta?.last_row_id;
+    const post = newId
+      ? await env.DB.prepare(
+          `SELECT id, title, message, image_url, attachment_url, created_at
+           FROM blog_posts
+           WHERE id = ?
+           LIMIT 1`
+        ).bind(newId).first()
+      : null;
+
+    return json({ ok: true, post }, 201);
+  } catch (err) {
+    console.error('BLOG CREATE ERROR:', err);
+    return json({ ok: false, error: 'Server error creating blog post.' }, 500);
+  }
 }

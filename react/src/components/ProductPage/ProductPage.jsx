@@ -956,7 +956,7 @@ export default function ProductPage() {
   const isIsolatesCollection = /\bisolates?\b/.test(isolatesHaystack);
 
   const starterSetHeading = `New to ${collection?.name || "This Collection"} Profiles?`;
-  const freeSamplesRoute = "/free-samples";
+  const freeSamplesRoute = "/contact";
 
 
 
@@ -969,7 +969,7 @@ export default function ProductPage() {
             <button
               type="button"
               className="pp-qualifyWidgetButton"
-              onClick={() => navigate(freeSamplesRoute)}
+              onClick={() => navigate("/contact")}
             >
               <div className="pp-qualifyWidgetIcon" aria-hidden="true">🧪</div>
               <div className="pp-qualifyWidgetText">
@@ -990,19 +990,7 @@ export default function ProductPage() {
               )}
             </div>
 
-            <div className="pp-thumbRow" role="list" aria-label="Image thumbnails">
-              {galleryImages.map((src, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  className={`pp-thumb ${i === activeImg ? "isActive" : ""}`}
-                  onClick={() => setActiveImg(i)}
-                  aria-label={`View image ${i + 1}`}
-                >
-                  <img src={src} alt="" />
-                </button>
-              ))}
-            </div>
+            {/* Removed image thumbnail selection to prevent user from choosing image */}
 
             <div className="pp-galleryMeta">
                 {isAdmin && (

@@ -1205,6 +1205,8 @@ export default function BlogPage() {
                               outline: "none",
                               lineHeight: 1.7,
                               fontSize: 14,
+                              textAlign: "left",
+                              direction: "ltr",
                             }}
                           />
                         </div>

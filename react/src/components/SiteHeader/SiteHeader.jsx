@@ -548,6 +548,21 @@ export default function SiteHeader({
           color: #6b7280;
         }
 
+        @media (max-width: 700px) {
+          .ts-searchShell {
+            width: 100%;
+            min-width: 0;
+          }
+
+          .ts-searchSuggestions {
+            left: 0;
+            right: auto;
+            width: min(84vw, 360px);
+            max-width: calc(100vw - 24px);
+          }
+        }
+
+
         @media (min-width: 901px) {
           .ts-desktopOnlyResourceLink {
             display: none !important;

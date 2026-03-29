@@ -1,13 +1,11 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-
-// .wrangler/tmp/pages-2jPcjC/functionsWorker-0.2764092313878981.mjs
-var __defProp2 = Object.defineProperty;
-var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
-var __export = /* @__PURE__ */ __name((target, all) => {
+var __export = (target, all) => {
   for (var name in all)
-    __defProp2(target, name, { get: all[name], enumerable: true });
-}, "__export");
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+
+// _lib/auth.js
 var encoder = new TextEncoder();
 function json(status, data, extraHeaders = {}) {
   const headers = new Headers({
@@ -17,12 +15,10 @@ function json(status, data, extraHeaders = {}) {
   return new Response(JSON.stringify(data), { status, headers });
 }
 __name(json, "json");
-__name2(json, "json");
 function normalizeEmail(email) {
   return String(email || "").trim().toLowerCase();
 }
 __name(normalizeEmail, "normalizeEmail");
-__name2(normalizeEmail, "normalizeEmail");
 function cookieOptions(opts = {}) {
   const defaults = {
     httpOnly: true,
@@ -35,7 +31,6 @@ function cookieOptions(opts = {}) {
   return { ...defaults, ...opts };
 }
 __name(cookieOptions, "cookieOptions");
-__name2(cookieOptions, "cookieOptions");
 function setCookie(headers, name, value, options = {}) {
   const opts = cookieOptions(options);
   const parts = [`${name}=${encodeURIComponent(value)}`];
@@ -48,7 +43,6 @@ function setCookie(headers, name, value, options = {}) {
   headers.append("Set-Cookie", parts.join("; "));
 }
 __name(setCookie, "setCookie");
-__name2(setCookie, "setCookie");
 function parseCookie(cookieHeader) {
   const out = {};
   const str = cookieHeader || "";
@@ -60,14 +54,12 @@ function parseCookie(cookieHeader) {
   return out;
 }
 __name(parseCookie, "parseCookie");
-__name2(parseCookie, "parseCookie");
 function randomToken(byteLen = 32) {
   const bytes = new Uint8Array(byteLen);
   crypto.getRandomValues(bytes);
   return [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 __name(randomToken, "randomToken");
-__name2(randomToken, "randomToken");
 var DEFAULT_PBKDF2_ITERS = 1e5;
 async function hashPassword(password, iters = DEFAULT_PBKDF2_ITERS) {
   const safeIters = Math.min(Number(iters) || DEFAULT_PBKDF2_ITERS, 1e5);
@@ -94,7 +86,6 @@ async function hashPassword(password, iters = DEFAULT_PBKDF2_ITERS) {
   return `pbkdf2$${safeIters}$${toHex(salt)}$${toHex(hash)}`;
 }
 __name(hashPassword, "hashPassword");
-__name2(hashPassword, "hashPassword");
 async function verifyPassword(password, stored) {
   try {
     const [alg, itersStr, saltHex, hashHex] = String(stored || "").split("$");
@@ -126,7 +117,6 @@ async function verifyPassword(password, stored) {
   }
 }
 __name(verifyPassword, "verifyPassword");
-__name2(verifyPassword, "verifyPassword");
 async function getUserFromSession(env, sessionToken) {
   if (!env?.DB || !sessionToken) return null;
   const row = await env.DB.prepare(
@@ -144,12 +134,10 @@ async function getUserFromSession(env, sessionToken) {
   return { id: row.id, email: row.email, role: row.role || "user" };
 }
 __name(getUserFromSession, "getUserFromSession");
-__name2(getUserFromSession, "getUserFromSession");
 function toHex(u8) {
   return [...u8].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 __name(toHex, "toHex");
-__name2(toHex, "toHex");
 function fromHex(hex) {
   const clean = String(hex || "").trim();
   const out = new Uint8Array(clean.length / 2);
@@ -159,7 +147,6 @@ function fromHex(hex) {
   return out;
 }
 __name(fromHex, "fromHex");
-__name2(fromHex, "fromHex");
 function timingSafeEqual(a, b) {
   if (a.length !== b.length) return false;
   let diff = 0;
@@ -167,7 +154,8 @@ function timingSafeEqual(a, b) {
   return diff === 0;
 }
 __name(timingSafeEqual, "timingSafeEqual");
-__name2(timingSafeEqual, "timingSafeEqual");
+
+// api/collections/[id]/documents/[docId]/download.js
 var CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,OPTIONS",
@@ -177,15 +165,13 @@ function withCors(headers = {}) {
   return { ...headers, ...CORS_HEADERS };
 }
 __name(withCors, "withCors");
-__name2(withCors, "withCors");
 function json2(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: withCors({ "Content-Type": "application/json", ...extraHeaders })
   });
 }
-__name(json2, "json2");
-__name2(json2, "json");
+__name(json2, "json");
 function safeJsonArray(text) {
   if (!text) return [];
   try {
@@ -196,7 +182,6 @@ function safeJsonArray(text) {
   }
 }
 __name(safeJsonArray, "safeJsonArray");
-__name2(safeJsonArray, "safeJsonArray");
 async function requireLoginIfConfigured(request, env) {
   if (String(env.DOCS_REQUIRE_LOGIN || "") !== "1") return { ok: true };
   const cookieHeader = request.headers.get("Cookie") || "";
@@ -207,12 +192,10 @@ async function requireLoginIfConfigured(request, env) {
   return { ok: true, user };
 }
 __name(requireLoginIfConfigured, "requireLoginIfConfigured");
-__name2(requireLoginIfConfigured, "requireLoginIfConfigured");
 async function onRequestOptions() {
   return new Response(null, { status: 204, headers: withCors() });
 }
 __name(onRequestOptions, "onRequestOptions");
-__name2(onRequestOptions, "onRequestOptions");
 async function onRequestGet({ request, env, params }) {
   const id = params?.id;
   const docId = params?.docId;
@@ -250,7 +233,8 @@ async function onRequestGet({ request, env, params }) {
   return new Response(obj.body, { status: 200, headers });
 }
 __name(onRequestGet, "onRequestGet");
-__name2(onRequestGet, "onRequestGet");
+
+// api/collections/[id]/documents/upload.js
 var CORS_HEADERS2 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST,OPTIONS",
@@ -262,8 +246,7 @@ function json3(body, status = 200, extraHeaders = {}) {
     headers: { "Content-Type": "application/json", ...CORS_HEADERS2, ...extraHeaders }
   });
 }
-__name(json3, "json3");
-__name2(json3, "json");
+__name(json3, "json");
 async function requireAdmin(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -274,7 +257,6 @@ async function requireAdmin(request, env) {
   return { ok: true, user };
 }
 __name(requireAdmin, "requireAdmin");
-__name2(requireAdmin, "requireAdmin");
 function safeJsonArray2(text) {
   if (!text) return [];
   if (Array.isArray(text)) return text;
@@ -285,19 +267,16 @@ function safeJsonArray2(text) {
     return [];
   }
 }
-__name(safeJsonArray2, "safeJsonArray2");
-__name2(safeJsonArray2, "safeJsonArray");
+__name(safeJsonArray2, "safeJsonArray");
 function sanitizeFileName(name) {
   const base = String(name || "document").replace(/[/\\?%*:|"<>]/g, "_");
   return base.length > 120 ? base.slice(0, 120) : base;
 }
 __name(sanitizeFileName, "sanitizeFileName");
-__name2(sanitizeFileName, "sanitizeFileName");
 async function onRequestOptions2() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS2 } });
 }
-__name(onRequestOptions2, "onRequestOptions2");
-__name2(onRequestOptions2, "onRequestOptions");
+__name(onRequestOptions2, "onRequestOptions");
 async function onRequestPost({ request, env, params }) {
   const id = params?.id;
   if (!id) return json3({ ok: false, error: "Missing collection id." }, 400);
@@ -382,7 +361,8 @@ async function onRequestPost({ request, env, params }) {
   });
 }
 __name(onRequestPost, "onRequestPost");
-__name2(onRequestPost, "onRequestPost");
+
+// api/collections/[id]/documents/[docId].js
 var CORS_HEADERS3 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "DELETE,OPTIONS",
@@ -394,8 +374,7 @@ function json4(body, status = 200, extraHeaders = {}) {
     headers: { "Content-Type": "application/json", ...CORS_HEADERS3, ...extraHeaders }
   });
 }
-__name(json4, "json4");
-__name2(json4, "json");
+__name(json4, "json");
 async function requireAdmin2(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -405,8 +384,7 @@ async function requireAdmin2(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin2, "requireAdmin2");
-__name2(requireAdmin2, "requireAdmin");
+__name(requireAdmin2, "requireAdmin");
 function safeJsonArray3(text) {
   if (!text) return [];
   try {
@@ -416,13 +394,11 @@ function safeJsonArray3(text) {
     return [];
   }
 }
-__name(safeJsonArray3, "safeJsonArray3");
-__name2(safeJsonArray3, "safeJsonArray");
+__name(safeJsonArray3, "safeJsonArray");
 async function onRequestOptions3() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS3 } });
 }
-__name(onRequestOptions3, "onRequestOptions3");
-__name2(onRequestOptions3, "onRequestOptions");
+__name(onRequestOptions3, "onRequestOptions");
 async function onRequestDelete({ request, env, params }) {
   const id = params?.id;
   const docId = params?.docId;
@@ -453,15 +429,15 @@ async function onRequestDelete({ request, env, params }) {
   return json4({ ok: true, deleted: { id: docId } });
 }
 __name(onRequestDelete, "onRequestDelete");
-__name2(onRequestDelete, "onRequestDelete");
+
+// api/collections/[id]/sample-profiles/[profileId].js
 function json5(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...extraHeaders }
   });
 }
-__name(json5, "json5");
-__name2(json5, "json");
+__name(json5, "json");
 async function requireAdmin3(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -471,8 +447,7 @@ async function requireAdmin3(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin3, "requireAdmin3");
-__name2(requireAdmin3, "requireAdmin");
+__name(requireAdmin3, "requireAdmin");
 async function onRequest(context) {
   const { request, env, params } = context;
   const collectionId = String(params?.id || "").trim();
@@ -502,7 +477,8 @@ async function onRequest(context) {
   }
 }
 __name(onRequest, "onRequest");
-__name2(onRequest, "onRequest");
+
+// api/profiles/[slug]/sku-options.js
 var CORS_HEADERS4 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,OPTIONS",
@@ -514,8 +490,7 @@ function json6(body, status = 200) {
     headers: { "Content-Type": "application/json", ...CORS_HEADERS4 }
   });
 }
-__name(json6, "json6");
-__name2(json6, "json");
+__name(json6, "json");
 function parseJsonArray(value) {
   if (!value) return [];
   if (Array.isArray(value)) return value;
@@ -527,7 +502,6 @@ function parseJsonArray(value) {
   }
 }
 __name(parseJsonArray, "parseJsonArray");
-__name2(parseJsonArray, "parseJsonArray");
 function normalizeProfileRow(row) {
   if (!row) return null;
   return {
@@ -537,12 +511,10 @@ function normalizeProfileRow(row) {
   };
 }
 __name(normalizeProfileRow, "normalizeProfileRow");
-__name2(normalizeProfileRow, "normalizeProfileRow");
 async function onRequestOptions4() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS4 } });
 }
-__name(onRequestOptions4, "onRequestOptions4");
-__name2(onRequestOptions4, "onRequestOptions");
+__name(onRequestOptions4, "onRequestOptions");
 async function onRequestGet2({ env, params }) {
   const slug = String(params?.slug || "").trim();
   if (!slug) return json6({ ok: false, error: "Missing slug." }, 400);
@@ -603,26 +575,24 @@ async function onRequestGet2({ env, params }) {
     return json6({ ok: false, error: String(err?.message || err || "Server error.") }, 500);
   }
 }
-__name(onRequestGet2, "onRequestGet2");
-__name2(onRequestGet2, "onRequestGet");
+__name(onRequestGet2, "onRequestGet");
+
+// api/collections/[id]/profiles.js
 function json7(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...extraHeaders }
   });
 }
-__name(json7, "json7");
-__name2(json7, "json");
+__name(json7, "json");
 function slugify(input) {
   return String(input || "").trim().toLowerCase().replace(/['"]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
 }
 __name(slugify, "slugify");
-__name2(slugify, "slugify");
 function nowIso() {
   return (/* @__PURE__ */ new Date()).toISOString();
 }
 __name(nowIso, "nowIso");
-__name2(nowIso, "nowIso");
 function cleanImagesArray(value) {
   if (!Array.isArray(value)) return [];
   return value.filter((x) => x && typeof x.url === "string" && x.url.trim()).map((x, idx) => ({
@@ -633,7 +603,6 @@ function cleanImagesArray(value) {
   }));
 }
 __name(cleanImagesArray, "cleanImagesArray");
-__name2(cleanImagesArray, "cleanImagesArray");
 async function requireAdmin4(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -643,8 +612,7 @@ async function requireAdmin4(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin4, "requireAdmin4");
-__name2(requireAdmin4, "requireAdmin");
+__name(requireAdmin4, "requireAdmin");
 async function onRequest2(context) {
   const { request, env, params } = context;
   const id = params?.id;
@@ -736,21 +704,20 @@ async function onRequest2(context) {
   }
   return json7({ ok: false, error: "Method not allowed" }, 405);
 }
-__name(onRequest2, "onRequest2");
-__name2(onRequest2, "onRequest");
+__name(onRequest2, "onRequest");
+
+// api/collections/[id]/sample-profiles.js
 function json8(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...extraHeaders }
   });
 }
-__name(json8, "json8");
-__name2(json8, "json");
+__name(json8, "json");
 function nowIso2() {
   return (/* @__PURE__ */ new Date()).toISOString();
 }
-__name(nowIso2, "nowIso2");
-__name2(nowIso2, "nowIso");
+__name(nowIso2, "nowIso");
 async function requireAdmin5(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -760,8 +727,7 @@ async function requireAdmin5(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin5, "requireAdmin5");
-__name2(requireAdmin5, "requireAdmin");
+__name(requireAdmin5, "requireAdmin");
 async function onRequest3(context) {
   const { request, env, params } = context;
   const collectionId = String(params?.id || "").trim();
@@ -862,8 +828,9 @@ async function onRequest3(context) {
   }
   return json8({ ok: false, error: "Method not allowed" }, 405);
 }
-__name(onRequest3, "onRequest3");
-__name2(onRequest3, "onRequest");
+__name(onRequest3, "onRequest");
+
+// api/auth/login.js
 var SESSION_COOKIE = "el_session";
 var SESSION_TTL_MS = 1e3 * 60 * 60 * 24 * 14;
 async function onRequestPost2(context) {
@@ -904,8 +871,9 @@ async function onRequestPost2(context) {
     return json(500, { ok: false, error: String(e?.message || e) });
   }
 }
-__name(onRequestPost2, "onRequestPost2");
-__name2(onRequestPost2, "onRequestPost");
+__name(onRequestPost2, "onRequestPost");
+
+// api/auth/logout.js
 var SESSION_COOKIE2 = "el_session";
 async function onRequestPost3(context) {
   const { request, env } = context;
@@ -922,8 +890,9 @@ async function onRequestPost3(context) {
   setCookie(headers, SESSION_COOKIE2, "", cookieOptions({ maxAge: 0 }));
   return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
 }
-__name(onRequestPost3, "onRequestPost3");
-__name2(onRequestPost3, "onRequestPost");
+__name(onRequestPost3, "onRequestPost");
+
+// api/auth/me.js
 var SESSION_COOKIE3 = "el_session";
 async function onRequestGet3(context) {
   const cookies = parseCookie(context.request.headers.get("Cookie"));
@@ -931,8 +900,9 @@ async function onRequestGet3(context) {
   const user = await getUserFromSession(context.env, token);
   return json(200, { ok: true, user: user || null });
 }
-__name(onRequestGet3, "onRequestGet3");
-__name2(onRequestGet3, "onRequestGet");
+__name(onRequestGet3, "onRequestGet");
+
+// api/auth/register.js
 async function onRequestPost4(context) {
   try {
     const { request, env } = context;
@@ -979,8 +949,9 @@ async function onRequestPost4(context) {
     return json(500, { ok: false, error: String(e?.message || e) });
   }
 }
-__name(onRequestPost4, "onRequestPost4");
-__name2(onRequestPost4, "onRequestPost");
+__name(onRequestPost4, "onRequestPost");
+
+// api/images/direct-upload.js
 var CORS_HEADERS5 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST,OPTIONS",
@@ -992,8 +963,7 @@ function json9(body, status = 200, extraHeaders = {}) {
     headers: { "Content-Type": "application/json", ...CORS_HEADERS5, ...extraHeaders }
   });
 }
-__name(json9, "json9");
-__name2(json9, "json");
+__name(json9, "json");
 async function requireAdmin6(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -1003,13 +973,11 @@ async function requireAdmin6(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin6, "requireAdmin6");
-__name2(requireAdmin6, "requireAdmin");
+__name(requireAdmin6, "requireAdmin");
 async function onRequestOptions5() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS5 } });
 }
-__name(onRequestOptions5, "onRequestOptions5");
-__name2(onRequestOptions5, "onRequestOptions");
+__name(onRequestOptions5, "onRequestOptions");
 async function onRequestPost5({ request, env }) {
   const gate = await requireAdmin6(request, env);
   if (!gate.ok) return json9({ ok: false, error: gate.error }, gate.status);
@@ -1056,8 +1024,9 @@ async function onRequestPost5({ request, env }) {
   }
   return json9({ ok: true, id: data.result?.id, uploadURL: data.result?.uploadURL });
 }
-__name(onRequestPost5, "onRequestPost5");
-__name2(onRequestPost5, "onRequestPost");
+__name(onRequestPost5, "onRequestPost");
+
+// api/admin-orders/[id].js
 var CORS_HEADERS6 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "PATCH,OPTIONS",
@@ -1073,8 +1042,7 @@ function json10(body, status = 200) {
     }
   });
 }
-__name(json10, "json10");
-__name2(json10, "json");
+__name(json10, "json");
 async function requireAdmin7(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -1084,8 +1052,7 @@ async function requireAdmin7(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin7, "requireAdmin7");
-__name2(requireAdmin7, "requireAdmin");
+__name(requireAdmin7, "requireAdmin");
 function normalizeStatus(value) {
   const raw = String(value || "").trim().toLowerCase();
   if (!raw) return "Processing";
@@ -1093,12 +1060,10 @@ function normalizeStatus(value) {
   return raw.charAt(0).toUpperCase() + raw.slice(1);
 }
 __name(normalizeStatus, "normalizeStatus");
-__name2(normalizeStatus, "normalizeStatus");
 async function onRequestOptions6() {
   return new Response(null, { status: 204, headers: CORS_HEADERS6 });
 }
-__name(onRequestOptions6, "onRequestOptions6");
-__name2(onRequestOptions6, "onRequestOptions");
+__name(onRequestOptions6, "onRequestOptions");
 async function onRequestPatch({ request, env, params }) {
   const auth = await requireAdmin7(request, env);
   if (!auth.ok) return json10({ ok: false, error: auth.error }, auth.status);
@@ -1157,7 +1122,8 @@ async function onRequestPatch({ request, env, params }) {
   }
 }
 __name(onRequestPatch, "onRequestPatch");
-__name2(onRequestPatch, "onRequestPatch");
+
+// api/blog/[id].js
 var CORS_HEADERS7 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,PATCH,DELETE,OPTIONS",
@@ -1172,8 +1138,7 @@ function json11(body, status = 200) {
     }
   });
 }
-__name(json11, "json11");
-__name2(json11, "json");
+__name(json11, "json");
 async function requireAdmin8(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -1183,26 +1148,22 @@ async function requireAdmin8(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin8, "requireAdmin8");
-__name2(requireAdmin8, "requireAdmin");
+__name(requireAdmin8, "requireAdmin");
 function cleanText(value, maxLen = 0) {
   const out = String(value || "").trim();
   if (!maxLen) return out;
   return out.slice(0, maxLen);
 }
 __name(cleanText, "cleanText");
-__name2(cleanText, "cleanText");
 function parseId(value) {
   const n = Number(value || 0);
   return Number.isInteger(n) && n > 0 ? n : 0;
 }
 __name(parseId, "parseId");
-__name2(parseId, "parseId");
 async function onRequestOptions7() {
   return new Response(null, { status: 204, headers: CORS_HEADERS7 });
 }
-__name(onRequestOptions7, "onRequestOptions7");
-__name2(onRequestOptions7, "onRequestOptions");
+__name(onRequestOptions7, "onRequestOptions");
 async function onRequestGet4({ env, params }) {
   const id = parseId(params?.id);
   if (!id) return json11({ ok: false, error: "Invalid blog id." }, 400);
@@ -1220,8 +1181,7 @@ async function onRequestGet4({ env, params }) {
     return json11({ ok: false, error: "Server error loading blog post." }, 500);
   }
 }
-__name(onRequestGet4, "onRequestGet4");
-__name2(onRequestGet4, "onRequestGet");
+__name(onRequestGet4, "onRequestGet");
 async function onRequestPatch2({ request, env, params }) {
   const auth = await requireAdmin8(request, env);
   if (!auth.ok) return json11({ ok: false, error: auth.error }, auth.status);
@@ -1261,8 +1221,7 @@ async function onRequestPatch2({ request, env, params }) {
     return json11({ ok: false, error: "Server error updating blog post." }, 500);
   }
 }
-__name(onRequestPatch2, "onRequestPatch2");
-__name2(onRequestPatch2, "onRequestPatch");
+__name(onRequestPatch2, "onRequestPatch");
 async function onRequestDelete2({ request, env, params }) {
   const auth = await requireAdmin8(request, env);
   if (!auth.ok) return json11({ ok: false, error: auth.error }, auth.status);
@@ -1280,8 +1239,9 @@ async function onRequestDelete2({ request, env, params }) {
     return json11({ ok: false, error: "Server error deleting blog post." }, 500);
   }
 }
-__name(onRequestDelete2, "onRequestDelete2");
-__name2(onRequestDelete2, "onRequestDelete");
+__name(onRequestDelete2, "onRequestDelete");
+
+// api/collections/[id].js
 var CORS_HEADERS8 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,PUT,OPTIONS",
@@ -1293,8 +1253,7 @@ function json12(body, status = 200, extraHeaders = {}) {
     headers: { "Content-Type": "application/json", ...CORS_HEADERS8, ...extraHeaders }
   });
 }
-__name(json12, "json12");
-__name2(json12, "json");
+__name(json12, "json");
 async function requireAdmin9(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -1304,27 +1263,23 @@ async function requireAdmin9(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin9, "requireAdmin9");
-__name2(requireAdmin9, "requireAdmin");
+__name(requireAdmin9, "requireAdmin");
 function toText(v) {
   if (v === null || typeof v === "undefined") return null;
   return String(v);
 }
 __name(toText, "toText");
-__name2(toText, "toText");
 function toNumber(v) {
   if (v === null || typeof v === "undefined" || v === "") return null;
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
 }
 __name(toNumber, "toNumber");
-__name2(toNumber, "toNumber");
 function toBool01(v) {
   if (v === null || typeof v === "undefined") return null;
   return v === true || v === 1 || v === "1" || v === "true" ? 1 : 0;
 }
 __name(toBool01, "toBool01");
-__name2(toBool01, "toBool01");
 function toJsonText(v) {
   if (v === null || typeof v === "undefined") return null;
   if (typeof v === "string") return v;
@@ -1335,12 +1290,10 @@ function toJsonText(v) {
   }
 }
 __name(toJsonText, "toJsonText");
-__name2(toJsonText, "toJsonText");
 async function onRequestOptions8() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS8 } });
 }
-__name(onRequestOptions8, "onRequestOptions8");
-__name2(onRequestOptions8, "onRequestOptions");
+__name(onRequestOptions8, "onRequestOptions");
 async function onRequestGet5({ env, params }) {
   const id = params?.id;
   if (!id) return json12({ ok: false, error: "Missing collection id." }, 400);
@@ -1355,8 +1308,7 @@ async function onRequestGet5({ env, params }) {
     return json12({ ok: false, error: "Server error." }, 500);
   }
 }
-__name(onRequestGet5, "onRequestGet5");
-__name2(onRequestGet5, "onRequestGet");
+__name(onRequestGet5, "onRequestGet");
 async function onRequestPut({ request, env, params }) {
   const id = params?.id;
   if (!id) return json12({ ok: false, error: "Missing collection id." }, 400);
@@ -1389,7 +1341,6 @@ async function onRequestPut({ request, env, params }) {
     binds.push(val);
   }
   __name(add, "add");
-  __name2(add, "add");
   add("name", name);
   add("tagline", tagline);
   add("description", description);
@@ -1420,20 +1371,19 @@ async function onRequestPut({ request, env, params }) {
   }
 }
 __name(onRequestPut, "onRequestPut");
-__name2(onRequestPut, "onRequestPut");
+
+// api/profiles/[slug].js
 function json13(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...extraHeaders }
   });
 }
-__name(json13, "json13");
-__name2(json13, "json");
+__name(json13, "json");
 function nowIso3() {
   return (/* @__PURE__ */ new Date()).toISOString();
 }
-__name(nowIso3, "nowIso3");
-__name2(nowIso3, "nowIso");
+__name(nowIso3, "nowIso");
 async function requireAdmin10(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -1443,8 +1393,7 @@ async function requireAdmin10(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin10, "requireAdmin10");
-__name2(requireAdmin10, "requireAdmin");
+__name(requireAdmin10, "requireAdmin");
 function asJsonTextArray(value) {
   if (Array.isArray(value)) {
     const arr = value.map((s) => String(s).trim()).filter(Boolean);
@@ -1457,7 +1406,6 @@ function asJsonTextArray(value) {
   return JSON.stringify([]);
 }
 __name(asJsonTextArray, "asJsonTextArray");
-__name2(asJsonTextArray, "asJsonTextArray");
 function parseJsonArray2(text) {
   try {
     const v = JSON.parse(text || "[]");
@@ -1466,8 +1414,7 @@ function parseJsonArray2(text) {
     return [];
   }
 }
-__name(parseJsonArray2, "parseJsonArray2");
-__name2(parseJsonArray2, "parseJsonArray");
+__name(parseJsonArray2, "parseJsonArray");
 function cleanImagesArray2(value) {
   if (!Array.isArray(value)) return [];
   return value.filter((x) => x && typeof x.url === "string" && x.url.trim()).map((x, idx) => ({
@@ -1477,8 +1424,7 @@ function cleanImagesArray2(value) {
     sort_order: x.sort_order === void 0 || x.sort_order === null || x.sort_order === "" ? idx : Number(x.sort_order)
   }));
 }
-__name(cleanImagesArray2, "cleanImagesArray2");
-__name2(cleanImagesArray2, "cleanImagesArray");
+__name(cleanImagesArray2, "cleanImagesArray");
 async function onRequest4(context) {
   const { request, env, params } = context;
   const slug = params?.slug;
@@ -1600,8 +1546,9 @@ async function onRequest4(context) {
   }
   return json13({ ok: false, error: "Method not allowed" }, 405);
 }
-__name(onRequest4, "onRequest4");
-__name2(onRequest4, "onRequest");
+__name(onRequest4, "onRequest");
+
+// api/admin-orders.js
 var CORS_HEADERS9 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,OPTIONS",
@@ -1616,8 +1563,7 @@ function json14(body, status = 200) {
     }
   });
 }
-__name(json14, "json14");
-__name2(json14, "json");
+__name(json14, "json");
 async function requireAdmin11(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -1627,13 +1573,11 @@ async function requireAdmin11(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin11, "requireAdmin11");
-__name2(requireAdmin11, "requireAdmin");
+__name(requireAdmin11, "requireAdmin");
 async function onRequestOptions9() {
   return new Response(null, { status: 204, headers: CORS_HEADERS9 });
 }
-__name(onRequestOptions9, "onRequestOptions9");
-__name2(onRequestOptions9, "onRequestOptions");
+__name(onRequestOptions9, "onRequestOptions");
 async function onRequestGet6({ request, env }) {
   const auth = await requireAdmin11(request, env);
   if (!auth.ok) return json14({ ok: false, error: auth.error }, auth.status);
@@ -1666,8 +1610,9 @@ async function onRequestGet6({ request, env }) {
     return json14({ ok: false, error: "Server error loading orders." }, 500);
   }
 }
-__name(onRequestGet6, "onRequestGet6");
-__name2(onRequestGet6, "onRequestGet");
+__name(onRequestGet6, "onRequestGet");
+
+// api/blog.js
 var CORS_HEADERS10 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
@@ -1682,8 +1627,7 @@ function json15(body, status = 200) {
     }
   });
 }
-__name(json15, "json15");
-__name2(json15, "json");
+__name(json15, "json");
 async function requireAdmin12(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -1693,20 +1637,17 @@ async function requireAdmin12(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin12, "requireAdmin12");
-__name2(requireAdmin12, "requireAdmin");
+__name(requireAdmin12, "requireAdmin");
 function cleanText2(value, maxLen = 0) {
   const out = String(value || "").trim();
   if (!maxLen) return out;
   return out.slice(0, maxLen);
 }
-__name(cleanText2, "cleanText2");
-__name2(cleanText2, "cleanText");
+__name(cleanText2, "cleanText");
 async function onRequestOptions10() {
   return new Response(null, { status: 204, headers: CORS_HEADERS10 });
 }
-__name(onRequestOptions10, "onRequestOptions10");
-__name2(onRequestOptions10, "onRequestOptions");
+__name(onRequestOptions10, "onRequestOptions");
 async function onRequestGet7({ env }) {
   try {
     const result = await env.DB.prepare(
@@ -1720,8 +1661,7 @@ async function onRequestGet7({ env }) {
     return json15({ ok: false, error: "Server error loading blog posts." }, 500);
   }
 }
-__name(onRequestGet7, "onRequestGet7");
-__name2(onRequestGet7, "onRequestGet");
+__name(onRequestGet7, "onRequestGet");
 async function onRequestPost6({ request, env }) {
   const auth = await requireAdmin12(request, env);
   if (!auth.ok) return json15({ ok: false, error: auth.error }, auth.status);
@@ -1756,8 +1696,9 @@ async function onRequestPost6({ request, env }) {
     return json15({ ok: false, error: "Server error creating blog post." }, 500);
   }
 }
-__name(onRequestPost6, "onRequestPost6");
-__name2(onRequestPost6, "onRequestPost");
+__name(onRequestPost6, "onRequestPost");
+
+// ../node_modules/stripe/esm/utils.js
 var OPTIONS_KEYS = [
   "apiKey",
   "idempotencyKey",
@@ -1775,17 +1716,14 @@ function isOptionsHash(o) {
   return o && typeof o === "object" && OPTIONS_KEYS.some((prop) => Object.prototype.hasOwnProperty.call(o, prop));
 }
 __name(isOptionsHash, "isOptionsHash");
-__name2(isOptionsHash, "isOptionsHash");
 function queryStringifyRequestData(data, _apiMode) {
   return stringifyRequestData(data);
 }
 __name(queryStringifyRequestData, "queryStringifyRequestData");
-__name2(queryStringifyRequestData, "queryStringifyRequestData");
 function encodeQueryValue(value) {
   return encodeURIComponent(value).replace(/!/g, "%21").replace(/\*/g, "%2A").replace(/\(/g, "%28").replace(/\)/g, "%29").replace(/'/g, "%27").replace(/%5B/g, "[").replace(/%5D/g, "]");
 }
 __name(encodeQueryValue, "encodeQueryValue");
-__name2(encodeQueryValue, "encodeQueryValue");
 function valueToString(value) {
   if (value instanceof Date) {
     return Math.floor(value.getTime() / 1e3).toString();
@@ -1796,7 +1734,6 @@ function valueToString(value) {
   return String(value);
 }
 __name(valueToString, "valueToString");
-__name2(valueToString, "valueToString");
 function stringifyRequestData(data) {
   const pairs = [];
   function encode(key, value) {
@@ -1820,7 +1757,6 @@ function stringifyRequestData(data) {
     }
   }
   __name(encode, "encode");
-  __name2(encode, "encode");
   if (typeof data === "object" && data !== null) {
     for (const key of Object.keys(data)) {
       encode(key, data[key]);
@@ -1829,7 +1765,6 @@ function stringifyRequestData(data) {
   return pairs.join("&");
 }
 __name(stringifyRequestData, "stringifyRequestData");
-__name2(stringifyRequestData, "stringifyRequestData");
 var makeURLInterpolator = /* @__PURE__ */ (() => {
   const rc = {
     "\n": "\\n",
@@ -1853,7 +1788,6 @@ function isValidEncodeUriComponentType(value) {
   return ["number", "string", "boolean"].includes(typeof value);
 }
 __name(isValidEncodeUriComponentType, "isValidEncodeUriComponentType");
-__name2(isValidEncodeUriComponentType, "isValidEncodeUriComponentType");
 function extractUrlParams(path) {
   const params = path.match(/\{\w+\}/g);
   if (!params) {
@@ -1862,7 +1796,6 @@ function extractUrlParams(path) {
   return params.map((param) => param.replace(/[{}]/g, ""));
 }
 __name(extractUrlParams, "extractUrlParams");
-__name2(extractUrlParams, "extractUrlParams");
 function getDataFromArgs(args) {
   if (!Array.isArray(args) || !args[0] || typeof args[0] !== "object") {
     return {};
@@ -1878,7 +1811,6 @@ function getDataFromArgs(args) {
   return {};
 }
 __name(getDataFromArgs, "getDataFromArgs");
-__name2(getDataFromArgs, "getDataFromArgs");
 function getOptionsFromArgs(args) {
   const opts = {
     host: null,
@@ -1943,7 +1875,6 @@ function getOptionsFromArgs(args) {
   return opts;
 }
 __name(getOptionsFromArgs, "getOptionsFromArgs");
-__name2(getOptionsFromArgs, "getOptionsFromArgs");
 function protoExtend(sub) {
   const Super = this;
   const Constructor = Object.prototype.hasOwnProperty.call(sub, "constructor") ? sub.constructor : function(...args) {
@@ -1955,7 +1886,6 @@ function protoExtend(sub) {
   return Constructor;
 }
 __name(protoExtend, "protoExtend");
-__name2(protoExtend, "protoExtend");
 function removeNullish(obj) {
   if (typeof obj !== "object") {
     throw new Error("Argument must be an object");
@@ -1968,7 +1898,6 @@ function removeNullish(obj) {
   }, {});
 }
 __name(removeNullish, "removeNullish");
-__name2(removeNullish, "removeNullish");
 function normalizeHeaders(obj) {
   if (!(obj && typeof obj === "object")) {
     return obj;
@@ -1979,12 +1908,10 @@ function normalizeHeaders(obj) {
   }, {});
 }
 __name(normalizeHeaders, "normalizeHeaders");
-__name2(normalizeHeaders, "normalizeHeaders");
 function normalizeHeader(header) {
   return header.split("-").map((text) => text.charAt(0).toUpperCase() + text.substr(1).toLowerCase()).join("-");
 }
 __name(normalizeHeader, "normalizeHeader");
-__name2(normalizeHeader, "normalizeHeader");
 function callbackifyPromiseWithTimeout(promise, callback) {
   if (callback) {
     return promise.then((res) => {
@@ -2000,7 +1927,6 @@ function callbackifyPromiseWithTimeout(promise, callback) {
   return promise;
 }
 __name(callbackifyPromiseWithTimeout, "callbackifyPromiseWithTimeout");
-__name2(callbackifyPromiseWithTimeout, "callbackifyPromiseWithTimeout");
 function pascalToCamelCase(name) {
   if (name === "OAuth") {
     return "oauth";
@@ -2009,7 +1935,6 @@ function pascalToCamelCase(name) {
   }
 }
 __name(pascalToCamelCase, "pascalToCamelCase");
-__name2(pascalToCamelCase, "pascalToCamelCase");
 function emitWarning(warning) {
   if (typeof process.emitWarning !== "function") {
     return console.warn(`Stripe: ${warning}`);
@@ -2017,16 +1942,14 @@ function emitWarning(warning) {
   return process.emitWarning(warning, "Stripe");
 }
 __name(emitWarning, "emitWarning");
-__name2(emitWarning, "emitWarning");
 function isObject(obj) {
   const type = typeof obj;
   return (type === "function" || type === "object") && !!obj;
 }
 __name(isObject, "isObject");
-__name2(isObject, "isObject");
 function flattenAndStringify(data) {
   const result = {};
-  const step = /* @__PURE__ */ __name2((obj, prevKey) => {
+  const step = /* @__PURE__ */ __name((obj, prevKey) => {
     Object.entries(obj).forEach(([key, value]) => {
       const newKey = prevKey ? `${prevKey}[${key}]` : key;
       if (isObject(value)) {
@@ -2044,7 +1967,6 @@ function flattenAndStringify(data) {
   return result;
 }
 __name(flattenAndStringify, "flattenAndStringify");
-__name2(flattenAndStringify, "flattenAndStringify");
 function validateInteger(name, n, defaultVal) {
   if (!Number.isInteger(n)) {
     if (defaultVal !== void 0) {
@@ -2056,7 +1978,6 @@ function validateInteger(name, n, defaultVal) {
   return n;
 }
 __name(validateInteger, "validateInteger");
-__name2(validateInteger, "validateInteger");
 function determineProcessUserAgentProperties() {
   return typeof process === "undefined" ? {} : {
     lang_version: process.version,
@@ -2064,9 +1985,8 @@ function determineProcessUserAgentProperties() {
   };
 }
 __name(determineProcessUserAgentProperties, "determineProcessUserAgentProperties");
-__name2(determineProcessUserAgentProperties, "determineProcessUserAgentProperties");
 function createApiKeyAuthenticator(apiKey) {
-  const authenticator = /* @__PURE__ */ __name2((request) => {
+  const authenticator = /* @__PURE__ */ __name((request) => {
     request.headers.Authorization = "Bearer " + apiKey;
     return Promise.resolve();
   }, "authenticator");
@@ -2074,7 +1994,6 @@ function createApiKeyAuthenticator(apiKey) {
   return authenticator;
 }
 __name(createApiKeyAuthenticator, "createApiKeyAuthenticator");
-__name2(createApiKeyAuthenticator, "createApiKeyAuthenticator");
 function dateTimeReplacer(key, value) {
   if (this[key] instanceof Date) {
     return Math.floor(this[key].getTime() / 1e3).toString();
@@ -2082,12 +2001,10 @@ function dateTimeReplacer(key, value) {
   return value;
 }
 __name(dateTimeReplacer, "dateTimeReplacer");
-__name2(dateTimeReplacer, "dateTimeReplacer");
 function jsonStringifyRequestData(data) {
   return JSON.stringify(data, dateTimeReplacer);
 }
 __name(jsonStringifyRequestData, "jsonStringifyRequestData");
-__name2(jsonStringifyRequestData, "jsonStringifyRequestData");
 function getAPIMode(path) {
   if (!path) {
     return "v1";
@@ -2095,7 +2012,6 @@ function getAPIMode(path) {
   return path.startsWith("/v2") ? "v2" : "v1";
 }
 __name(getAPIMode, "getAPIMode");
-__name2(getAPIMode, "getAPIMode");
 function parseHttpHeaderAsString(header) {
   if (Array.isArray(header)) {
     return header.join(", ");
@@ -2103,26 +2019,22 @@ function parseHttpHeaderAsString(header) {
   return String(header);
 }
 __name(parseHttpHeaderAsString, "parseHttpHeaderAsString");
-__name2(parseHttpHeaderAsString, "parseHttpHeaderAsString");
 function parseHttpHeaderAsNumber(header) {
   const number = Array.isArray(header) ? header[0] : header;
   return Number(number);
 }
 __name(parseHttpHeaderAsNumber, "parseHttpHeaderAsNumber");
-__name2(parseHttpHeaderAsNumber, "parseHttpHeaderAsNumber");
 function parseHeadersForFetch(headers) {
   return Object.entries(headers).map(([key, value]) => {
     return [key, parseHttpHeaderAsString(value)];
   });
 }
 __name(parseHeadersForFetch, "parseHeadersForFetch");
-__name2(parseHeadersForFetch, "parseHeadersForFetch");
+
+// ../node_modules/stripe/esm/net/HttpClient.js
 var HttpClient = class _HttpClient {
   static {
-    __name(this, "_HttpClient");
-  }
-  static {
-    __name2(this, "HttpClient");
+    __name(this, "HttpClient");
   }
   /** The client name used for diagnostics. */
   getClientName() {
@@ -2144,9 +2056,6 @@ var HttpClientResponse = class {
   static {
     __name(this, "HttpClientResponse");
   }
-  static {
-    __name2(this, "HttpClientResponse");
-  }
   constructor(statusCode, headers) {
     this._statusCode = statusCode;
     this._headers = headers;
@@ -2167,12 +2076,11 @@ var HttpClientResponse = class {
     throw new Error("toJSON not implemented.");
   }
 };
+
+// ../node_modules/stripe/esm/net/FetchHttpClient.js
 var FetchHttpClient = class _FetchHttpClient extends HttpClient {
   static {
-    __name(this, "_FetchHttpClient");
-  }
-  static {
-    __name2(this, "FetchHttpClient");
+    __name(this, "FetchHttpClient");
   }
   constructor(fetchFn) {
     super();
@@ -2247,10 +2155,7 @@ var FetchHttpClient = class _FetchHttpClient extends HttpClient {
 };
 var FetchHttpClientResponse = class _FetchHttpClientResponse extends HttpClientResponse {
   static {
-    __name(this, "_FetchHttpClientResponse");
-  }
-  static {
-    __name2(this, "FetchHttpClientResponse");
+    __name(this, "FetchHttpClientResponse");
   }
   constructor(res) {
     super(res.status, _FetchHttpClientResponse._transformHeadersToObject(res.headers));
@@ -2277,12 +2182,11 @@ var FetchHttpClientResponse = class _FetchHttpClientResponse extends HttpClientR
     return headersObj;
   }
 };
+
+// ../node_modules/stripe/esm/crypto/CryptoProvider.js
 var CryptoProvider = class {
   static {
     __name(this, "CryptoProvider");
-  }
-  static {
-    __name2(this, "CryptoProvider");
   }
   /**
    * Computes a SHA-256 HMAC given a secret and a payload (encoded in UTF-8).
@@ -2320,16 +2224,12 @@ var CryptoProviderOnlySupportsAsyncError = class extends Error {
   static {
     __name(this, "CryptoProviderOnlySupportsAsyncError");
   }
-  static {
-    __name2(this, "CryptoProviderOnlySupportsAsyncError");
-  }
 };
+
+// ../node_modules/stripe/esm/crypto/SubtleCryptoProvider.js
 var SubtleCryptoProvider = class extends CryptoProvider {
   static {
     __name(this, "SubtleCryptoProvider");
-  }
-  static {
-    __name2(this, "SubtleCryptoProvider");
   }
   constructor(subtleCrypto) {
     super();
@@ -2363,12 +2263,11 @@ var byteHexMapping = new Array(256);
 for (let i = 0; i < byteHexMapping.length; i++) {
   byteHexMapping[i] = i.toString(16).padStart(2, "0");
 }
+
+// ../node_modules/stripe/esm/platform/PlatformFunctions.js
 var PlatformFunctions = class {
   static {
     __name(this, "PlatformFunctions");
-  }
-  static {
-    __name2(this, "PlatformFunctions");
   }
   constructor() {
     this._fetchFn = null;
@@ -2456,12 +2355,11 @@ var PlatformFunctions = class {
     throw new Error("createDefaultCryptoProvider not implemented.");
   }
 };
+
+// ../node_modules/stripe/esm/StripeEmitter.js
 var _StripeEvent = class extends Event {
   static {
     __name(this, "_StripeEvent");
-  }
-  static {
-    __name2(this, "_StripeEvent");
   }
   constructor(eventName, data) {
     super(eventName);
@@ -2472,15 +2370,12 @@ var StripeEmitter = class {
   static {
     __name(this, "StripeEmitter");
   }
-  static {
-    __name2(this, "StripeEmitter");
-  }
   constructor() {
     this.eventTarget = new EventTarget();
     this.listenerMapping = /* @__PURE__ */ new Map();
   }
   on(eventName, listener) {
-    const listenerWrapper = /* @__PURE__ */ __name2((event) => {
+    const listenerWrapper = /* @__PURE__ */ __name((event) => {
       listener(event.data);
     }, "listenerWrapper");
     this.listenerMapping.set(listener, listenerWrapper);
@@ -2492,7 +2387,7 @@ var StripeEmitter = class {
     return this.eventTarget.removeEventListener(eventName, listenerWrapper);
   }
   once(eventName, listener) {
-    const listenerWrapper = /* @__PURE__ */ __name2((event) => {
+    const listenerWrapper = /* @__PURE__ */ __name((event) => {
       listener(event.data);
     }, "listenerWrapper");
     this.listenerMapping.set(listener, listenerWrapper);
@@ -2504,12 +2399,11 @@ var StripeEmitter = class {
     return this.eventTarget.dispatchEvent(new _StripeEvent(eventName, data));
   }
 };
+
+// ../node_modules/stripe/esm/platform/WebPlatformFunctions.js
 var WebPlatformFunctions = class extends PlatformFunctions {
   static {
     __name(this, "WebPlatformFunctions");
-  }
-  static {
-    __name2(this, "WebPlatformFunctions");
   }
   /** @override */
   getUname() {
@@ -2543,25 +2437,27 @@ var WebPlatformFunctions = class extends PlatformFunctions {
     return this.createSubtleCryptoProvider();
   }
 };
+
+// ../node_modules/stripe/esm/Error.js
 var Error_exports = {};
 __export(Error_exports, {
-  StripeAPIError: /* @__PURE__ */ __name(() => StripeAPIError, "StripeAPIError"),
-  StripeAuthenticationError: /* @__PURE__ */ __name(() => StripeAuthenticationError, "StripeAuthenticationError"),
-  StripeCardError: /* @__PURE__ */ __name(() => StripeCardError, "StripeCardError"),
-  StripeConnectionError: /* @__PURE__ */ __name(() => StripeConnectionError, "StripeConnectionError"),
-  StripeError: /* @__PURE__ */ __name(() => StripeError, "StripeError"),
-  StripeIdempotencyError: /* @__PURE__ */ __name(() => StripeIdempotencyError, "StripeIdempotencyError"),
-  StripeInvalidGrantError: /* @__PURE__ */ __name(() => StripeInvalidGrantError, "StripeInvalidGrantError"),
-  StripeInvalidRequestError: /* @__PURE__ */ __name(() => StripeInvalidRequestError, "StripeInvalidRequestError"),
-  StripePermissionError: /* @__PURE__ */ __name(() => StripePermissionError, "StripePermissionError"),
-  StripeRateLimitError: /* @__PURE__ */ __name(() => StripeRateLimitError, "StripeRateLimitError"),
-  StripeSignatureVerificationError: /* @__PURE__ */ __name(() => StripeSignatureVerificationError, "StripeSignatureVerificationError"),
-  StripeUnknownError: /* @__PURE__ */ __name(() => StripeUnknownError, "StripeUnknownError"),
-  TemporarySessionExpiredError: /* @__PURE__ */ __name(() => TemporarySessionExpiredError, "TemporarySessionExpiredError"),
-  generateV1Error: /* @__PURE__ */ __name(() => generateV1Error, "generateV1Error"),
-  generateV2Error: /* @__PURE__ */ __name(() => generateV2Error, "generateV2Error")
+  StripeAPIError: () => StripeAPIError,
+  StripeAuthenticationError: () => StripeAuthenticationError,
+  StripeCardError: () => StripeCardError,
+  StripeConnectionError: () => StripeConnectionError,
+  StripeError: () => StripeError,
+  StripeIdempotencyError: () => StripeIdempotencyError,
+  StripeInvalidGrantError: () => StripeInvalidGrantError,
+  StripeInvalidRequestError: () => StripeInvalidRequestError,
+  StripePermissionError: () => StripePermissionError,
+  StripeRateLimitError: () => StripeRateLimitError,
+  StripeSignatureVerificationError: () => StripeSignatureVerificationError,
+  StripeUnknownError: () => StripeUnknownError,
+  TemporarySessionExpiredError: () => TemporarySessionExpiredError,
+  generateV1Error: () => generateV1Error,
+  generateV2Error: () => generateV2Error
 });
-var generateV1Error = /* @__PURE__ */ __name2((rawStripeError) => {
+var generateV1Error = /* @__PURE__ */ __name((rawStripeError) => {
   switch (rawStripeError.type) {
     case "card_error":
       return new StripeCardError(rawStripeError);
@@ -2581,7 +2477,7 @@ var generateV1Error = /* @__PURE__ */ __name2((rawStripeError) => {
       return new StripeUnknownError(rawStripeError);
   }
 }, "generateV1Error");
-var generateV2Error = /* @__PURE__ */ __name2((rawStripeError) => {
+var generateV2Error = /* @__PURE__ */ __name((rawStripeError) => {
   switch (rawStripeError.type) {
     // switchCases: The beginning of the section generated from our OpenAPI spec
     case "temporary_session_expired":
@@ -2596,9 +2492,6 @@ var generateV2Error = /* @__PURE__ */ __name2((rawStripeError) => {
 var StripeError = class extends Error {
   static {
     __name(this, "StripeError");
-  }
-  static {
-    __name2(this, "StripeError");
   }
   constructor(raw = {}, type = null) {
     var _a;
@@ -2629,9 +2522,6 @@ var StripeCardError = class extends StripeError {
   static {
     __name(this, "StripeCardError");
   }
-  static {
-    __name2(this, "StripeCardError");
-  }
   constructor(raw = {}) {
     super(raw, "StripeCardError");
   }
@@ -2639,9 +2529,6 @@ var StripeCardError = class extends StripeError {
 var StripeInvalidRequestError = class extends StripeError {
   static {
     __name(this, "StripeInvalidRequestError");
-  }
-  static {
-    __name2(this, "StripeInvalidRequestError");
   }
   constructor(raw = {}) {
     super(raw, "StripeInvalidRequestError");
@@ -2651,9 +2538,6 @@ var StripeAPIError = class extends StripeError {
   static {
     __name(this, "StripeAPIError");
   }
-  static {
-    __name2(this, "StripeAPIError");
-  }
   constructor(raw = {}) {
     super(raw, "StripeAPIError");
   }
@@ -2661,9 +2545,6 @@ var StripeAPIError = class extends StripeError {
 var StripeAuthenticationError = class extends StripeError {
   static {
     __name(this, "StripeAuthenticationError");
-  }
-  static {
-    __name2(this, "StripeAuthenticationError");
   }
   constructor(raw = {}) {
     super(raw, "StripeAuthenticationError");
@@ -2673,9 +2554,6 @@ var StripePermissionError = class extends StripeError {
   static {
     __name(this, "StripePermissionError");
   }
-  static {
-    __name2(this, "StripePermissionError");
-  }
   constructor(raw = {}) {
     super(raw, "StripePermissionError");
   }
@@ -2683,9 +2561,6 @@ var StripePermissionError = class extends StripeError {
 var StripeRateLimitError = class extends StripeError {
   static {
     __name(this, "StripeRateLimitError");
-  }
-  static {
-    __name2(this, "StripeRateLimitError");
   }
   constructor(raw = {}) {
     super(raw, "StripeRateLimitError");
@@ -2695,9 +2570,6 @@ var StripeConnectionError = class extends StripeError {
   static {
     __name(this, "StripeConnectionError");
   }
-  static {
-    __name2(this, "StripeConnectionError");
-  }
   constructor(raw = {}) {
     super(raw, "StripeConnectionError");
   }
@@ -2705,9 +2577,6 @@ var StripeConnectionError = class extends StripeError {
 var StripeSignatureVerificationError = class extends StripeError {
   static {
     __name(this, "StripeSignatureVerificationError");
-  }
-  static {
-    __name2(this, "StripeSignatureVerificationError");
   }
   constructor(header, payload, raw = {}) {
     super(raw, "StripeSignatureVerificationError");
@@ -2719,9 +2588,6 @@ var StripeIdempotencyError = class extends StripeError {
   static {
     __name(this, "StripeIdempotencyError");
   }
-  static {
-    __name2(this, "StripeIdempotencyError");
-  }
   constructor(raw = {}) {
     super(raw, "StripeIdempotencyError");
   }
@@ -2729,9 +2595,6 @@ var StripeIdempotencyError = class extends StripeError {
 var StripeInvalidGrantError = class extends StripeError {
   static {
     __name(this, "StripeInvalidGrantError");
-  }
-  static {
-    __name2(this, "StripeInvalidGrantError");
   }
   constructor(raw = {}) {
     super(raw, "StripeInvalidGrantError");
@@ -2741,9 +2604,6 @@ var StripeUnknownError = class extends StripeError {
   static {
     __name(this, "StripeUnknownError");
   }
-  static {
-    __name2(this, "StripeUnknownError");
-  }
   constructor(raw = {}) {
     super(raw, "StripeUnknownError");
   }
@@ -2752,20 +2612,16 @@ var TemporarySessionExpiredError = class extends StripeError {
   static {
     __name(this, "TemporarySessionExpiredError");
   }
-  static {
-    __name2(this, "TemporarySessionExpiredError");
-  }
   constructor(rawStripeError = {}) {
     super(rawStripeError, "TemporarySessionExpiredError");
   }
 };
+
+// ../node_modules/stripe/esm/RequestSender.js
 var MAX_RETRY_AFTER_WAIT = 60;
 var RequestSender = class _RequestSender {
   static {
-    __name(this, "_RequestSender");
-  }
-  static {
-    __name2(this, "RequestSender");
+    __name(this, "RequestSender");
   }
   constructor(stripe, maxBufferedRequestMetric) {
     this._stripe = stripe;
@@ -2815,7 +2671,7 @@ var RequestSender = class _RequestSender {
   _streamingResponseHandler(requestEvent, usage, callback) {
     return (res) => {
       const headers = res.getHeaders();
-      const streamCompleteCallback = /* @__PURE__ */ __name2(() => {
+      const streamCompleteCallback = /* @__PURE__ */ __name(() => {
         const responseEvent = this._makeResponseEvent(requestEvent, res.getStatusCode(), headers);
         this._stripe._emitter.emit("response", responseEvent);
         this._recordRequestMetrics(this._getRequestId(headers), responseEvent.elapsed, usage);
@@ -2927,7 +2783,7 @@ var RequestSender = class _RequestSender {
   }
   _defaultIdempotencyKey(method, settings, apiMode) {
     const maxRetries = this._getMaxNetworkRetries(settings);
-    const genKey = /* @__PURE__ */ __name2(() => `stripe-node-retry-${this._stripe._platformFunctions.uuid4()}`, "genKey");
+    const genKey = /* @__PURE__ */ __name(() => `stripe-node-retry-${this._stripe._platformFunctions.uuid4()}`, "genKey");
     if (apiMode === "v2") {
       if (method === "POST" || method === "DELETE") {
         return genKey();
@@ -3032,7 +2888,6 @@ var RequestSender = class _RequestSender {
         }
       }
       __name(requestCallback, "requestCallback");
-      __name2(requestCallback, "requestCallback");
       const { headers, settings } = opts;
       const authenticator = opts.authenticator;
       this._request(opts.requestMethod, opts.host, path, opts.bodyData, authenticator, { headers, settings, streaming: opts.streaming }, opts.usage, requestCallback);
@@ -3047,10 +2902,10 @@ var RequestSender = class _RequestSender {
     let requestData;
     authenticator = (_a = authenticator !== null && authenticator !== void 0 ? authenticator : this._stripe._authenticator) !== null && _a !== void 0 ? _a : null;
     const apiMode = getAPIMode(path);
-    const retryRequest = /* @__PURE__ */ __name2((requestFn, apiVersion, headers, requestRetries, retryAfter) => {
+    const retryRequest = /* @__PURE__ */ __name((requestFn, apiVersion, headers, requestRetries, retryAfter) => {
       return setTimeout(requestFn, this._getSleepTimeInMS(requestRetries, retryAfter), apiVersion, headers, requestRetries + 1);
     }, "retryRequest");
-    const makeRequest = /* @__PURE__ */ __name2((apiVersion, headers, numRetries) => {
+    const makeRequest = /* @__PURE__ */ __name((apiVersion, headers, numRetries) => {
       const timeout = options.settings && options.settings.timeout && Number.isInteger(options.settings.timeout) && options.settings.timeout >= 0 ? options.settings.timeout : this._stripe.getApiField("timeout");
       const request = {
         host: host || this._stripe.getApiField("host"),
@@ -3101,7 +2956,7 @@ var RequestSender = class _RequestSender {
         });
       });
     }, "makeRequest");
-    const prepareAndMakeRequest = /* @__PURE__ */ __name2((error, data2) => {
+    const prepareAndMakeRequest = /* @__PURE__ */ __name((error, data2) => {
       if (error) {
         return callback(error);
       }
@@ -3138,12 +2993,11 @@ var RequestSender = class _RequestSender {
     }
   }
 };
+
+// ../node_modules/stripe/esm/autoPagination.js
 var V1Iterator = class {
   static {
     __name(this, "V1Iterator");
-  }
-  static {
-    __name2(this, "V1Iterator");
   }
   constructor(firstPagePromise, requestArgs, spec, stripeResource) {
     this.index = 0;
@@ -3195,9 +3049,6 @@ var V1ListIterator = class extends V1Iterator {
   static {
     __name(this, "V1ListIterator");
   }
-  static {
-    __name2(this, "V1ListIterator");
-  }
   getNextPage(pageResult) {
     const reverseIteration = isReverseIteration(this.requestArgs);
     const lastId = getLastId(pageResult, reverseIteration);
@@ -3209,9 +3060,6 @@ var V1ListIterator = class extends V1Iterator {
 var V1SearchIterator = class extends V1Iterator {
   static {
     __name(this, "V1SearchIterator");
-  }
-  static {
-    __name2(this, "V1SearchIterator");
   }
   getNextPage(pageResult) {
     if (!pageResult.next_page) {
@@ -3225,9 +3073,6 @@ var V1SearchIterator = class extends V1Iterator {
 var V2ListIterator = class {
   static {
     __name(this, "V2ListIterator");
-  }
-  static {
-    __name2(this, "V2ListIterator");
   }
   constructor(firstPagePromise, requestArgs, spec, stripeResource) {
     this.firstPagePromise = firstPagePromise;
@@ -3271,7 +3116,7 @@ var V2ListIterator = class {
     return { done: true, value: void 0 };
   }
 };
-var makeAutoPaginationMethods = /* @__PURE__ */ __name2((stripeResource, requestArgs, spec, firstPagePromise) => {
+var makeAutoPaginationMethods = /* @__PURE__ */ __name((stripeResource, requestArgs, spec, firstPagePromise) => {
   const apiMode = getAPIMode(spec.fullPath || spec.path);
   if (apiMode !== "v2" && spec.methodType === "search") {
     return makeAutoPaginationMethodsFromIterator(new V1SearchIterator(firstPagePromise, requestArgs, spec, stripeResource));
@@ -3284,15 +3129,15 @@ var makeAutoPaginationMethods = /* @__PURE__ */ __name2((stripeResource, request
   }
   return null;
 }, "makeAutoPaginationMethods");
-var makeAutoPaginationMethodsFromIterator = /* @__PURE__ */ __name2((iterator) => {
+var makeAutoPaginationMethodsFromIterator = /* @__PURE__ */ __name((iterator) => {
   const autoPagingEach = makeAutoPagingEach((...args) => iterator.next(...args));
   const autoPagingToArray = makeAutoPagingToArray(autoPagingEach);
   const autoPaginationMethods = {
     autoPagingEach,
     autoPagingToArray,
     // Async iterator functions:
-    next: /* @__PURE__ */ __name2(() => iterator.next(), "next"),
-    return: /* @__PURE__ */ __name2(() => {
+    next: /* @__PURE__ */ __name(() => iterator.next(), "next"),
+    return: /* @__PURE__ */ __name(() => {
       return {};
     }, "return"),
     [getAsyncIteratorSymbol()]: () => {
@@ -3308,7 +3153,6 @@ function getAsyncIteratorSymbol() {
   return "@@asyncIterator";
 }
 __name(getAsyncIteratorSymbol, "getAsyncIteratorSymbol");
-__name2(getAsyncIteratorSymbol, "getAsyncIteratorSymbol");
 function getDoneCallback(args) {
   if (args.length < 2) {
     return null;
@@ -3320,7 +3164,6 @@ function getDoneCallback(args) {
   return onDone;
 }
 __name(getDoneCallback, "getDoneCallback");
-__name2(getDoneCallback, "getDoneCallback");
 function getItemCallback(args) {
   if (args.length === 0) {
     return void 0;
@@ -3335,13 +3178,12 @@ function getItemCallback(args) {
   if (onItem.length > 2) {
     throw Error(`The \`onItem\` callback function passed to autoPagingEach must accept at most two arguments; got ${onItem}`);
   }
-  return /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function _onItem(item, next) {
+  return /* @__PURE__ */ __name(function _onItem(item, next) {
     const shouldContinue = onItem(item);
     next(shouldContinue);
-  }, "_onItem"), "_onItem");
+  }, "_onItem");
 }
 __name(getItemCallback, "getItemCallback");
-__name2(getItemCallback, "getItemCallback");
 function getLastId(listResult, reverseIteration) {
   const lastIdx = reverseIteration ? 0 : listResult.data.length - 1;
   const lastItem = listResult.data[lastIdx];
@@ -3352,9 +3194,8 @@ function getLastId(listResult, reverseIteration) {
   return lastId;
 }
 __name(getLastId, "getLastId");
-__name2(getLastId, "getLastId");
 function makeAutoPagingEach(asyncIteratorNext) {
-  return /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function autoPagingEach() {
+  return /* @__PURE__ */ __name(function autoPagingEach() {
     const args = [].slice.call(arguments);
     const onItem = getItemCallback(args);
     const onDone = getDoneCallback(args);
@@ -3367,12 +3208,11 @@ function makeAutoPagingEach(asyncIteratorNext) {
       onItem
     );
     return callbackifyPromiseWithTimeout(autoPagePromise, onDone);
-  }, "autoPagingEach"), "autoPagingEach");
+  }, "autoPagingEach");
 }
 __name(makeAutoPagingEach, "makeAutoPagingEach");
-__name2(makeAutoPagingEach, "makeAutoPagingEach");
 function makeAutoPagingToArray(autoPagingEach) {
-  return /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function autoPagingToArray(opts, onDone) {
+  return /* @__PURE__ */ __name(function autoPagingToArray(opts, onDone) {
     const limit = opts && opts.limit;
     if (!limit) {
       throw Error("You must pass a `limit` option to autoPagingToArray, e.g., `autoPagingToArray({limit: 1000});`.");
@@ -3392,10 +3232,9 @@ function makeAutoPagingToArray(autoPagingEach) {
       }).catch(reject);
     });
     return callbackifyPromiseWithTimeout(promise, onDone);
-  }, "autoPagingToArray"), "autoPagingToArray");
+  }, "autoPagingToArray");
 }
 __name(makeAutoPagingToArray, "makeAutoPagingToArray");
-__name2(makeAutoPagingToArray, "makeAutoPagingToArray");
 function wrapAsyncIteratorWithCallback(asyncIteratorNext, onItem) {
   return new Promise((resolve, reject) => {
     function handleIteration(iterResult) {
@@ -3415,19 +3254,18 @@ function wrapAsyncIteratorWithCallback(asyncIteratorNext, onItem) {
       });
     }
     __name(handleIteration, "handleIteration");
-    __name2(handleIteration, "handleIteration");
     asyncIteratorNext().then(handleIteration).catch(reject);
   });
 }
 __name(wrapAsyncIteratorWithCallback, "wrapAsyncIteratorWithCallback");
-__name2(wrapAsyncIteratorWithCallback, "wrapAsyncIteratorWithCallback");
 function isReverseIteration(requestArgs) {
   const args = [].slice.call(requestArgs);
   const dataFromArgs = getDataFromArgs(args);
   return !!dataFromArgs.ending_before;
 }
 __name(isReverseIteration, "isReverseIteration");
-__name2(isReverseIteration, "isReverseIteration");
+
+// ../node_modules/stripe/esm/StripeMethod.js
 function stripeMethod(spec) {
   if (spec.path !== void 0 && spec.fullPath !== void 0) {
     throw new Error(`Method spec specified both a 'path' (${spec.path}) and a 'fullPath' (${spec.fullPath}).`);
@@ -3441,7 +3279,8 @@ function stripeMethod(spec) {
   };
 }
 __name(stripeMethod, "stripeMethod");
-__name2(stripeMethod, "stripeMethod");
+
+// ../node_modules/stripe/esm/StripeResource.js
 StripeResource.extend = protoExtend;
 StripeResource.method = stripeMethod;
 StripeResource.MAX_BUFFERED_REQUEST_METRICS = 100;
@@ -3459,7 +3298,6 @@ function StripeResource(stripe, deprecatedUrlData) {
   this.initialize(...arguments);
 }
 __name(StripeResource, "StripeResource");
-__name2(StripeResource, "StripeResource");
 StripeResource.prototype = {
   _stripe: null,
   // @ts-ignore the type of path changes in ctor
@@ -3567,7 +3405,6 @@ StripeResource.prototype = {
         }
       }
       __name(requestCallback, "requestCallback");
-      __name2(requestCallback, "requestCallback");
       const emptyQuery = Object.keys(opts.queryData).length === 0;
       const path = [
         opts.requestPath,
@@ -3583,12 +3420,11 @@ StripeResource.prototype = {
     });
   }
 };
+
+// ../node_modules/stripe/esm/StripeContext.js
 var StripeContext = class _StripeContext {
   static {
-    __name(this, "_StripeContext");
-  }
-  static {
-    __name2(this, "StripeContext");
+    __name(this, "StripeContext");
   }
   /**
    * Creates a new StripeContext with the given segments.
@@ -3637,6 +3473,8 @@ var StripeContext = class _StripeContext {
     return new _StripeContext(contextStr.split("/"));
   }
 };
+
+// ../node_modules/stripe/esm/Webhooks.js
 function createWebhooks(platformFunctions) {
   const Webhook = {
     DEFAULT_TOLERANCE: 300,
@@ -3675,12 +3513,12 @@ function createWebhooks(platformFunctions) {
      * @property {string} signature - Computed webhook signature
      * @property {CryptoProvider} cryptoProvider - Crypto provider to use for computing the signature if none was provided. Defaults to NodeCryptoProvider.
      */
-    generateTestHeaderString: /* @__PURE__ */ __name2(function(opts) {
+    generateTestHeaderString: /* @__PURE__ */ __name(function(opts) {
       const preparedOpts = prepareOptions(opts);
       const signature2 = preparedOpts.signature || preparedOpts.cryptoProvider.computeHMACSignature(preparedOpts.payloadString, preparedOpts.secret);
       return preparedOpts.generateHeaderString(signature2);
     }, "generateTestHeaderString"),
-    generateTestHeaderStringAsync: /* @__PURE__ */ __name2(async function(opts) {
+    generateTestHeaderStringAsync: /* @__PURE__ */ __name(async function(opts) {
       const preparedOpts = prepareOptions(opts);
       const signature2 = preparedOpts.signature || await preparedOpts.cryptoProvider.computeHMACSignatureAsync(preparedOpts.payloadString, preparedOpts.secret);
       return preparedOpts.generateHeaderString(signature2);
@@ -3708,7 +3546,6 @@ function createWebhooks(platformFunctions) {
     return `${details.timestamp}.${payload}`;
   }
   __name(makeHMACContent, "makeHMACContent");
-  __name2(makeHMACContent, "makeHMACContent");
   function parseEventDetails(encodedPayload, encodedHeader, expectedScheme) {
     if (!encodedPayload) {
       throw new StripeSignatureVerificationError(encodedHeader, encodedPayload, {
@@ -3746,7 +3583,6 @@ function createWebhooks(platformFunctions) {
     };
   }
   __name(parseEventDetails, "parseEventDetails");
-  __name2(parseEventDetails, "parseEventDetails");
   function validateComputedSignature(payload, header, details, expectedSignature, tolerance, suspectPayloadType, secretContainsWhitespace, receivedAt) {
     const signatureFound = !!details.signatures.filter(platformFunctions.secureCompare.bind(platformFunctions, expectedSignature)).length;
     const docsLocation = "\nLearn more about webhook signing and explore webhook integration examples for various frameworks at https://docs.stripe.com/webhooks/signature";
@@ -3770,7 +3606,6 @@ function createWebhooks(platformFunctions) {
     return true;
   }
   __name(validateComputedSignature, "validateComputedSignature");
-  __name2(validateComputedSignature, "validateComputedSignature");
   function parseHeader(header, scheme) {
     if (typeof header !== "string") {
       return null;
@@ -3790,7 +3625,6 @@ function createWebhooks(platformFunctions) {
     });
   }
   __name(parseHeader, "parseHeader");
-  __name2(parseHeader, "parseHeader");
   let webhooksCryptoProviderInstance = null;
   function getCryptoProvider() {
     if (!webhooksCryptoProviderInstance) {
@@ -3799,7 +3633,6 @@ function createWebhooks(platformFunctions) {
     return webhooksCryptoProviderInstance;
   }
   __name(getCryptoProvider, "getCryptoProvider");
-  __name2(getCryptoProvider, "getCryptoProvider");
   function prepareOptions(opts) {
     if (!opts) {
       throw new StripeError({
@@ -3810,7 +3643,7 @@ function createWebhooks(platformFunctions) {
     const scheme = opts.scheme || signature.EXPECTED_SCHEME;
     const cryptoProvider = opts.cryptoProvider || getCryptoProvider();
     const payloadString = `${timestamp}.${opts.payload}`;
-    const generateHeaderString = /* @__PURE__ */ __name2((signature2) => {
+    const generateHeaderString = /* @__PURE__ */ __name((signature2) => {
       return `t=${timestamp},${scheme}=${signature2}`;
     }, "generateHeaderString");
     return Object.assign(Object.assign({}, opts), {
@@ -3822,91 +3655,95 @@ function createWebhooks(platformFunctions) {
     });
   }
   __name(prepareOptions, "prepareOptions");
-  __name2(prepareOptions, "prepareOptions");
   Webhook.signature = signature;
   return Webhook;
 }
 __name(createWebhooks, "createWebhooks");
-__name2(createWebhooks, "createWebhooks");
+
+// ../node_modules/stripe/esm/apiVersion.js
 var ApiVersion = "2026-02-25.clover";
+
+// ../node_modules/stripe/esm/resources.js
 var resources_exports = {};
 __export(resources_exports, {
-  Account: /* @__PURE__ */ __name(() => Accounts3, "Account"),
-  AccountLinks: /* @__PURE__ */ __name(() => AccountLinks2, "AccountLinks"),
-  AccountSessions: /* @__PURE__ */ __name(() => AccountSessions, "AccountSessions"),
-  Accounts: /* @__PURE__ */ __name(() => Accounts3, "Accounts"),
-  ApplePayDomains: /* @__PURE__ */ __name(() => ApplePayDomains, "ApplePayDomains"),
-  ApplicationFees: /* @__PURE__ */ __name(() => ApplicationFees, "ApplicationFees"),
-  Apps: /* @__PURE__ */ __name(() => Apps, "Apps"),
-  Balance: /* @__PURE__ */ __name(() => Balance, "Balance"),
-  BalanceSettings: /* @__PURE__ */ __name(() => BalanceSettings, "BalanceSettings"),
-  BalanceTransactions: /* @__PURE__ */ __name(() => BalanceTransactions, "BalanceTransactions"),
-  Billing: /* @__PURE__ */ __name(() => Billing, "Billing"),
-  BillingPortal: /* @__PURE__ */ __name(() => BillingPortal, "BillingPortal"),
-  Charges: /* @__PURE__ */ __name(() => Charges, "Charges"),
-  Checkout: /* @__PURE__ */ __name(() => Checkout, "Checkout"),
-  Climate: /* @__PURE__ */ __name(() => Climate, "Climate"),
-  ConfirmationTokens: /* @__PURE__ */ __name(() => ConfirmationTokens2, "ConfirmationTokens"),
-  CountrySpecs: /* @__PURE__ */ __name(() => CountrySpecs, "CountrySpecs"),
-  Coupons: /* @__PURE__ */ __name(() => Coupons, "Coupons"),
-  CreditNotes: /* @__PURE__ */ __name(() => CreditNotes, "CreditNotes"),
-  CustomerSessions: /* @__PURE__ */ __name(() => CustomerSessions, "CustomerSessions"),
-  Customers: /* @__PURE__ */ __name(() => Customers2, "Customers"),
-  Disputes: /* @__PURE__ */ __name(() => Disputes2, "Disputes"),
-  Entitlements: /* @__PURE__ */ __name(() => Entitlements, "Entitlements"),
-  EphemeralKeys: /* @__PURE__ */ __name(() => EphemeralKeys, "EphemeralKeys"),
-  Events: /* @__PURE__ */ __name(() => Events2, "Events"),
-  ExchangeRates: /* @__PURE__ */ __name(() => ExchangeRates, "ExchangeRates"),
-  FileLinks: /* @__PURE__ */ __name(() => FileLinks, "FileLinks"),
-  Files: /* @__PURE__ */ __name(() => Files, "Files"),
-  FinancialConnections: /* @__PURE__ */ __name(() => FinancialConnections, "FinancialConnections"),
-  Forwarding: /* @__PURE__ */ __name(() => Forwarding, "Forwarding"),
-  Identity: /* @__PURE__ */ __name(() => Identity, "Identity"),
-  InvoiceItems: /* @__PURE__ */ __name(() => InvoiceItems, "InvoiceItems"),
-  InvoicePayments: /* @__PURE__ */ __name(() => InvoicePayments, "InvoicePayments"),
-  InvoiceRenderingTemplates: /* @__PURE__ */ __name(() => InvoiceRenderingTemplates, "InvoiceRenderingTemplates"),
-  Invoices: /* @__PURE__ */ __name(() => Invoices, "Invoices"),
-  Issuing: /* @__PURE__ */ __name(() => Issuing, "Issuing"),
-  Mandates: /* @__PURE__ */ __name(() => Mandates, "Mandates"),
-  OAuth: /* @__PURE__ */ __name(() => OAuth, "OAuth"),
-  PaymentAttemptRecords: /* @__PURE__ */ __name(() => PaymentAttemptRecords, "PaymentAttemptRecords"),
-  PaymentIntents: /* @__PURE__ */ __name(() => PaymentIntents, "PaymentIntents"),
-  PaymentLinks: /* @__PURE__ */ __name(() => PaymentLinks, "PaymentLinks"),
-  PaymentMethodConfigurations: /* @__PURE__ */ __name(() => PaymentMethodConfigurations, "PaymentMethodConfigurations"),
-  PaymentMethodDomains: /* @__PURE__ */ __name(() => PaymentMethodDomains, "PaymentMethodDomains"),
-  PaymentMethods: /* @__PURE__ */ __name(() => PaymentMethods, "PaymentMethods"),
-  PaymentRecords: /* @__PURE__ */ __name(() => PaymentRecords, "PaymentRecords"),
-  Payouts: /* @__PURE__ */ __name(() => Payouts, "Payouts"),
-  Plans: /* @__PURE__ */ __name(() => Plans, "Plans"),
-  Prices: /* @__PURE__ */ __name(() => Prices, "Prices"),
-  Products: /* @__PURE__ */ __name(() => Products2, "Products"),
-  PromotionCodes: /* @__PURE__ */ __name(() => PromotionCodes, "PromotionCodes"),
-  Quotes: /* @__PURE__ */ __name(() => Quotes, "Quotes"),
-  Radar: /* @__PURE__ */ __name(() => Radar, "Radar"),
-  Refunds: /* @__PURE__ */ __name(() => Refunds2, "Refunds"),
-  Reporting: /* @__PURE__ */ __name(() => Reporting, "Reporting"),
-  Reviews: /* @__PURE__ */ __name(() => Reviews, "Reviews"),
-  SetupAttempts: /* @__PURE__ */ __name(() => SetupAttempts, "SetupAttempts"),
-  SetupIntents: /* @__PURE__ */ __name(() => SetupIntents, "SetupIntents"),
-  ShippingRates: /* @__PURE__ */ __name(() => ShippingRates, "ShippingRates"),
-  Sigma: /* @__PURE__ */ __name(() => Sigma, "Sigma"),
-  Sources: /* @__PURE__ */ __name(() => Sources, "Sources"),
-  SubscriptionItems: /* @__PURE__ */ __name(() => SubscriptionItems, "SubscriptionItems"),
-  SubscriptionSchedules: /* @__PURE__ */ __name(() => SubscriptionSchedules, "SubscriptionSchedules"),
-  Subscriptions: /* @__PURE__ */ __name(() => Subscriptions, "Subscriptions"),
-  Tax: /* @__PURE__ */ __name(() => Tax, "Tax"),
-  TaxCodes: /* @__PURE__ */ __name(() => TaxCodes, "TaxCodes"),
-  TaxIds: /* @__PURE__ */ __name(() => TaxIds, "TaxIds"),
-  TaxRates: /* @__PURE__ */ __name(() => TaxRates, "TaxRates"),
-  Terminal: /* @__PURE__ */ __name(() => Terminal, "Terminal"),
-  TestHelpers: /* @__PURE__ */ __name(() => TestHelpers, "TestHelpers"),
-  Tokens: /* @__PURE__ */ __name(() => Tokens2, "Tokens"),
-  Topups: /* @__PURE__ */ __name(() => Topups, "Topups"),
-  Transfers: /* @__PURE__ */ __name(() => Transfers, "Transfers"),
-  Treasury: /* @__PURE__ */ __name(() => Treasury, "Treasury"),
-  V2: /* @__PURE__ */ __name(() => V2, "V2"),
-  WebhookEndpoints: /* @__PURE__ */ __name(() => WebhookEndpoints, "WebhookEndpoints")
+  Account: () => Accounts3,
+  AccountLinks: () => AccountLinks2,
+  AccountSessions: () => AccountSessions,
+  Accounts: () => Accounts3,
+  ApplePayDomains: () => ApplePayDomains,
+  ApplicationFees: () => ApplicationFees,
+  Apps: () => Apps,
+  Balance: () => Balance,
+  BalanceSettings: () => BalanceSettings,
+  BalanceTransactions: () => BalanceTransactions,
+  Billing: () => Billing,
+  BillingPortal: () => BillingPortal,
+  Charges: () => Charges,
+  Checkout: () => Checkout,
+  Climate: () => Climate,
+  ConfirmationTokens: () => ConfirmationTokens2,
+  CountrySpecs: () => CountrySpecs,
+  Coupons: () => Coupons,
+  CreditNotes: () => CreditNotes,
+  CustomerSessions: () => CustomerSessions,
+  Customers: () => Customers2,
+  Disputes: () => Disputes2,
+  Entitlements: () => Entitlements,
+  EphemeralKeys: () => EphemeralKeys,
+  Events: () => Events2,
+  ExchangeRates: () => ExchangeRates,
+  FileLinks: () => FileLinks,
+  Files: () => Files,
+  FinancialConnections: () => FinancialConnections,
+  Forwarding: () => Forwarding,
+  Identity: () => Identity,
+  InvoiceItems: () => InvoiceItems,
+  InvoicePayments: () => InvoicePayments,
+  InvoiceRenderingTemplates: () => InvoiceRenderingTemplates,
+  Invoices: () => Invoices,
+  Issuing: () => Issuing,
+  Mandates: () => Mandates,
+  OAuth: () => OAuth,
+  PaymentAttemptRecords: () => PaymentAttemptRecords,
+  PaymentIntents: () => PaymentIntents,
+  PaymentLinks: () => PaymentLinks,
+  PaymentMethodConfigurations: () => PaymentMethodConfigurations,
+  PaymentMethodDomains: () => PaymentMethodDomains,
+  PaymentMethods: () => PaymentMethods,
+  PaymentRecords: () => PaymentRecords,
+  Payouts: () => Payouts,
+  Plans: () => Plans,
+  Prices: () => Prices,
+  Products: () => Products2,
+  PromotionCodes: () => PromotionCodes,
+  Quotes: () => Quotes,
+  Radar: () => Radar,
+  Refunds: () => Refunds2,
+  Reporting: () => Reporting,
+  Reviews: () => Reviews,
+  SetupAttempts: () => SetupAttempts,
+  SetupIntents: () => SetupIntents,
+  ShippingRates: () => ShippingRates,
+  Sigma: () => Sigma,
+  Sources: () => Sources,
+  SubscriptionItems: () => SubscriptionItems,
+  SubscriptionSchedules: () => SubscriptionSchedules,
+  Subscriptions: () => Subscriptions,
+  Tax: () => Tax,
+  TaxCodes: () => TaxCodes,
+  TaxIds: () => TaxIds,
+  TaxRates: () => TaxRates,
+  Terminal: () => Terminal,
+  TestHelpers: () => TestHelpers,
+  Tokens: () => Tokens2,
+  Topups: () => Topups,
+  Transfers: () => Transfers,
+  Treasury: () => Treasury,
+  V2: () => V2,
+  WebhookEndpoints: () => WebhookEndpoints
 });
+
+// ../node_modules/stripe/esm/ResourceNamespace.js
 function ResourceNamespace(stripe, resources) {
   for (const name in resources) {
     if (!Object.prototype.hasOwnProperty.call(resources, name)) {
@@ -3918,18 +3755,20 @@ function ResourceNamespace(stripe, resources) {
   }
 }
 __name(ResourceNamespace, "ResourceNamespace");
-__name2(ResourceNamespace, "ResourceNamespace");
 function resourceNamespace(namespace, resources) {
   return function(stripe) {
     return new ResourceNamespace(stripe, resources);
   };
 }
 __name(resourceNamespace, "resourceNamespace");
-__name2(resourceNamespace, "resourceNamespace");
+
+// ../node_modules/stripe/esm/resources/V2/Core/AccountLinks.js
 var stripeMethod2 = StripeResource.method;
 var AccountLinks = StripeResource.extend({
   create: stripeMethod2({ method: "POST", fullPath: "/v2/core/account_links" })
 });
+
+// ../node_modules/stripe/esm/resources/V2/Core/AccountTokens.js
 var stripeMethod3 = StripeResource.method;
 var AccountTokens = StripeResource.extend({
   create: stripeMethod3({ method: "POST", fullPath: "/v2/core/account_tokens" }),
@@ -3938,6 +3777,8 @@ var AccountTokens = StripeResource.extend({
     fullPath: "/v2/core/account_tokens/{id}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/FinancialConnections/Accounts.js
 var stripeMethod4 = StripeResource.method;
 var Accounts = StripeResource.extend({
   retrieve: stripeMethod4({
@@ -3971,6 +3812,8 @@ var Accounts = StripeResource.extend({
     fullPath: "/v1/financial_connections/accounts/{account}/unsubscribe"
   })
 });
+
+// ../node_modules/stripe/esm/resources/V2/Core/Accounts/Persons.js
 var stripeMethod5 = StripeResource.method;
 var Persons = StripeResource.extend({
   create: stripeMethod5({
@@ -3995,6 +3838,8 @@ var Persons = StripeResource.extend({
     fullPath: "/v2/core/accounts/{account_id}/persons/{id}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/V2/Core/Accounts/PersonTokens.js
 var stripeMethod6 = StripeResource.method;
 var PersonTokens = StripeResource.extend({
   create: stripeMethod6({
@@ -4006,9 +3851,11 @@ var PersonTokens = StripeResource.extend({
     fullPath: "/v2/core/accounts/{account_id}/person_tokens/{id}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/V2/Core/Accounts.js
 var stripeMethod7 = StripeResource.method;
 var Accounts2 = StripeResource.extend({
-  constructor: /* @__PURE__ */ __name2(function(...args) {
+  constructor: /* @__PURE__ */ __name(function(...args) {
     StripeResource.apply(this, args);
     this.persons = new Persons(...args);
     this.personTokens = new PersonTokens(...args);
@@ -4026,6 +3873,8 @@ var Accounts2 = StripeResource.extend({
     fullPath: "/v2/core/accounts/{id}/close"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Entitlements/ActiveEntitlements.js
 var stripeMethod8 = StripeResource.method;
 var ActiveEntitlements = StripeResource.extend({
   retrieve: stripeMethod8({
@@ -4038,6 +3887,8 @@ var ActiveEntitlements = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Billing/Alerts.js
 var stripeMethod9 = StripeResource.method;
 var Alerts = StripeResource.extend({
   create: stripeMethod9({ method: "POST", fullPath: "/v1/billing/alerts" }),
@@ -4060,10 +3911,14 @@ var Alerts = StripeResource.extend({
     fullPath: "/v1/billing/alerts/{id}/deactivate"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Tax/Associations.js
 var stripeMethod10 = StripeResource.method;
 var Associations = StripeResource.extend({
   find: stripeMethod10({ method: "GET", fullPath: "/v1/tax/associations/find" })
 });
+
+// ../node_modules/stripe/esm/resources/Issuing/Authorizations.js
 var stripeMethod11 = StripeResource.method;
 var Authorizations = StripeResource.extend({
   retrieve: stripeMethod11({
@@ -4088,6 +3943,8 @@ var Authorizations = StripeResource.extend({
     fullPath: "/v1/issuing/authorizations/{authorization}/decline"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/Issuing/Authorizations.js
 var stripeMethod12 = StripeResource.method;
 var Authorizations2 = StripeResource.extend({
   create: stripeMethod12({
@@ -4119,6 +3976,8 @@ var Authorizations2 = StripeResource.extend({
     fullPath: "/v1/test_helpers/issuing/authorizations/{authorization}/reverse"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Tax/Calculations.js
 var stripeMethod13 = StripeResource.method;
 var Calculations = StripeResource.extend({
   create: stripeMethod13({ method: "POST", fullPath: "/v1/tax/calculations" }),
@@ -4132,6 +3991,8 @@ var Calculations = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Issuing/Cardholders.js
 var stripeMethod14 = StripeResource.method;
 var Cardholders = StripeResource.extend({
   create: stripeMethod14({ method: "POST", fullPath: "/v1/issuing/cardholders" }),
@@ -4149,6 +4010,8 @@ var Cardholders = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Issuing/Cards.js
 var stripeMethod15 = StripeResource.method;
 var Cards = StripeResource.extend({
   create: stripeMethod15({ method: "POST", fullPath: "/v1/issuing/cards" }),
@@ -4160,6 +4023,8 @@ var Cards = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/Issuing/Cards.js
 var stripeMethod16 = StripeResource.method;
 var Cards2 = StripeResource.extend({
   deliverCard: stripeMethod16({
@@ -4183,6 +4048,8 @@ var Cards2 = StripeResource.extend({
     fullPath: "/v1/test_helpers/issuing/cards/{card}/shipping/submit"
   })
 });
+
+// ../node_modules/stripe/esm/resources/BillingPortal/Configurations.js
 var stripeMethod17 = StripeResource.method;
 var Configurations = StripeResource.extend({
   create: stripeMethod17({
@@ -4203,6 +4070,8 @@ var Configurations = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Terminal/Configurations.js
 var stripeMethod18 = StripeResource.method;
 var Configurations2 = StripeResource.extend({
   create: stripeMethod18({
@@ -4227,6 +4096,8 @@ var Configurations2 = StripeResource.extend({
     fullPath: "/v1/terminal/configurations/{configuration}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/ConfirmationTokens.js
 var stripeMethod19 = StripeResource.method;
 var ConfirmationTokens = StripeResource.extend({
   create: stripeMethod19({
@@ -4234,6 +4105,8 @@ var ConfirmationTokens = StripeResource.extend({
     fullPath: "/v1/test_helpers/confirmation_tokens"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Terminal/ConnectionTokens.js
 var stripeMethod20 = StripeResource.method;
 var ConnectionTokens = StripeResource.extend({
   create: stripeMethod20({
@@ -4241,6 +4114,8 @@ var ConnectionTokens = StripeResource.extend({
     fullPath: "/v1/terminal/connection_tokens"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Billing/CreditBalanceSummary.js
 var stripeMethod21 = StripeResource.method;
 var CreditBalanceSummary = StripeResource.extend({
   retrieve: stripeMethod21({
@@ -4248,6 +4123,8 @@ var CreditBalanceSummary = StripeResource.extend({
     fullPath: "/v1/billing/credit_balance_summary"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Billing/CreditBalanceTransactions.js
 var stripeMethod22 = StripeResource.method;
 var CreditBalanceTransactions = StripeResource.extend({
   retrieve: stripeMethod22({
@@ -4260,6 +4137,8 @@ var CreditBalanceTransactions = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Billing/CreditGrants.js
 var stripeMethod23 = StripeResource.method;
 var CreditGrants = StripeResource.extend({
   create: stripeMethod23({ method: "POST", fullPath: "/v1/billing/credit_grants" }),
@@ -4285,6 +4164,8 @@ var CreditGrants = StripeResource.extend({
     fullPath: "/v1/billing/credit_grants/{id}/void"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Treasury/CreditReversals.js
 var stripeMethod24 = StripeResource.method;
 var CreditReversals = StripeResource.extend({
   create: stripeMethod24({
@@ -4301,6 +4182,8 @@ var CreditReversals = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/Customers.js
 var stripeMethod25 = StripeResource.method;
 var Customers = StripeResource.extend({
   fundCashBalance: stripeMethod25({
@@ -4308,6 +4191,8 @@ var Customers = StripeResource.extend({
     fullPath: "/v1/test_helpers/customers/{customer}/fund_cash_balance"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Treasury/DebitReversals.js
 var stripeMethod26 = StripeResource.method;
 var DebitReversals = StripeResource.extend({
   create: stripeMethod26({
@@ -4324,6 +4209,8 @@ var DebitReversals = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Issuing/Disputes.js
 var stripeMethod27 = StripeResource.method;
 var Disputes = StripeResource.extend({
   create: stripeMethod27({ method: "POST", fullPath: "/v1/issuing/disputes" }),
@@ -4345,6 +4232,8 @@ var Disputes = StripeResource.extend({
     fullPath: "/v1/issuing/disputes/{dispute}/submit"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Radar/EarlyFraudWarnings.js
 var stripeMethod28 = StripeResource.method;
 var EarlyFraudWarnings = StripeResource.extend({
   retrieve: stripeMethod28({
@@ -4357,6 +4246,8 @@ var EarlyFraudWarnings = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/V2/Core/EventDestinations.js
 var stripeMethod29 = StripeResource.method;
 var EventDestinations = StripeResource.extend({
   create: stripeMethod29({
@@ -4393,10 +4284,12 @@ var EventDestinations = StripeResource.extend({
     fullPath: "/v2/core/event_destinations/{id}/ping"
   })
 });
+
+// ../node_modules/stripe/esm/resources/V2/Core/Events.js
 var stripeMethod30 = StripeResource.method;
 var Events = StripeResource.extend({
   retrieve(...args) {
-    const transformResponseData = /* @__PURE__ */ __name2((response) => {
+    const transformResponseData = /* @__PURE__ */ __name((response) => {
       return this.addFetchRelatedObjectIfNeeded(response);
     }, "transformResponseData");
     return stripeMethod30({
@@ -4406,7 +4299,7 @@ var Events = StripeResource.extend({
     }).apply(this, args);
   },
   list(...args) {
-    const transformResponseData = /* @__PURE__ */ __name2((response) => {
+    const transformResponseData = /* @__PURE__ */ __name((response) => {
       return Object.assign(Object.assign({}, response), { data: response.data.map(this.addFetchRelatedObjectIfNeeded.bind(this)) });
     }, "transformResponseData");
     return stripeMethod30({
@@ -4429,7 +4322,7 @@ var Events = StripeResource.extend({
     if (!pulledEvent.related_object || !pulledEvent.related_object.url) {
       return pulledEvent;
     }
-    return Object.assign(Object.assign({}, pulledEvent), { fetchRelatedObject: /* @__PURE__ */ __name2(() => (
+    return Object.assign(Object.assign({}, pulledEvent), { fetchRelatedObject: /* @__PURE__ */ __name(() => (
       // call stripeMethod with 'this' resource to fetch
       // the related object. 'this' is needed to construct
       // and send the request, but the method spec controls
@@ -4446,6 +4339,8 @@ var Events = StripeResource.extend({
     ), "fetchRelatedObject") });
   }
 });
+
+// ../node_modules/stripe/esm/resources/Entitlements/Features.js
 var stripeMethod31 = StripeResource.method;
 var Features = StripeResource.extend({
   create: stripeMethod31({ method: "POST", fullPath: "/v1/entitlements/features" }),
@@ -4463,6 +4358,8 @@ var Features = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Treasury/FinancialAccounts.js
 var stripeMethod32 = StripeResource.method;
 var FinancialAccounts = StripeResource.extend({
   create: stripeMethod32({
@@ -4495,6 +4392,8 @@ var FinancialAccounts = StripeResource.extend({
     fullPath: "/v1/treasury/financial_accounts/{financial_account}/features"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/Treasury/InboundTransfers.js
 var stripeMethod33 = StripeResource.method;
 var InboundTransfers = StripeResource.extend({
   fail: stripeMethod33({
@@ -4510,6 +4409,8 @@ var InboundTransfers = StripeResource.extend({
     fullPath: "/v1/test_helpers/treasury/inbound_transfers/{id}/succeed"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Treasury/InboundTransfers.js
 var stripeMethod34 = StripeResource.method;
 var InboundTransfers2 = StripeResource.extend({
   create: stripeMethod34({
@@ -4530,6 +4431,8 @@ var InboundTransfers2 = StripeResource.extend({
     fullPath: "/v1/treasury/inbound_transfers/{inbound_transfer}/cancel"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Terminal/Locations.js
 var stripeMethod35 = StripeResource.method;
 var Locations = StripeResource.extend({
   create: stripeMethod35({ method: "POST", fullPath: "/v1/terminal/locations" }),
@@ -4551,6 +4454,8 @@ var Locations = StripeResource.extend({
     fullPath: "/v1/terminal/locations/{location}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Billing/MeterEventAdjustments.js
 var stripeMethod36 = StripeResource.method;
 var MeterEventAdjustments = StripeResource.extend({
   create: stripeMethod36({
@@ -4558,6 +4463,8 @@ var MeterEventAdjustments = StripeResource.extend({
     fullPath: "/v1/billing/meter_event_adjustments"
   })
 });
+
+// ../node_modules/stripe/esm/resources/V2/Billing/MeterEventAdjustments.js
 var stripeMethod37 = StripeResource.method;
 var MeterEventAdjustments2 = StripeResource.extend({
   create: stripeMethod37({
@@ -4565,6 +4472,8 @@ var MeterEventAdjustments2 = StripeResource.extend({
     fullPath: "/v2/billing/meter_event_adjustments"
   })
 });
+
+// ../node_modules/stripe/esm/resources/V2/Billing/MeterEventSession.js
 var stripeMethod38 = StripeResource.method;
 var MeterEventSession = StripeResource.extend({
   create: stripeMethod38({
@@ -4572,6 +4481,8 @@ var MeterEventSession = StripeResource.extend({
     fullPath: "/v2/billing/meter_event_session"
   })
 });
+
+// ../node_modules/stripe/esm/resources/V2/Billing/MeterEventStream.js
 var stripeMethod39 = StripeResource.method;
 var MeterEventStream = StripeResource.extend({
   create: stripeMethod39({
@@ -4580,14 +4491,20 @@ var MeterEventStream = StripeResource.extend({
     host: "meter-events.stripe.com"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Billing/MeterEvents.js
 var stripeMethod40 = StripeResource.method;
 var MeterEvents = StripeResource.extend({
   create: stripeMethod40({ method: "POST", fullPath: "/v1/billing/meter_events" })
 });
+
+// ../node_modules/stripe/esm/resources/V2/Billing/MeterEvents.js
 var stripeMethod41 = StripeResource.method;
 var MeterEvents2 = StripeResource.extend({
   create: stripeMethod41({ method: "POST", fullPath: "/v2/billing/meter_events" })
 });
+
+// ../node_modules/stripe/esm/resources/Billing/Meters.js
 var stripeMethod42 = StripeResource.method;
 var Meters = StripeResource.extend({
   create: stripeMethod42({ method: "POST", fullPath: "/v1/billing/meters" }),
@@ -4612,6 +4529,8 @@ var Meters = StripeResource.extend({
     fullPath: "/v1/billing/meters/{id}/reactivate"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Terminal/OnboardingLinks.js
 var stripeMethod43 = StripeResource.method;
 var OnboardingLinks = StripeResource.extend({
   create: stripeMethod43({
@@ -4619,6 +4538,8 @@ var OnboardingLinks = StripeResource.extend({
     fullPath: "/v1/terminal/onboarding_links"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Climate/Orders.js
 var stripeMethod44 = StripeResource.method;
 var Orders = StripeResource.extend({
   create: stripeMethod44({ method: "POST", fullPath: "/v1/climate/orders" }),
@@ -4640,6 +4561,8 @@ var Orders = StripeResource.extend({
     fullPath: "/v1/climate/orders/{order}/cancel"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/Treasury/OutboundPayments.js
 var stripeMethod45 = StripeResource.method;
 var OutboundPayments = StripeResource.extend({
   update: stripeMethod45({
@@ -4659,6 +4582,8 @@ var OutboundPayments = StripeResource.extend({
     fullPath: "/v1/test_helpers/treasury/outbound_payments/{id}/return"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Treasury/OutboundPayments.js
 var stripeMethod46 = StripeResource.method;
 var OutboundPayments2 = StripeResource.extend({
   create: stripeMethod46({
@@ -4679,6 +4604,8 @@ var OutboundPayments2 = StripeResource.extend({
     fullPath: "/v1/treasury/outbound_payments/{id}/cancel"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/Treasury/OutboundTransfers.js
 var stripeMethod47 = StripeResource.method;
 var OutboundTransfers = StripeResource.extend({
   update: stripeMethod47({
@@ -4698,6 +4625,8 @@ var OutboundTransfers = StripeResource.extend({
     fullPath: "/v1/test_helpers/treasury/outbound_transfers/{outbound_transfer}/return"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Treasury/OutboundTransfers.js
 var stripeMethod48 = StripeResource.method;
 var OutboundTransfers2 = StripeResource.extend({
   create: stripeMethod48({
@@ -4718,6 +4647,8 @@ var OutboundTransfers2 = StripeResource.extend({
     fullPath: "/v1/treasury/outbound_transfers/{outbound_transfer}/cancel"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Radar/PaymentEvaluations.js
 var stripeMethod49 = StripeResource.method;
 var PaymentEvaluations = StripeResource.extend({
   create: stripeMethod49({
@@ -4725,6 +4656,8 @@ var PaymentEvaluations = StripeResource.extend({
     fullPath: "/v1/radar/payment_evaluations"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Issuing/PersonalizationDesigns.js
 var stripeMethod50 = StripeResource.method;
 var PersonalizationDesigns = StripeResource.extend({
   create: stripeMethod50({
@@ -4745,6 +4678,8 @@ var PersonalizationDesigns = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/Issuing/PersonalizationDesigns.js
 var stripeMethod51 = StripeResource.method;
 var PersonalizationDesigns2 = StripeResource.extend({
   activate: stripeMethod51({
@@ -4760,6 +4695,8 @@ var PersonalizationDesigns2 = StripeResource.extend({
     fullPath: "/v1/test_helpers/issuing/personalization_designs/{personalization_design}/reject"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Issuing/PhysicalBundles.js
 var stripeMethod52 = StripeResource.method;
 var PhysicalBundles = StripeResource.extend({
   retrieve: stripeMethod52({
@@ -4772,6 +4709,8 @@ var PhysicalBundles = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Climate/Products.js
 var stripeMethod53 = StripeResource.method;
 var Products = StripeResource.extend({
   retrieve: stripeMethod53({
@@ -4784,6 +4723,8 @@ var Products = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Terminal/Readers.js
 var stripeMethod54 = StripeResource.method;
 var Readers = StripeResource.extend({
   create: stripeMethod54({ method: "POST", fullPath: "/v1/terminal/readers" }),
@@ -4837,6 +4778,8 @@ var Readers = StripeResource.extend({
     fullPath: "/v1/terminal/readers/{reader}/set_reader_display"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/Terminal/Readers.js
 var stripeMethod55 = StripeResource.method;
 var Readers2 = StripeResource.extend({
   presentPaymentMethod: stripeMethod55({
@@ -4852,6 +4795,8 @@ var Readers2 = StripeResource.extend({
     fullPath: "/v1/test_helpers/terminal/readers/{reader}/timeout_input_collection"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/Treasury/ReceivedCredits.js
 var stripeMethod56 = StripeResource.method;
 var ReceivedCredits = StripeResource.extend({
   create: stripeMethod56({
@@ -4859,6 +4804,8 @@ var ReceivedCredits = StripeResource.extend({
     fullPath: "/v1/test_helpers/treasury/received_credits"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Treasury/ReceivedCredits.js
 var stripeMethod57 = StripeResource.method;
 var ReceivedCredits2 = StripeResource.extend({
   retrieve: stripeMethod57({
@@ -4871,6 +4818,8 @@ var ReceivedCredits2 = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/Treasury/ReceivedDebits.js
 var stripeMethod58 = StripeResource.method;
 var ReceivedDebits = StripeResource.extend({
   create: stripeMethod58({
@@ -4878,6 +4827,8 @@ var ReceivedDebits = StripeResource.extend({
     fullPath: "/v1/test_helpers/treasury/received_debits"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Treasury/ReceivedDebits.js
 var stripeMethod59 = StripeResource.method;
 var ReceivedDebits2 = StripeResource.extend({
   retrieve: stripeMethod59({
@@ -4890,6 +4841,8 @@ var ReceivedDebits2 = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/Refunds.js
 var stripeMethod60 = StripeResource.method;
 var Refunds = StripeResource.extend({
   expire: stripeMethod60({
@@ -4897,6 +4850,8 @@ var Refunds = StripeResource.extend({
     fullPath: "/v1/test_helpers/refunds/{refund}/expire"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Tax/Registrations.js
 var stripeMethod61 = StripeResource.method;
 var Registrations = StripeResource.extend({
   create: stripeMethod61({ method: "POST", fullPath: "/v1/tax/registrations" }),
@@ -4914,6 +4869,8 @@ var Registrations = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Reporting/ReportRuns.js
 var stripeMethod62 = StripeResource.method;
 var ReportRuns = StripeResource.extend({
   create: stripeMethod62({ method: "POST", fullPath: "/v1/reporting/report_runs" }),
@@ -4927,6 +4884,8 @@ var ReportRuns = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Reporting/ReportTypes.js
 var stripeMethod63 = StripeResource.method;
 var ReportTypes = StripeResource.extend({
   retrieve: stripeMethod63({
@@ -4939,6 +4898,8 @@ var ReportTypes = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Forwarding/Requests.js
 var stripeMethod64 = StripeResource.method;
 var Requests = StripeResource.extend({
   create: stripeMethod64({ method: "POST", fullPath: "/v1/forwarding/requests" }),
@@ -4952,6 +4913,8 @@ var Requests = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Sigma/ScheduledQueryRuns.js
 var stripeMethod65 = StripeResource.method;
 var ScheduledQueryRuns = StripeResource.extend({
   retrieve: stripeMethod65({
@@ -4964,6 +4927,8 @@ var ScheduledQueryRuns = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Apps/Secrets.js
 var stripeMethod66 = StripeResource.method;
 var Secrets = StripeResource.extend({
   create: stripeMethod66({ method: "POST", fullPath: "/v1/apps/secrets" }),
@@ -4978,6 +4943,8 @@ var Secrets = StripeResource.extend({
   }),
   find: stripeMethod66({ method: "GET", fullPath: "/v1/apps/secrets/find" })
 });
+
+// ../node_modules/stripe/esm/resources/BillingPortal/Sessions.js
 var stripeMethod67 = StripeResource.method;
 var Sessions = StripeResource.extend({
   create: stripeMethod67({
@@ -4985,6 +4952,8 @@ var Sessions = StripeResource.extend({
     fullPath: "/v1/billing_portal/sessions"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Checkout/Sessions.js
 var stripeMethod68 = StripeResource.method;
 var Sessions2 = StripeResource.extend({
   create: stripeMethod68({ method: "POST", fullPath: "/v1/checkout/sessions" }),
@@ -5011,6 +4980,8 @@ var Sessions2 = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/FinancialConnections/Sessions.js
 var stripeMethod69 = StripeResource.method;
 var Sessions3 = StripeResource.extend({
   create: stripeMethod69({
@@ -5022,11 +4993,15 @@ var Sessions3 = StripeResource.extend({
     fullPath: "/v1/financial_connections/sessions/{session}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Tax/Settings.js
 var stripeMethod70 = StripeResource.method;
 var Settings = StripeResource.extend({
   retrieve: stripeMethod70({ method: "GET", fullPath: "/v1/tax/settings" }),
   update: stripeMethod70({ method: "POST", fullPath: "/v1/tax/settings" })
 });
+
+// ../node_modules/stripe/esm/resources/Climate/Suppliers.js
 var stripeMethod71 = StripeResource.method;
 var Suppliers = StripeResource.extend({
   retrieve: stripeMethod71({
@@ -5039,6 +5014,8 @@ var Suppliers = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/TestClocks.js
 var stripeMethod72 = StripeResource.method;
 var TestClocks = StripeResource.extend({
   create: stripeMethod72({
@@ -5063,6 +5040,8 @@ var TestClocks = StripeResource.extend({
     fullPath: "/v1/test_helpers/test_clocks/{test_clock}/advance"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Issuing/Tokens.js
 var stripeMethod73 = StripeResource.method;
 var Tokens = StripeResource.extend({
   retrieve: stripeMethod73({
@@ -5079,6 +5058,8 @@ var Tokens = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Treasury/TransactionEntries.js
 var stripeMethod74 = StripeResource.method;
 var TransactionEntries = StripeResource.extend({
   retrieve: stripeMethod74({
@@ -5091,6 +5072,8 @@ var TransactionEntries = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/FinancialConnections/Transactions.js
 var stripeMethod75 = StripeResource.method;
 var Transactions = StripeResource.extend({
   retrieve: stripeMethod75({
@@ -5103,6 +5086,8 @@ var Transactions = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Issuing/Transactions.js
 var stripeMethod76 = StripeResource.method;
 var Transactions2 = StripeResource.extend({
   retrieve: stripeMethod76({
@@ -5119,6 +5104,8 @@ var Transactions2 = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Tax/Transactions.js
 var stripeMethod77 = StripeResource.method;
 var Transactions3 = StripeResource.extend({
   retrieve: stripeMethod77({
@@ -5139,6 +5126,8 @@ var Transactions3 = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TestHelpers/Issuing/Transactions.js
 var stripeMethod78 = StripeResource.method;
 var Transactions4 = StripeResource.extend({
   createForceCapture: stripeMethod78({
@@ -5154,6 +5143,8 @@ var Transactions4 = StripeResource.extend({
     fullPath: "/v1/test_helpers/issuing/transactions/{transaction}/refund"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Treasury/Transactions.js
 var stripeMethod79 = StripeResource.method;
 var Transactions5 = StripeResource.extend({
   retrieve: stripeMethod79({
@@ -5166,6 +5157,8 @@ var Transactions5 = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Radar/ValueListItems.js
 var stripeMethod80 = StripeResource.method;
 var ValueListItems = StripeResource.extend({
   create: stripeMethod80({
@@ -5186,6 +5179,8 @@ var ValueListItems = StripeResource.extend({
     fullPath: "/v1/radar/value_list_items/{item}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Radar/ValueLists.js
 var stripeMethod81 = StripeResource.method;
 var ValueLists = StripeResource.extend({
   create: stripeMethod81({ method: "POST", fullPath: "/v1/radar/value_lists" }),
@@ -5207,6 +5202,8 @@ var ValueLists = StripeResource.extend({
     fullPath: "/v1/radar/value_lists/{value_list}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Identity/VerificationReports.js
 var stripeMethod82 = StripeResource.method;
 var VerificationReports = StripeResource.extend({
   retrieve: stripeMethod82({
@@ -5219,6 +5216,8 @@ var VerificationReports = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Identity/VerificationSessions.js
 var stripeMethod83 = StripeResource.method;
 var VerificationSessions = StripeResource.extend({
   create: stripeMethod83({
@@ -5247,6 +5246,8 @@ var VerificationSessions = StripeResource.extend({
     fullPath: "/v1/identity/verification_sessions/{session}/redact"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Accounts.js
 var stripeMethod84 = StripeResource.method;
 var Accounts3 = StripeResource.extend({
   create: stripeMethod84({ method: "POST", fullPath: "/v1/accounts" }),
@@ -5338,14 +5339,20 @@ var Accounts3 = StripeResource.extend({
     fullPath: "/v1/accounts/{account}/persons/{person}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/AccountLinks.js
 var stripeMethod85 = StripeResource.method;
 var AccountLinks2 = StripeResource.extend({
   create: stripeMethod85({ method: "POST", fullPath: "/v1/account_links" })
 });
+
+// ../node_modules/stripe/esm/resources/AccountSessions.js
 var stripeMethod86 = StripeResource.method;
 var AccountSessions = StripeResource.extend({
   create: stripeMethod86({ method: "POST", fullPath: "/v1/account_sessions" })
 });
+
+// ../node_modules/stripe/esm/resources/ApplePayDomains.js
 var stripeMethod87 = StripeResource.method;
 var ApplePayDomains = StripeResource.extend({
   create: stripeMethod87({ method: "POST", fullPath: "/v1/apple_pay/domains" }),
@@ -5363,6 +5370,8 @@ var ApplePayDomains = StripeResource.extend({
     fullPath: "/v1/apple_pay/domains/{domain}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/ApplicationFees.js
 var stripeMethod88 = StripeResource.method;
 var ApplicationFees = StripeResource.extend({
   retrieve: stripeMethod88({
@@ -5392,15 +5401,21 @@ var ApplicationFees = StripeResource.extend({
     fullPath: "/v1/application_fees/{fee}/refunds/{id}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Balance.js
 var stripeMethod89 = StripeResource.method;
 var Balance = StripeResource.extend({
   retrieve: stripeMethod89({ method: "GET", fullPath: "/v1/balance" })
 });
+
+// ../node_modules/stripe/esm/resources/BalanceSettings.js
 var stripeMethod90 = StripeResource.method;
 var BalanceSettings = StripeResource.extend({
   retrieve: stripeMethod90({ method: "GET", fullPath: "/v1/balance_settings" }),
   update: stripeMethod90({ method: "POST", fullPath: "/v1/balance_settings" })
 });
+
+// ../node_modules/stripe/esm/resources/BalanceTransactions.js
 var stripeMethod91 = StripeResource.method;
 var BalanceTransactions = StripeResource.extend({
   retrieve: stripeMethod91({
@@ -5413,6 +5428,8 @@ var BalanceTransactions = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Charges.js
 var stripeMethod92 = StripeResource.method;
 var Charges = StripeResource.extend({
   create: stripeMethod92({ method: "POST", fullPath: "/v1/charges" }),
@@ -5433,6 +5450,8 @@ var Charges = StripeResource.extend({
     methodType: "search"
   })
 });
+
+// ../node_modules/stripe/esm/resources/ConfirmationTokens.js
 var stripeMethod93 = StripeResource.method;
 var ConfirmationTokens2 = StripeResource.extend({
   retrieve: stripeMethod93({
@@ -5440,6 +5459,8 @@ var ConfirmationTokens2 = StripeResource.extend({
     fullPath: "/v1/confirmation_tokens/{confirmation_token}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/CountrySpecs.js
 var stripeMethod94 = StripeResource.method;
 var CountrySpecs = StripeResource.extend({
   retrieve: stripeMethod94({
@@ -5452,6 +5473,8 @@ var CountrySpecs = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Coupons.js
 var stripeMethod95 = StripeResource.method;
 var Coupons = StripeResource.extend({
   create: stripeMethod95({ method: "POST", fullPath: "/v1/coupons" }),
@@ -5464,6 +5487,8 @@ var Coupons = StripeResource.extend({
   }),
   del: stripeMethod95({ method: "DELETE", fullPath: "/v1/coupons/{coupon}" })
 });
+
+// ../node_modules/stripe/esm/resources/CreditNotes.js
 var stripeMethod96 = StripeResource.method;
 var CreditNotes = StripeResource.extend({
   create: stripeMethod96({ method: "POST", fullPath: "/v1/credit_notes" }),
@@ -5490,10 +5515,14 @@ var CreditNotes = StripeResource.extend({
     fullPath: "/v1/credit_notes/{id}/void"
   })
 });
+
+// ../node_modules/stripe/esm/resources/CustomerSessions.js
 var stripeMethod97 = StripeResource.method;
 var CustomerSessions = StripeResource.extend({
   create: stripeMethod97({ method: "POST", fullPath: "/v1/customer_sessions" })
 });
+
+// ../node_modules/stripe/esm/resources/Customers.js
 var stripeMethod98 = StripeResource.method;
 var Customers2 = StripeResource.extend({
   create: stripeMethod98({ method: "POST", fullPath: "/v1/customers" }),
@@ -5604,6 +5633,8 @@ var Customers2 = StripeResource.extend({
     fullPath: "/v1/customers/{customer}/sources/{id}/verify"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Disputes.js
 var stripeMethod99 = StripeResource.method;
 var Disputes2 = StripeResource.extend({
   retrieve: stripeMethod99({ method: "GET", fullPath: "/v1/disputes/{dispute}" }),
@@ -5618,12 +5649,14 @@ var Disputes2 = StripeResource.extend({
     fullPath: "/v1/disputes/{dispute}/close"
   })
 });
+
+// ../node_modules/stripe/esm/resources/EphemeralKeys.js
 var stripeMethod100 = StripeResource.method;
 var EphemeralKeys = StripeResource.extend({
   create: stripeMethod100({
     method: "POST",
     fullPath: "/v1/ephemeral_keys",
-    validator: /* @__PURE__ */ __name2((data, options) => {
+    validator: /* @__PURE__ */ __name((data, options) => {
       if (!options.headers || !options.headers["Stripe-Version"]) {
         throw new Error("Passing apiVersion in a separate options hash is required to create an ephemeral key. See https://stripe.com/docs/api/versioning?lang=node");
       }
@@ -5631,6 +5664,8 @@ var EphemeralKeys = StripeResource.extend({
   }),
   del: stripeMethod100({ method: "DELETE", fullPath: "/v1/ephemeral_keys/{key}" })
 });
+
+// ../node_modules/stripe/esm/resources/Events.js
 var stripeMethod101 = StripeResource.method;
 var Events2 = StripeResource.extend({
   retrieve: stripeMethod101({ method: "GET", fullPath: "/v1/events/{id}" }),
@@ -5640,6 +5675,8 @@ var Events2 = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/ExchangeRates.js
 var stripeMethod102 = StripeResource.method;
 var ExchangeRates = StripeResource.extend({
   retrieve: stripeMethod102({
@@ -5652,6 +5689,8 @@ var ExchangeRates = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/FileLinks.js
 var stripeMethod103 = StripeResource.method;
 var FileLinks = StripeResource.extend({
   create: stripeMethod103({ method: "POST", fullPath: "/v1/file_links" }),
@@ -5663,7 +5702,9 @@ var FileLinks = StripeResource.extend({
     methodType: "list"
   })
 });
-var multipartDataGenerator = /* @__PURE__ */ __name2((method, data, headers) => {
+
+// ../node_modules/stripe/esm/multipart.js
+var multipartDataGenerator = /* @__PURE__ */ __name((method, data, headers) => {
   const segno = (Math.round(Math.random() * 1e16) + Math.round(Math.random() * 1e16)).toString();
   headers["Content-Type"] = `multipart/form-data; boundary=${segno}`;
   const textEncoder = new TextEncoder();
@@ -5678,12 +5719,10 @@ var multipartDataGenerator = /* @__PURE__ */ __name2((method, data, headers) => 
     buffer.set(endBuffer, buffer.length - 2);
   }
   __name(push, "push");
-  __name2(push, "push");
   function q(s) {
     return `"${s.replace(/"|"/g, "%22").replace(/\r\n|\r|\n/g, " ")}"`;
   }
   __name(q, "q");
-  __name2(q, "q");
   const flattenedData = flattenAndStringify(data);
   for (const k in flattenedData) {
     if (!Object.prototype.hasOwnProperty.call(flattenedData, k)) {
@@ -5717,7 +5756,8 @@ function multipartRequestDataProcessor(method, data, headers, callback) {
   }).catch((err) => callback(err, null));
 }
 __name(multipartRequestDataProcessor, "multipartRequestDataProcessor");
-__name2(multipartRequestDataProcessor, "multipartRequestDataProcessor");
+
+// ../node_modules/stripe/esm/resources/Files.js
 var stripeMethod104 = StripeResource.method;
 var Files = StripeResource.extend({
   create: stripeMethod104({
@@ -5736,6 +5776,8 @@ var Files = StripeResource.extend({
   }),
   requestDataProcessor: multipartRequestDataProcessor
 });
+
+// ../node_modules/stripe/esm/resources/InvoiceItems.js
 var stripeMethod105 = StripeResource.method;
 var InvoiceItems = StripeResource.extend({
   create: stripeMethod105({ method: "POST", fullPath: "/v1/invoiceitems" }),
@@ -5757,6 +5799,8 @@ var InvoiceItems = StripeResource.extend({
     fullPath: "/v1/invoiceitems/{invoiceitem}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/InvoicePayments.js
 var stripeMethod106 = StripeResource.method;
 var InvoicePayments = StripeResource.extend({
   retrieve: stripeMethod106({
@@ -5769,6 +5813,8 @@ var InvoicePayments = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/InvoiceRenderingTemplates.js
 var stripeMethod107 = StripeResource.method;
 var InvoiceRenderingTemplates = StripeResource.extend({
   retrieve: stripeMethod107({
@@ -5789,6 +5835,8 @@ var InvoiceRenderingTemplates = StripeResource.extend({
     fullPath: "/v1/invoice_rendering_templates/{template}/unarchive"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Invoices.js
 var stripeMethod108 = StripeResource.method;
 var Invoices = StripeResource.extend({
   create: stripeMethod108({ method: "POST", fullPath: "/v1/invoices" }),
@@ -5852,10 +5900,14 @@ var Invoices = StripeResource.extend({
     fullPath: "/v1/invoices/{invoice}/void"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Mandates.js
 var stripeMethod109 = StripeResource.method;
 var Mandates = StripeResource.extend({
   retrieve: stripeMethod109({ method: "GET", fullPath: "/v1/mandates/{mandate}" })
 });
+
+// ../node_modules/stripe/esm/resources/OAuth.js
 var stripeMethod110 = StripeResource.method;
 var oAuthHost = "connect.stripe.com";
 var OAuth = StripeResource.extend({
@@ -5894,6 +5946,8 @@ var OAuth = StripeResource.extend({
     }).apply(this, [spec, ...args]);
   }
 });
+
+// ../node_modules/stripe/esm/resources/PaymentAttemptRecords.js
 var stripeMethod111 = StripeResource.method;
 var PaymentAttemptRecords = StripeResource.extend({
   retrieve: stripeMethod111({
@@ -5906,6 +5960,8 @@ var PaymentAttemptRecords = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/PaymentIntents.js
 var stripeMethod112 = StripeResource.method;
 var PaymentIntents = StripeResource.extend({
   create: stripeMethod112({ method: "POST", fullPath: "/v1/payment_intents" }),
@@ -5957,6 +6013,8 @@ var PaymentIntents = StripeResource.extend({
     fullPath: "/v1/payment_intents/{intent}/verify_microdeposits"
   })
 });
+
+// ../node_modules/stripe/esm/resources/PaymentLinks.js
 var stripeMethod113 = StripeResource.method;
 var PaymentLinks = StripeResource.extend({
   create: stripeMethod113({ method: "POST", fullPath: "/v1/payment_links" }),
@@ -5979,6 +6037,8 @@ var PaymentLinks = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/PaymentMethodConfigurations.js
 var stripeMethod114 = StripeResource.method;
 var PaymentMethodConfigurations = StripeResource.extend({
   create: stripeMethod114({
@@ -5999,6 +6059,8 @@ var PaymentMethodConfigurations = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/PaymentMethodDomains.js
 var stripeMethod115 = StripeResource.method;
 var PaymentMethodDomains = StripeResource.extend({
   create: stripeMethod115({
@@ -6023,6 +6085,8 @@ var PaymentMethodDomains = StripeResource.extend({
     fullPath: "/v1/payment_method_domains/{payment_method_domain}/validate"
   })
 });
+
+// ../node_modules/stripe/esm/resources/PaymentMethods.js
 var stripeMethod116 = StripeResource.method;
 var PaymentMethods = StripeResource.extend({
   create: stripeMethod116({ method: "POST", fullPath: "/v1/payment_methods" }),
@@ -6048,6 +6112,8 @@ var PaymentMethods = StripeResource.extend({
     fullPath: "/v1/payment_methods/{payment_method}/detach"
   })
 });
+
+// ../node_modules/stripe/esm/resources/PaymentRecords.js
 var stripeMethod117 = StripeResource.method;
 var PaymentRecords = StripeResource.extend({
   retrieve: stripeMethod117({ method: "GET", fullPath: "/v1/payment_records/{id}" }),
@@ -6080,6 +6146,8 @@ var PaymentRecords = StripeResource.extend({
     fullPath: "/v1/payment_records/{id}/report_refund"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Payouts.js
 var stripeMethod118 = StripeResource.method;
 var Payouts = StripeResource.extend({
   create: stripeMethod118({ method: "POST", fullPath: "/v1/payouts" }),
@@ -6099,6 +6167,8 @@ var Payouts = StripeResource.extend({
     fullPath: "/v1/payouts/{payout}/reverse"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Plans.js
 var stripeMethod119 = StripeResource.method;
 var Plans = StripeResource.extend({
   create: stripeMethod119({ method: "POST", fullPath: "/v1/plans" }),
@@ -6111,6 +6181,8 @@ var Plans = StripeResource.extend({
   }),
   del: stripeMethod119({ method: "DELETE", fullPath: "/v1/plans/{plan}" })
 });
+
+// ../node_modules/stripe/esm/resources/Prices.js
 var stripeMethod120 = StripeResource.method;
 var Prices = StripeResource.extend({
   create: stripeMethod120({ method: "POST", fullPath: "/v1/prices" }),
@@ -6127,6 +6199,8 @@ var Prices = StripeResource.extend({
     methodType: "search"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Products.js
 var stripeMethod121 = StripeResource.method;
 var Products2 = StripeResource.extend({
   create: stripeMethod121({ method: "POST", fullPath: "/v1/products" }),
@@ -6161,6 +6235,8 @@ var Products2 = StripeResource.extend({
     methodType: "search"
   })
 });
+
+// ../node_modules/stripe/esm/resources/PromotionCodes.js
 var stripeMethod122 = StripeResource.method;
 var PromotionCodes = StripeResource.extend({
   create: stripeMethod122({ method: "POST", fullPath: "/v1/promotion_codes" }),
@@ -6178,6 +6254,8 @@ var PromotionCodes = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Quotes.js
 var stripeMethod123 = StripeResource.method;
 var Quotes = StripeResource.extend({
   create: stripeMethod123({ method: "POST", fullPath: "/v1/quotes" }),
@@ -6211,6 +6289,8 @@ var Quotes = StripeResource.extend({
     streaming: true
   })
 });
+
+// ../node_modules/stripe/esm/resources/Refunds.js
 var stripeMethod124 = StripeResource.method;
 var Refunds2 = StripeResource.extend({
   create: stripeMethod124({ method: "POST", fullPath: "/v1/refunds" }),
@@ -6226,6 +6306,8 @@ var Refunds2 = StripeResource.extend({
     fullPath: "/v1/refunds/{refund}/cancel"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Reviews.js
 var stripeMethod125 = StripeResource.method;
 var Reviews = StripeResource.extend({
   retrieve: stripeMethod125({ method: "GET", fullPath: "/v1/reviews/{review}" }),
@@ -6239,6 +6321,8 @@ var Reviews = StripeResource.extend({
     fullPath: "/v1/reviews/{review}/approve"
   })
 });
+
+// ../node_modules/stripe/esm/resources/SetupAttempts.js
 var stripeMethod126 = StripeResource.method;
 var SetupAttempts = StripeResource.extend({
   list: stripeMethod126({
@@ -6247,6 +6331,8 @@ var SetupAttempts = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/SetupIntents.js
 var stripeMethod127 = StripeResource.method;
 var SetupIntents = StripeResource.extend({
   create: stripeMethod127({ method: "POST", fullPath: "/v1/setup_intents" }),
@@ -6276,6 +6362,8 @@ var SetupIntents = StripeResource.extend({
     fullPath: "/v1/setup_intents/{intent}/verify_microdeposits"
   })
 });
+
+// ../node_modules/stripe/esm/resources/ShippingRates.js
 var stripeMethod128 = StripeResource.method;
 var ShippingRates = StripeResource.extend({
   create: stripeMethod128({ method: "POST", fullPath: "/v1/shipping_rates" }),
@@ -6293,6 +6381,8 @@ var ShippingRates = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Sources.js
 var stripeMethod129 = StripeResource.method;
 var Sources = StripeResource.extend({
   create: stripeMethod129({ method: "POST", fullPath: "/v1/sources" }),
@@ -6308,6 +6398,8 @@ var Sources = StripeResource.extend({
     fullPath: "/v1/sources/{source}/verify"
   })
 });
+
+// ../node_modules/stripe/esm/resources/SubscriptionItems.js
 var stripeMethod130 = StripeResource.method;
 var SubscriptionItems = StripeResource.extend({
   create: stripeMethod130({ method: "POST", fullPath: "/v1/subscription_items" }),
@@ -6329,6 +6421,8 @@ var SubscriptionItems = StripeResource.extend({
     fullPath: "/v1/subscription_items/{item}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/SubscriptionSchedules.js
 var stripeMethod131 = StripeResource.method;
 var SubscriptionSchedules = StripeResource.extend({
   create: stripeMethod131({
@@ -6357,6 +6451,8 @@ var SubscriptionSchedules = StripeResource.extend({
     fullPath: "/v1/subscription_schedules/{schedule}/release"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Subscriptions.js
 var stripeMethod132 = StripeResource.method;
 var Subscriptions = StripeResource.extend({
   create: stripeMethod132({ method: "POST", fullPath: "/v1/subscriptions" }),
@@ -6395,6 +6491,8 @@ var Subscriptions = StripeResource.extend({
     methodType: "search"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TaxCodes.js
 var stripeMethod133 = StripeResource.method;
 var TaxCodes = StripeResource.extend({
   retrieve: stripeMethod133({ method: "GET", fullPath: "/v1/tax_codes/{id}" }),
@@ -6404,6 +6502,8 @@ var TaxCodes = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/TaxIds.js
 var stripeMethod134 = StripeResource.method;
 var TaxIds = StripeResource.extend({
   create: stripeMethod134({ method: "POST", fullPath: "/v1/tax_ids" }),
@@ -6415,6 +6515,8 @@ var TaxIds = StripeResource.extend({
   }),
   del: stripeMethod134({ method: "DELETE", fullPath: "/v1/tax_ids/{id}" })
 });
+
+// ../node_modules/stripe/esm/resources/TaxRates.js
 var stripeMethod135 = StripeResource.method;
 var TaxRates = StripeResource.extend({
   create: stripeMethod135({ method: "POST", fullPath: "/v1/tax_rates" }),
@@ -6426,11 +6528,15 @@ var TaxRates = StripeResource.extend({
     methodType: "list"
   })
 });
+
+// ../node_modules/stripe/esm/resources/Tokens.js
 var stripeMethod136 = StripeResource.method;
 var Tokens2 = StripeResource.extend({
   create: stripeMethod136({ method: "POST", fullPath: "/v1/tokens" }),
   retrieve: stripeMethod136({ method: "GET", fullPath: "/v1/tokens/{token}" })
 });
+
+// ../node_modules/stripe/esm/resources/Topups.js
 var stripeMethod137 = StripeResource.method;
 var Topups = StripeResource.extend({
   create: stripeMethod137({ method: "POST", fullPath: "/v1/topups" }),
@@ -6443,6 +6549,8 @@ var Topups = StripeResource.extend({
   }),
   cancel: stripeMethod137({ method: "POST", fullPath: "/v1/topups/{topup}/cancel" })
 });
+
+// ../node_modules/stripe/esm/resources/Transfers.js
 var stripeMethod138 = StripeResource.method;
 var Transfers = StripeResource.extend({
   create: stripeMethod138({ method: "POST", fullPath: "/v1/transfers" }),
@@ -6471,6 +6579,8 @@ var Transfers = StripeResource.extend({
     fullPath: "/v1/transfers/{transfer}/reversals/{id}"
   })
 });
+
+// ../node_modules/stripe/esm/resources/WebhookEndpoints.js
 var stripeMethod139 = StripeResource.method;
 var WebhookEndpoints = StripeResource.extend({
   create: stripeMethod139({ method: "POST", fullPath: "/v1/webhook_endpoints" }),
@@ -6492,6 +6602,8 @@ var WebhookEndpoints = StripeResource.extend({
     fullPath: "/v1/webhook_endpoints/{webhook_endpoint}"
   })
 });
+
+// ../node_modules/stripe/esm/resources.js
 var Apps = resourceNamespace("apps", { Secrets });
 var Billing = resourceNamespace("billing", {
   Alerts,
@@ -6616,6 +6728,8 @@ var V2 = resourceNamespace("v2", {
     Events
   })
 });
+
+// ../node_modules/stripe/esm/stripe.core.js
 var DEFAULT_HOST = "api.stripe.com";
 var DEFAULT_PORT = "443";
 var DEFAULT_BASE_PATH = "/v1/";
@@ -6640,7 +6754,7 @@ var ALLOWED_CONFIG_PROPERTIES = [
   "stripeAccount",
   "stripeContext"
 ];
-var defaultRequestSenderFactory = /* @__PURE__ */ __name2((stripe) => new RequestSender(stripe, StripeResource.MAX_BUFFERED_REQUEST_METRICS), "defaultRequestSenderFactory");
+var defaultRequestSenderFactory = /* @__PURE__ */ __name((stripe) => new RequestSender(stripe, StripeResource.MAX_BUFFERED_REQUEST_METRICS), "defaultRequestSenderFactory");
 function createStripe(platformFunctions, requestSender = defaultRequestSenderFactory) {
   Stripe2.PACKAGE_VERSION = "20.4.0";
   Stripe2.API_VERSION = ApiVersion;
@@ -6699,8 +6813,7 @@ function createStripe(platformFunctions, requestSender = defaultRequestSenderFac
     this._requestSender = requestSender(this);
     this.StripeResource = Stripe2.StripeResource;
   }
-  __name(Stripe2, "Stripe2");
-  __name2(Stripe2, "Stripe");
+  __name(Stripe2, "Stripe");
   Stripe2.errors = Error_exports;
   Stripe2.createNodeHttpClient = platformFunctions.createNodeHttpClient;
   Stripe2.createFetchHttpClient = platformFunctions.createFetchHttpClient;
@@ -6787,7 +6900,7 @@ function createStripe(platformFunctions, requestSender = defaultRequestSenderFac
      *
      * It may be deprecated and removed in the future.
      */
-    getConstant: /* @__PURE__ */ __name2((c) => {
+    getConstant: /* @__PURE__ */ __name((c) => {
       switch (c) {
         case "DEFAULT_HOST":
           return DEFAULT_HOST;
@@ -6950,9 +7063,12 @@ function createStripe(platformFunctions, requestSender = defaultRequestSenderFac
   return Stripe2;
 }
 __name(createStripe, "createStripe");
-__name2(createStripe, "createStripe");
+
+// ../node_modules/stripe/esm/stripe.esm.worker.js
 var Stripe = createStripe(new WebPlatformFunctions());
 var stripe_esm_worker_default = Stripe;
+
+// api/checkout-session-status.js
 var CORS_HEADERS11 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,OPTIONS",
@@ -6967,13 +7083,11 @@ function json16(body, status = 200) {
     }
   });
 }
-__name(json16, "json16");
-__name2(json16, "json");
+__name(json16, "json");
 async function onRequestOptions11() {
   return new Response(null, { status: 204, headers: CORS_HEADERS11 });
 }
-__name(onRequestOptions11, "onRequestOptions11");
-__name2(onRequestOptions11, "onRequestOptions");
+__name(onRequestOptions11, "onRequestOptions");
 async function onRequestGet8({ request, env }) {
   try {
     const secretKey = String(env?.STRIPE_SECRET_KEY || "").trim();
@@ -7000,8 +7114,9 @@ async function onRequestGet8({ request, env }) {
     return json16({ error: String(err?.message || "Server error retrieving checkout session.") }, 500);
   }
 }
-__name(onRequestGet8, "onRequestGet8");
-__name2(onRequestGet8, "onRequestGet");
+__name(onRequestGet8, "onRequestGet");
+
+// api/collections/index.js
 var CORS_HEADERS12 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
@@ -7013,13 +7128,11 @@ function json17(body, status = 200, extraHeaders = {}) {
     headers: { "Content-Type": "application/json", ...CORS_HEADERS12, ...extraHeaders }
   });
 }
-__name(json17, "json17");
-__name2(json17, "json");
+__name(json17, "json");
 function slugify2(input) {
   return String(input || "").trim().toLowerCase().replace(/['"]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
 }
-__name(slugify2, "slugify2");
-__name2(slugify2, "slugify");
+__name(slugify2, "slugify");
 async function requireAdmin13(request, env) {
   const cookieHeader = request.headers.get("Cookie") || "";
   const cookies = parseCookie(cookieHeader);
@@ -7029,13 +7142,11 @@ async function requireAdmin13(request, env) {
   if ((user.role || "user") !== "admin") return { ok: false, status: 403, error: "Forbidden" };
   return { ok: true, user };
 }
-__name(requireAdmin13, "requireAdmin13");
-__name2(requireAdmin13, "requireAdmin");
+__name(requireAdmin13, "requireAdmin");
 async function onRequestOptions12() {
   return new Response(null, { status: 204, headers: { ...CORS_HEADERS12 } });
 }
-__name(onRequestOptions12, "onRequestOptions12");
-__name2(onRequestOptions12, "onRequestOptions");
+__name(onRequestOptions12, "onRequestOptions");
 async function onRequestGet9({ env }) {
   try {
     const res = await env.DB.prepare(
@@ -7047,8 +7158,7 @@ async function onRequestGet9({ env }) {
     return json17({ ok: false, error: "Server error." }, 500);
   }
 }
-__name(onRequestGet9, "onRequestGet9");
-__name2(onRequestGet9, "onRequestGet");
+__name(onRequestGet9, "onRequestGet");
 async function onRequestPost7({ request, env }) {
   const auth = await requireAdmin13(request, env);
   if (!auth.ok) return json17({ ok: false, error: auth.error }, auth.status);
@@ -7123,8 +7233,9 @@ async function onRequestPost7({ request, env }) {
     return json17({ ok: false, error: "Server error." }, 500);
   }
 }
-__name(onRequestPost7, "onRequestPost7");
-__name2(onRequestPost7, "onRequestPost");
+__name(onRequestPost7, "onRequestPost");
+
+// api/contact.js
 var CORS_HEADERS13 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST,OPTIONS",
@@ -7139,13 +7250,11 @@ function json18(body, status = 200) {
     }
   });
 }
-__name(json18, "json18");
-__name2(json18, "json");
+__name(json18, "json");
 async function onRequestOptions13() {
   return new Response(null, { status: 204, headers: CORS_HEADERS13 });
 }
-__name(onRequestOptions13, "onRequestOptions13");
-__name2(onRequestOptions13, "onRequestOptions");
+__name(onRequestOptions13, "onRequestOptions");
 async function onRequestPost8({ request, env }) {
   try {
     const body = await request.json().catch(() => ({}));
@@ -7208,8 +7317,9 @@ async function onRequestPost8({ request, env }) {
     return json18({ ok: false, error: "Server error." }, 500);
   }
 }
-__name(onRequestPost8, "onRequestPost8");
-__name2(onRequestPost8, "onRequestPost");
+__name(onRequestPost8, "onRequestPost");
+
+// api/create-checkout-session.js
 var CORS_HEADERS14 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST,OPTIONS",
@@ -7224,8 +7334,7 @@ function json19(body, status = 200) {
     }
   });
 }
-__name(json19, "json19");
-__name2(json19, "json");
+__name(json19, "json");
 function parseUnitPrice(item) {
   const sizeText = String(item?.size || "");
   const sampleKitLike = /sample\s*kit/i.test(sizeText) || /sample\s*kit/i.test(String(item?.profileName || ""));
@@ -7240,7 +7349,6 @@ function parseUnitPrice(item) {
   return 0;
 }
 __name(parseUnitPrice, "parseUnitPrice");
-__name2(parseUnitPrice, "parseUnitPrice");
 function sanitizeItems(items) {
   return (Array.isArray(items) ? items : []).map((item) => {
     const quantity = Math.max(1, Math.floor(Number(item?.quantity || 1)));
@@ -7257,12 +7365,10 @@ function sanitizeItems(items) {
   }).filter((item) => item.quantity > 0 && item.unitPrice > 0);
 }
 __name(sanitizeItems, "sanitizeItems");
-__name2(sanitizeItems, "sanitizeItems");
 async function onRequestOptions14() {
   return new Response(null, { status: 204, headers: CORS_HEADERS14 });
 }
-__name(onRequestOptions14, "onRequestOptions14");
-__name2(onRequestOptions14, "onRequestOptions");
+__name(onRequestOptions14, "onRequestOptions");
 async function onRequestPost9({ request, env }) {
   try {
     const secretKey = String(env?.STRIPE_SECRET_KEY || "").trim();
@@ -7320,8 +7426,9 @@ async function onRequestPost9({ request, env }) {
     return json19({ error: String(err?.message || "Server error creating checkout session.") }, 500);
   }
 }
-__name(onRequestPost9, "onRequestPost9");
-__name2(onRequestPost9, "onRequestPost");
+__name(onRequestPost9, "onRequestPost");
+
+// api/purchase.js
 var CORS_HEADERS15 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST,OPTIONS",
@@ -7336,29 +7443,27 @@ function json20(body, status = 200) {
     }
   });
 }
-__name(json20, "json20");
-__name2(json20, "json");
+__name(json20, "json");
 async function onRequestOptions15() {
   return new Response(null, { status: 204, headers: CORS_HEADERS15 });
 }
-__name(onRequestOptions15, "onRequestOptions15");
-__name2(onRequestOptions15, "onRequestOptions");
+__name(onRequestOptions15, "onRequestOptions");
 async function onRequestPost10() {
   return json20({
     ok: true,
     message: "Stripe checkout now uses Checkout Sessions directly. This endpoint is no longer required for the cart flow."
   });
 }
-__name(onRequestPost10, "onRequestPost10");
-__name2(onRequestPost10, "onRequestPost");
+__name(onRequestPost10, "onRequestPost");
+
+// api/search.js
 function json21(body, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...extraHeaders }
   });
 }
-__name(json21, "json21");
-__name2(json21, "json");
+__name(json21, "json");
 function routeForRow(row) {
   const collectionId = String(row?.collection_id || "").trim();
   const slug = String(row?.slug || "").trim();
@@ -7369,7 +7474,6 @@ function routeForRow(row) {
   return `/product/${encodeURIComponent(collectionId)}?profile=${encodeURIComponent(slug)}`;
 }
 __name(routeForRow, "routeForRow");
-__name2(routeForRow, "routeForRow");
 async function onRequestGet10({ env }) {
   try {
     const res = await env.DB.prepare(
@@ -7417,8 +7521,9 @@ async function onRequestGet10({ env }) {
     );
   }
 }
-__name(onRequestGet10, "onRequestGet10");
-__name2(onRequestGet10, "onRequestGet");
+__name(onRequestGet10, "onRequestGet");
+
+// api/stripe-webhook.js
 var CORS_HEADERS16 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST,OPTIONS",
@@ -7433,8 +7538,7 @@ function json22(body, status = 200) {
     }
   });
 }
-__name(json22, "json22");
-__name2(json22, "json");
+__name(json22, "json");
 function safeJsonParse(value, fallback) {
   try {
     return JSON.parse(value);
@@ -7443,7 +7547,6 @@ function safeJsonParse(value, fallback) {
   }
 }
 __name(safeJsonParse, "safeJsonParse");
-__name2(safeJsonParse, "safeJsonParse");
 function buildItemsFromLineItems(lineItems) {
   return (Array.isArray(lineItems) ? lineItems : []).map((line) => ({
     name: String(line?.description || line?.price?.product?.name || "Item"),
@@ -7455,19 +7558,16 @@ function buildItemsFromLineItems(lineItems) {
   })).filter((item) => item.quantity > 0);
 }
 __name(buildItemsFromLineItems, "buildItemsFromLineItems");
-__name2(buildItemsFromLineItems, "buildItemsFromLineItems");
 async function getPurchaseColumns(env) {
   const tableInfo = await env.DB.prepare("PRAGMA table_info(purchases)").all();
   const rows = Array.isArray(tableInfo?.results) ? tableInfo.results : [];
   return new Set(rows.map((row) => String(row?.name || "").trim()).filter(Boolean));
 }
 __name(getPurchaseColumns, "getPurchaseColumns");
-__name2(getPurchaseColumns, "getPurchaseColumns");
 function hasColumn(columns, name) {
   return columns.has(name);
 }
 __name(hasColumn, "hasColumn");
-__name2(hasColumn, "hasColumn");
 function shippingSummaryFromDetails(shippingDetails, shippingName) {
   const address = shippingDetails?.address || null;
   if (!address) return null;
@@ -7480,12 +7580,10 @@ function shippingSummaryFromDetails(shippingDetails, shippingName) {
   ].filter(Boolean).join(", ");
 }
 __name(shippingSummaryFromDetails, "shippingSummaryFromDetails");
-__name2(shippingSummaryFromDetails, "shippingSummaryFromDetails");
 async function onRequestOptions16() {
   return new Response(null, { status: 204, headers: CORS_HEADERS16 });
 }
-__name(onRequestOptions16, "onRequestOptions16");
-__name2(onRequestOptions16, "onRequestOptions");
+__name(onRequestOptions16, "onRequestOptions");
 async function onRequestPost11({ request, env }) {
   try {
     const secretKey = String(env?.STRIPE_SECRET_KEY || "").trim();
@@ -7571,7 +7669,7 @@ async function onRequestPost11({ request, env }) {
     const insertColumns = [];
     const placeholders = [];
     const bindings = [];
-    const addValue = /* @__PURE__ */ __name2((name, value, options = {}) => {
+    const addValue = /* @__PURE__ */ __name((name, value, options = {}) => {
       if (!hasColumn(columns, name)) return;
       insertColumns.push(name);
       if (options.rawSql) {
@@ -7612,8 +7710,9 @@ async function onRequestPost11({ request, env }) {
     return json22({ ok: false, error: String(err?.message || "Server error processing Stripe webhook.") }, 500);
   }
 }
-__name(onRequestPost11, "onRequestPost11");
-__name2(onRequestPost11, "onRequestPost");
+__name(onRequestPost11, "onRequestPost");
+
+// api/user-purchases.js
 var CORS_HEADERS17 = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,OPTIONS",
@@ -7628,20 +7727,17 @@ function json23(body, status = 200) {
     }
   });
 }
-__name(json23, "json23");
-__name2(json23, "json");
+__name(json23, "json");
 async function getPurchaseColumns2(env) {
   const tableInfo = await env.DB.prepare("PRAGMA table_info(purchases)").all();
   const rows = Array.isArray(tableInfo?.results) ? tableInfo.results : [];
   return new Set(rows.map((row) => String(row?.name || "").trim()).filter(Boolean));
 }
-__name(getPurchaseColumns2, "getPurchaseColumns2");
-__name2(getPurchaseColumns2, "getPurchaseColumns");
+__name(getPurchaseColumns2, "getPurchaseColumns");
 async function onRequestOptions17() {
   return new Response(null, { status: 204, headers: CORS_HEADERS17 });
 }
-__name(onRequestOptions17, "onRequestOptions17");
-__name2(onRequestOptions17, "onRequestOptions");
+__name(onRequestOptions17, "onRequestOptions");
 async function onRequestGet11({ request, env }) {
   try {
     const cookieHeader = request.headers.get("Cookie") || "";
@@ -7687,13 +7783,13 @@ async function onRequestGet11({ request, env }) {
     return json23({ ok: false, error: "Server error." }, 500);
   }
 }
-__name(onRequestGet11, "onRequestGet11");
-__name2(onRequestGet11, "onRequestGet");
+__name(onRequestGet11, "onRequestGet");
 function hasColumn2(columns, name) {
   return columns.has(name);
 }
-__name(hasColumn2, "hasColumn2");
-__name2(hasColumn2, "hasColumn");
+__name(hasColumn2, "hasColumn");
+
+// ../.wrangler/tmp/pages-Dq8Ina/functionsRoutes-0.6645058403928636.mjs
 var routes = [
   {
     routePath: "/api/collections/:id/documents/:docId/download",
@@ -8032,6 +8128,8 @@ var routes = [
     modules: [onRequestOptions17]
   }
 ];
+
+// ../../../../../AppData/Roaming/npm/node_modules/wrangler/node_modules/path-to-regexp/dist.es2015/index.js
 function lexer(str) {
   var tokens = [];
   var i = 0;
@@ -8116,7 +8214,6 @@ function lexer(str) {
   return tokens;
 }
 __name(lexer, "lexer");
-__name2(lexer, "lexer");
 function parse(str, options) {
   if (options === void 0) {
     options = {};
@@ -8127,18 +8224,18 @@ function parse(str, options) {
   var key = 0;
   var i = 0;
   var path = "";
-  var tryConsume = /* @__PURE__ */ __name2(function(type) {
+  var tryConsume = /* @__PURE__ */ __name(function(type) {
     if (i < tokens.length && tokens[i].type === type)
       return tokens[i++].value;
   }, "tryConsume");
-  var mustConsume = /* @__PURE__ */ __name2(function(type) {
+  var mustConsume = /* @__PURE__ */ __name(function(type) {
     var value2 = tryConsume(type);
     if (value2 !== void 0)
       return value2;
     var _a2 = tokens[i], nextType = _a2.type, index = _a2.index;
     throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
   }, "mustConsume");
-  var consumeText = /* @__PURE__ */ __name2(function() {
+  var consumeText = /* @__PURE__ */ __name(function() {
     var result2 = "";
     var value2;
     while (value2 = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
@@ -8146,7 +8243,7 @@ function parse(str, options) {
     }
     return result2;
   }, "consumeText");
-  var isSafe = /* @__PURE__ */ __name2(function(value2) {
+  var isSafe = /* @__PURE__ */ __name(function(value2) {
     for (var _i = 0, delimiter_1 = delimiter; _i < delimiter_1.length; _i++) {
       var char2 = delimiter_1[_i];
       if (value2.indexOf(char2) > -1)
@@ -8154,7 +8251,7 @@ function parse(str, options) {
     }
     return false;
   }, "isSafe");
-  var safePattern = /* @__PURE__ */ __name2(function(prefix2) {
+  var safePattern = /* @__PURE__ */ __name(function(prefix2) {
     var prev = result[result.length - 1];
     var prevText = prefix2 || (prev && typeof prev === "string" ? prev : "");
     if (prev && !prevText) {
@@ -8217,14 +8314,12 @@ function parse(str, options) {
   return result;
 }
 __name(parse, "parse");
-__name2(parse, "parse");
 function match(str, options) {
   var keys = [];
   var re = pathToRegexp(str, keys, options);
   return regexpToFunction(re, keys, options);
 }
 __name(match, "match");
-__name2(match, "match");
 function regexpToFunction(re, keys, options) {
   if (options === void 0) {
     options = {};
@@ -8238,7 +8333,7 @@ function regexpToFunction(re, keys, options) {
       return false;
     var path = m[0], index = m.index;
     var params = /* @__PURE__ */ Object.create(null);
-    var _loop_1 = /* @__PURE__ */ __name2(function(i2) {
+    var _loop_1 = /* @__PURE__ */ __name(function(i2) {
       if (m[i2] === void 0)
         return "continue";
       var key = keys[i2 - 1];
@@ -8257,17 +8352,14 @@ function regexpToFunction(re, keys, options) {
   };
 }
 __name(regexpToFunction, "regexpToFunction");
-__name2(regexpToFunction, "regexpToFunction");
 function escapeString(str) {
   return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1");
 }
 __name(escapeString, "escapeString");
-__name2(escapeString, "escapeString");
 function flags(options) {
   return options && options.sensitive ? "" : "i";
 }
 __name(flags, "flags");
-__name2(flags, "flags");
 function regexpToRegexp(path, keys) {
   if (!keys)
     return path;
@@ -8288,7 +8380,6 @@ function regexpToRegexp(path, keys) {
   return path;
 }
 __name(regexpToRegexp, "regexpToRegexp");
-__name2(regexpToRegexp, "regexpToRegexp");
 function arrayToRegexp(paths, keys, options) {
   var parts = paths.map(function(path) {
     return pathToRegexp(path, keys, options).source;
@@ -8296,12 +8387,10 @@ function arrayToRegexp(paths, keys, options) {
   return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
 }
 __name(arrayToRegexp, "arrayToRegexp");
-__name2(arrayToRegexp, "arrayToRegexp");
 function stringToRegexp(path, keys, options) {
   return tokensToRegexp(parse(path, options), keys, options);
 }
 __name(stringToRegexp, "stringToRegexp");
-__name2(stringToRegexp, "stringToRegexp");
 function tokensToRegexp(tokens, keys, options) {
   if (options === void 0) {
     options = {};
@@ -8357,7 +8446,6 @@ function tokensToRegexp(tokens, keys, options) {
   return new RegExp(route, flags(options));
 }
 __name(tokensToRegexp, "tokensToRegexp");
-__name2(tokensToRegexp, "tokensToRegexp");
 function pathToRegexp(path, keys, options) {
   if (path instanceof RegExp)
     return regexpToRegexp(path, keys);
@@ -8366,7 +8454,8 @@ function pathToRegexp(path, keys, options) {
   return stringToRegexp(path, keys, options);
 }
 __name(pathToRegexp, "pathToRegexp");
-__name2(pathToRegexp, "pathToRegexp");
+
+// ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/pages-template-worker.ts
 var escapeRegex = /[.+?^${}()|[\]\\]/g;
 function* executeRequest(request) {
   const requestPath = new URL(request.url).pathname;
@@ -8417,14 +8506,13 @@ function* executeRequest(request) {
   }
 }
 __name(executeRequest, "executeRequest");
-__name2(executeRequest, "executeRequest");
 var pages_template_worker_default = {
   async fetch(originalRequest, env, workerContext) {
     let request = originalRequest;
     const handlerIterator = executeRequest(request);
     let data = {};
     let isFailOpen = false;
-    const next = /* @__PURE__ */ __name2(async (input, init) => {
+    const next = /* @__PURE__ */ __name(async (input, init) => {
       if (input !== void 0) {
         let url = input;
         if (typeof input === "string") {
@@ -8451,7 +8539,7 @@ var pages_template_worker_default = {
           },
           env,
           waitUntil: workerContext.waitUntil.bind(workerContext),
-          passThroughOnException: /* @__PURE__ */ __name2(() => {
+          passThroughOnException: /* @__PURE__ */ __name(() => {
             isFailOpen = true;
           }, "passThroughOnException")
         };
@@ -8479,14 +8567,16 @@ var pages_template_worker_default = {
     }
   }
 };
-var cloneResponse = /* @__PURE__ */ __name2((response) => (
+var cloneResponse = /* @__PURE__ */ __name((response) => (
   // https://fetch.spec.whatwg.org/#null-body-status
   new Response(
     [101, 204, 205, 304].includes(response.status) ? null : response.body,
     response
   )
 ), "cloneResponse");
-var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
+
+// ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
+var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } finally {
@@ -8502,6 +8592,8 @@ var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx
   }
 }, "drainBody");
 var middleware_ensure_req_body_drained_default = drainBody;
+
+// ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
 function reduceError(e) {
   return {
     name: e?.name,
@@ -8511,8 +8603,7 @@ function reduceError(e) {
   };
 }
 __name(reduceError, "reduceError");
-__name2(reduceError, "reduceError");
-var jsonError = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
+var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } catch (e) {
@@ -8524,17 +8615,20 @@ var jsonError = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx
   }
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
+
+// ../.wrangler/tmp/bundle-SGUdSi/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
 ];
 var middleware_insertion_facade_default = pages_template_worker_default;
+
+// ../../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/common.ts
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
   __facade_middleware__.push(...args.flat());
 }
 __name(__facade_register__, "__facade_register__");
-__name2(__facade_register__, "__facade_register__");
 function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   const [head, ...tail] = middlewareChain;
   const middlewareCtx = {
@@ -8546,7 +8640,6 @@ function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   return head(request, env, ctx, middlewareCtx);
 }
 __name(__facade_invokeChain__, "__facade_invokeChain__");
-__name2(__facade_invokeChain__, "__facade_invokeChain__");
 function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   return __facade_invokeChain__(request, env, ctx, dispatch, [
     ...__facade_middleware__,
@@ -8554,18 +8647,16 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   ]);
 }
 __name(__facade_invoke__, "__facade_invoke__");
-__name2(__facade_invoke__, "__facade_invoke__");
+
+// ../.wrangler/tmp/bundle-SGUdSi/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
-  static {
-    __name(this, "___Facade_ScheduledController__");
-  }
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
     this.cron = cron;
     this.#noRetry = noRetry;
   }
   static {
-    __name2(this, "__Facade_ScheduledController__");
+    __name(this, "__Facade_ScheduledController__");
   }
   #noRetry;
   noRetry() {
@@ -8582,7 +8673,7 @@ function wrapExportedHandler(worker) {
   for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__) {
     __facade_register__(middleware);
   }
-  const fetchDispatcher = /* @__PURE__ */ __name2(function(request, env, ctx) {
+  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
     if (worker.fetch === void 0) {
       throw new Error("Handler does not export a fetch() function.");
     }
@@ -8591,7 +8682,7 @@ function wrapExportedHandler(worker) {
   return {
     ...worker,
     fetch(request, env, ctx) {
-      const dispatcher = /* @__PURE__ */ __name2(function(type, init) {
+      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
         if (type === "scheduled" && worker.scheduled !== void 0) {
           const controller = new __Facade_ScheduledController__(
             Date.now(),
@@ -8607,7 +8698,6 @@ function wrapExportedHandler(worker) {
   };
 }
 __name(wrapExportedHandler, "wrapExportedHandler");
-__name2(wrapExportedHandler, "wrapExportedHandler");
 function wrapWorkerEntrypoint(klass) {
   if (__INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0) {
     return klass;
@@ -8616,7 +8706,7 @@ function wrapWorkerEntrypoint(klass) {
     __facade_register__(middleware);
   }
   return class extends klass {
-    #fetchDispatcher = /* @__PURE__ */ __name2((request, env, ctx) => {
+    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
       this.env = env;
       this.ctx = ctx;
       if (super.fetch === void 0) {
@@ -8624,7 +8714,7 @@ function wrapWorkerEntrypoint(klass) {
       }
       return super.fetch(request);
     }, "#fetchDispatcher");
-    #dispatcher = /* @__PURE__ */ __name2((type, init) => {
+    #dispatcher = /* @__PURE__ */ __name((type, init) => {
       if (type === "scheduled" && super.scheduled !== void 0) {
         const controller = new __Facade_ScheduledController__(
           Date.now(),
@@ -8647,7 +8737,6 @@ function wrapWorkerEntrypoint(klass) {
   };
 }
 __name(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
-__name2(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
 var WRAPPED_ENTRY;
 if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapExportedHandler(middleware_insertion_facade_default);
@@ -8655,178 +8744,8 @@ if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapWorkerEntrypoint(middleware_insertion_facade_default);
 }
 var middleware_loader_entry_default = WRAPPED_ENTRY;
-
-// ../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
-var drainBody2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
-  try {
-    return await middlewareCtx.next(request, env);
-  } finally {
-    try {
-      if (request.body !== null && !request.bodyUsed) {
-        const reader = request.body.getReader();
-        while (!(await reader.read()).done) {
-        }
-      }
-    } catch (e) {
-      console.error("Failed to drain the unused request body.", e);
-    }
-  }
-}, "drainBody");
-var middleware_ensure_req_body_drained_default2 = drainBody2;
-
-// ../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
-function reduceError2(e) {
-  return {
-    name: e?.name,
-    message: e?.message ?? String(e),
-    stack: e?.stack,
-    cause: e?.cause === void 0 ? void 0 : reduceError2(e.cause)
-  };
-}
-__name(reduceError2, "reduceError");
-var jsonError2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
-  try {
-    return await middlewareCtx.next(request, env);
-  } catch (e) {
-    const error = reduceError2(e);
-    return Response.json(error, {
-      status: 500,
-      headers: { "MF-Experimental-Error-Stack": "true" }
-    });
-  }
-}, "jsonError");
-var middleware_miniflare3_json_error_default2 = jsonError2;
-
-// .wrangler/tmp/bundle-Z4JjGN/middleware-insertion-facade.js
-var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
-  middleware_ensure_req_body_drained_default2,
-  middleware_miniflare3_json_error_default2
-];
-var middleware_insertion_facade_default2 = middleware_loader_entry_default;
-
-// ../../../../AppData/Roaming/npm/node_modules/wrangler/templates/middleware/common.ts
-var __facade_middleware__2 = [];
-function __facade_register__2(...args) {
-  __facade_middleware__2.push(...args.flat());
-}
-__name(__facade_register__2, "__facade_register__");
-function __facade_invokeChain__2(request, env, ctx, dispatch, middlewareChain) {
-  const [head, ...tail] = middlewareChain;
-  const middlewareCtx = {
-    dispatch,
-    next(newRequest, newEnv) {
-      return __facade_invokeChain__2(newRequest, newEnv, ctx, dispatch, tail);
-    }
-  };
-  return head(request, env, ctx, middlewareCtx);
-}
-__name(__facade_invokeChain__2, "__facade_invokeChain__");
-function __facade_invoke__2(request, env, ctx, dispatch, finalMiddleware) {
-  return __facade_invokeChain__2(request, env, ctx, dispatch, [
-    ...__facade_middleware__2,
-    finalMiddleware
-  ]);
-}
-__name(__facade_invoke__2, "__facade_invoke__");
-
-// .wrangler/tmp/bundle-Z4JjGN/middleware-loader.entry.ts
-var __Facade_ScheduledController__2 = class ___Facade_ScheduledController__2 {
-  constructor(scheduledTime, cron, noRetry) {
-    this.scheduledTime = scheduledTime;
-    this.cron = cron;
-    this.#noRetry = noRetry;
-  }
-  static {
-    __name(this, "__Facade_ScheduledController__");
-  }
-  #noRetry;
-  noRetry() {
-    if (!(this instanceof ___Facade_ScheduledController__2)) {
-      throw new TypeError("Illegal invocation");
-    }
-    this.#noRetry();
-  }
-};
-function wrapExportedHandler2(worker) {
-  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
-    return worker;
-  }
-  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
-    __facade_register__2(middleware);
-  }
-  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
-    if (worker.fetch === void 0) {
-      throw new Error("Handler does not export a fetch() function.");
-    }
-    return worker.fetch(request, env, ctx);
-  }, "fetchDispatcher");
-  return {
-    ...worker,
-    fetch(request, env, ctx) {
-      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
-        if (type === "scheduled" && worker.scheduled !== void 0) {
-          const controller = new __Facade_ScheduledController__2(
-            Date.now(),
-            init.cron ?? "",
-            () => {
-            }
-          );
-          return worker.scheduled(controller, env, ctx);
-        }
-      }, "dispatcher");
-      return __facade_invoke__2(request, env, ctx, dispatcher, fetchDispatcher);
-    }
-  };
-}
-__name(wrapExportedHandler2, "wrapExportedHandler");
-function wrapWorkerEntrypoint2(klass) {
-  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
-    return klass;
-  }
-  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
-    __facade_register__2(middleware);
-  }
-  return class extends klass {
-    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
-      this.env = env;
-      this.ctx = ctx;
-      if (super.fetch === void 0) {
-        throw new Error("Entrypoint class does not define a fetch() function.");
-      }
-      return super.fetch(request);
-    }, "#fetchDispatcher");
-    #dispatcher = /* @__PURE__ */ __name((type, init) => {
-      if (type === "scheduled" && super.scheduled !== void 0) {
-        const controller = new __Facade_ScheduledController__2(
-          Date.now(),
-          init.cron ?? "",
-          () => {
-          }
-        );
-        return super.scheduled(controller);
-      }
-    }, "#dispatcher");
-    fetch(request) {
-      return __facade_invoke__2(
-        request,
-        this.env,
-        this.ctx,
-        this.#dispatcher,
-        this.#fetchDispatcher
-      );
-    }
-  };
-}
-__name(wrapWorkerEntrypoint2, "wrapWorkerEntrypoint");
-var WRAPPED_ENTRY2;
-if (typeof middleware_insertion_facade_default2 === "object") {
-  WRAPPED_ENTRY2 = wrapExportedHandler2(middleware_insertion_facade_default2);
-} else if (typeof middleware_insertion_facade_default2 === "function") {
-  WRAPPED_ENTRY2 = wrapWorkerEntrypoint2(middleware_insertion_facade_default2);
-}
-var middleware_loader_entry_default2 = WRAPPED_ENTRY2;
 export {
-  __INTERNAL_WRANGLER_MIDDLEWARE__2 as __INTERNAL_WRANGLER_MIDDLEWARE__,
-  middleware_loader_entry_default2 as default
+  __INTERNAL_WRANGLER_MIDDLEWARE__,
+  middleware_loader_entry_default as default
 };
-//# sourceMappingURL=functionsWorker-0.2764092313878981.js.map
+//# sourceMappingURL=functionsWorker-0.23872088366803945.mjs.map

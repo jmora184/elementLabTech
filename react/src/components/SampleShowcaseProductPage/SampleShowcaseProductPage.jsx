@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { addCartItem } from "../../utils/cart";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import "../TerpeneShowcase/TerpeneShowcase.css";
 import "./SampleShowcaseProductPage.css";
 
@@ -36,8 +36,30 @@ function normalizeBundleMap(bundles) {
   );
 }
 
+
+function getSampleFormatConfig(formatParam) {
+  const value = String(formatParam || "").trim().toLowerCase();
+
+  if (value === "2ml-10") {
+    return {
+      key: "2ml-10",
+      shortLabel: "2mL",
+      fullLabel: "2mL × 10 Profiles",
+      selectionLimit: 10,
+    };
+  }
+
+  return {
+    key: "5ml-5",
+    shortLabel: "5mL",
+    fullLabel: "5mL × 5 Profiles",
+    selectionLimit: 5,
+  };
+}
+
 export default function SampleShowcaseProductPage() {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const [collection, setCollection] = useState(null);
   const [allProfiles, setAllProfiles] = useState([]);
   const [profileBundles, setProfileBundles] = useState([]);
@@ -46,6 +68,9 @@ export default function SampleShowcaseProductPage() {
   const [showAllFlavors, setShowAllFlavors] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const selectedFormat = useMemo(() => getSampleFormatConfig(searchParams.get("format")), [searchParams]);
+  const selectionLimit = selectedFormat.selectionLimit;
 
   useEffect(() => {
     let alive = true;
@@ -81,8 +106,8 @@ export default function SampleShowcaseProductPage() {
         setAllProfiles(all);
 
         const defaultSelected = curated.length
-          ? curated.map((x) => String(x?.slug || "").trim()).filter(Boolean).slice(0, 5)
-          : all.map((x) => String(x?.slug || "").trim()).filter(Boolean).slice(0, 5);
+          ? curated.map((x) => String(x?.slug || "").trim()).filter(Boolean).slice(0, selectionLimit)
+          : all.map((x) => String(x?.slug || "").trim()).filter(Boolean).slice(0, selectionLimit);
 
         setSelectedSlugs(defaultSelected);
         setExpandedSlug(defaultSelected[0] || all[0]?.slug || "");
@@ -118,7 +143,7 @@ export default function SampleShowcaseProductPage() {
     return () => {
       alive = false;
     };
-  }, [id]);
+  }, [id, selectionLimit]);
 
   const heroImage = useMemo(() => getCollectionImageUrl(collection), [collection]);
   const bundleMap = useMemo(() => normalizeBundleMap(profileBundles), [profileBundles]);
@@ -136,7 +161,7 @@ export default function SampleShowcaseProductPage() {
 
   const visibleProfiles = useMemo(() => {
     if (showAllFlavors) return allProfiles;
-    return allProfiles.slice(0, 5);
+    return allProfiles.slice(0, selectionLimit);
   }, [allProfiles, showAllFlavors]);
 
   function toggleFlavor(slug) {
@@ -147,7 +172,7 @@ export default function SampleShowcaseProductPage() {
       if (prev.includes(cleanSlug)) {
         return prev.filter((x) => x !== cleanSlug);
       }
-      if (prev.length >= 5) {
+      if (prev.length >= selectionLimit) {
         return prev;
       }
       return [...prev, cleanSlug];
@@ -172,7 +197,8 @@ export default function SampleShowcaseProductPage() {
     );
   }
 
-  const canAddToCart = selectedProfiles.length === 5;
+  const canAddToCart = selectedProfiles.length === selectionLimit;
+  const remainingSelections = Math.max(0, selectionLimit - selectedProfiles.length);
 
   return (
     <div className="ssp-page" style={{ paddingTop: 24 }}>
@@ -193,14 +219,14 @@ export default function SampleShowcaseProductPage() {
               <p className="ssp-desc">{collection.description}</p>
             ) : (
               <p className="ssp-desc">
-                Build your sample kit by choosing any 5 profiles from this collection.
+                Build your sample kit by choosing any {selectionLimit} profiles from this collection.
               </p>
             )}
 
             <div className="ssp-heroBadges">
-              <div className="ssp-badge">Choose any 5 profiles</div>
+              <div className="ssp-badge">Selected format: {selectedFormat.fullLabel}</div>
+              <div className="ssp-badge">Choose any {selectionLimit} profiles</div>
               <div className="ssp-badge">{allProfiles.length} flavors available</div>
-              <div className="ssp-badge">Designed for R&amp;D</div>
             </div>
 
             <div className="ssp-actions">
@@ -216,7 +242,7 @@ export default function SampleShowcaseProductPage() {
                     collectionName: collection?.name,
                     profileSlug: "sample-kit",
                     profileName: `${collection?.name} Sample Kit`,
-                    size: "Sample Kit",
+                    size: selectedFormat.fullLabel,
                     quantity: 1,
                     selectedProfiles: selectedProfiles.map(({ sp }) => ({
                       slug: sp?.slug,
@@ -225,7 +251,7 @@ export default function SampleShowcaseProductPage() {
                   });
                 }}
               >
-                {canAddToCart ? "Add To Cart $199" : `Select ${5 - selectedProfiles.length} more flavor${5 - selectedProfiles.length === 1 ? "" : "s"}`}
+                {canAddToCart ? `Add ${selectedFormat.fullLabel} To Cart $199` : `Select ${remainingSelections} more flavor${remainingSelections === 1 ? "" : "s"}`}
               </button>
             </div>
           </div>
@@ -239,8 +265,8 @@ export default function SampleShowcaseProductPage() {
           <aside className="ssp-side" aria-label="Your kit" style={{ color: "#111" }}>
             <div className="ssp-sideCard">
               <div className="ssp-sideTitle">Your kit</div>
-              <div className="ssp-sideSub">Pick 5 flavor profiles from the list.</div>
-              <div className="ssp-sideCount">{selectedProfiles.length} / 5 selected</div>
+              <div className="ssp-sideSub">Selected option: {selectedFormat.fullLabel}</div>
+              <div className="ssp-sideCount">{selectedProfiles.length} / {selectionLimit} selected</div>
 
               <div className="ssp-sideList">
                 {selectedProfiles.length ? (
@@ -283,7 +309,7 @@ export default function SampleShowcaseProductPage() {
                     bundle={bundleMap.get(String(sp?.slug || "").trim()) || null}
                     isSelected={selectedSlugs.includes(String(sp?.slug || "").trim())}
                     expanded={expandedSlug === String(sp?.slug || "").trim()}
-                    selectionLocked={!selectedSlugs.includes(String(sp?.slug || "").trim()) && selectedSlugs.length >= 5}
+                    selectionLocked={!selectedSlugs.includes(String(sp?.slug || "").trim()) && selectedSlugs.length >= selectionLimit}
                     onToggleSelected={() => toggleFlavor(sp?.slug)}
                     onToggleExpanded={() => {
                       const slug = String(sp?.slug || "").trim();
@@ -317,8 +343,7 @@ function FlavorSelectorRow({
   const domTerps = Array.isArray(profile?.dominant_terpenes) ? profile.dominant_terpenes : [];
   const mood = String(profile?.mood || "").trim();
   const description = String(profile?.description || "").trim();
-  const images = Array.isArray(bundle?.images) ? bundle.images : [];
-  const primaryImg = images.find((x) => typeof x?.url === "string" && x.url.trim())?.url || "";
+
   const rowId = `selector-${encodeURIComponent(sp?.slug || String(index))}`;
 
   return (
@@ -392,10 +417,6 @@ function FlavorSelectorRow({
                   </div>
                 </div>
               ) : null}
-            </div>
-
-            <div className="ssp-profileMedia" aria-hidden="true">
-              {primaryImg ? <img className="ssp-profileImg" src={primaryImg} alt="" /> : <div className="ssp-profileImgFallback" />}
             </div>
           </div>
         </div>

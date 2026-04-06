@@ -958,7 +958,32 @@ export default function ProductPage() {
   const starterSetHeading = `New to ${collection?.name || "This Collection"} Profiles?`;
   const freeSamplesRoute = "/contact";
 
+  const renderStarterWidget = (extraClassName = "") => (
+    <aside className={`pp-card pp-starterWidget ${extraClassName}`.trim()} aria-label="Collection starter set">
+      <div className="pp-starterWidgetIcon" aria-hidden="true">💡</div>
+      <div className="pp-starterWidgetContent">
+        <h3 className="pp-starterWidgetTitle">{starterSetHeading}</h3>
+        <p className="pp-starterWidgetSubtitle">Start with these industry staples:</p>
 
+        <ul className="pp-starterWidgetList">
+          {starterSetProfiles.map((name, index) => (
+            <li key={`${name}-${index}`} className="pp-starterWidgetItem">
+              <span className="pp-starterWidgetDot" aria-hidden="true" />
+              <span>{name}</span>
+            </li>
+          ))}
+        </ul>
+
+        <button
+          type="button"
+          className="pp-primaryBtn pp-starterWidgetBtn"
+          onClick={() => navigate(`/samples/${encodeURIComponent(id)}`)}
+        >
+          View Starter Set <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </aside>
+  );
 
   return (
     <>
@@ -1039,32 +1064,7 @@ export default function ProductPage() {
 
           </section>
 
-            {!isIsolatesCollection && starterSetProfiles.length > 0 && (
-              <aside className="pp-card pp-starterWidget" aria-label="Collection starter set">
-                <div className="pp-starterWidgetIcon" aria-hidden="true">💡</div>
-                <div className="pp-starterWidgetContent">
-                  <h3 className="pp-starterWidgetTitle">{starterSetHeading}</h3>
-                  <p className="pp-starterWidgetSubtitle">Start with these industry staples:</p>
-
-                  <ul className="pp-starterWidgetList">
-                    {starterSetProfiles.map((name, index) => (
-                      <li key={`${name}-${index}`} className="pp-starterWidgetItem">
-                        <span className="pp-starterWidgetDot" aria-hidden="true" />
-                        <span>{name}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <button
-                    type="button"
-                    className="pp-primaryBtn pp-starterWidgetBtn"
-                    onClick={() => navigate(`/samples/${encodeURIComponent(id)}`)}
-                  >
-                    View Starter Set <span aria-hidden="true">→</span>
-                  </button>
-                </div>
-              </aside>
-            )}
+            {!isIsolatesCollection && starterSetProfiles.length > 0 && renderStarterWidget("pp-starterWidgetDesktop")}
           </div>
 
           {/* MIDDLE: Details / Docs / Info (tabs) */}
@@ -1825,8 +1825,8 @@ export default function ProductPage() {
               </button>
             </aside>
 
-            <section className="pp-card pp-buyCard" aria-label="Purchase options">
             <div className="pp-buySticky">
+              <section className="pp-card pp-buyCard" aria-label="Purchase options">
               <div style={{ 
                 fontSize: 26, 
                 fontWeight: 700, 
@@ -1994,7 +1994,10 @@ export default function ProductPage() {
               </button>
 
 
-              <div className="pp-benchmarkSection">
+              </section>
+
+              <section className="pp-card pp-buyCard pp-benchmarkCard" aria-label="Build your flavor library">
+                <div className="pp-benchmarkSection pp-benchmarkSectionStandalone">
                 <div className="pp-benchmarkHeaderRow">
                   <div>
                     <div className="pp-benchmarkTitle">Build Your Flavor Library</div>
@@ -2109,8 +2112,10 @@ export default function ProductPage() {
                   Add flavor library to cart
                 </button>
               </div>
+              </section>
             </div>
-          </section>
+
+            {!isIsolatesCollection && starterSetProfiles.length > 0 && renderStarterWidget("pp-starterWidgetMobile")}
           </div>
         </div>
       </main>

@@ -389,18 +389,15 @@
 
 .ssp-profileBody{
   border-top: 1px solid rgba(0,0,0,0.06);
-  padding: 14px;
+  padding: 16px 18px 18px;
 }
 
 .ssp-profileBodyInner{
-  display: grid;
-  grid-template-columns: 1fr 240px;
-  gap: 14px;
-  align-items: start;
+  display: block;
 }
 
-@media (max-width: 720px){
-  .ssp-profileBodyInner{ grid-template-columns: 1fr; }
+.ssp-profileCopy{
+  width: 100%;
 }
 
 .ssp-profileDesc{

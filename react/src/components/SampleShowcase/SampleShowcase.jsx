@@ -189,18 +189,28 @@ function SampleCollectionCard({ collection, variantIndex = 0 }) {
     return () => { alive = false; };
   }, [collection.collectionId]);
 
-  const handleCardClick = () => {
-    if (collection.collectionId) {
-      navigate(`/samples/${collection.collectionId}`);
+  const openKit = (format) => {
+    if (!collection.collectionId) return;
+    const params = new URLSearchParams();
+    if (format) params.set("format", format);
+    navigate(`/samples/${collection.collectionId}${params.toString() ? `?${params.toString()}` : ""}`);
+  };
+
+  const handleCardKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openKit("2ml-10");
     }
   };
 
   return (
-    <button
-      type="button"
+    <div
       className={`ss-card ss-card--v${(variantIndex % 4) + 1}`}
-      onClick={handleCardClick}
+      onClick={() => openKit("2ml-10")}
+      onKeyDown={handleCardKeyDown}
       aria-label={`Open ${collection.name} sample kit`}
+      role="button"
+      tabIndex={0}
     >
       <div className="ss-cardTop">
         <div className="ss-cardName">
@@ -226,15 +236,33 @@ function SampleCollectionCard({ collection, variantIndex = 0 }) {
         <div className="ss-cardRight">
           <div className="ss-cardSub">Choose format</div>
           <div className="ss-chipWrap" style={{ marginBottom: 12 }}>
-            <button className="ss-chip ss-chipBtn" type="button">2mL X 10 Flavors</button>
-            <button className="ss-chip ss-chipBtn" type="button">5mL X 5 Flavors</button>
+            <button
+              className="ss-chip ss-chipBtn"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                openKit("2ml-10");
+              }}
+            >
+              2mL X 10 Flavors
+            </button>
+            <button
+              className="ss-chip ss-chipBtn"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                openKit("5ml-5");
+              }}
+            >
+              5mL X 5 Flavors
+            </button>
           </div>
           <div className="ss-cardFooter">
-            <div className="ss-meta">Tap to view kit details</div>
+            <div className="ss-meta">Tap a format to view kit details</div>
             <div className="ss-action">View kit →</div>
           </div>
         </div>
       </div>
-    </button>
+    </div>
   );
 }

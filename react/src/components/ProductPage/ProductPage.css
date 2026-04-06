@@ -598,6 +598,8 @@
 .pp-buySticky{
   position: sticky;
   top: 14px;
+  display: grid;
+  gap: 14px;
 }
 
 .pp-buyTitle{
@@ -690,6 +692,12 @@
   margin-top: 18px;
   padding-top: 18px;
   border-top: 1px solid var(--border);
+}
+
+.pp-benchmarkSectionStandalone{
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
 }
 
 .pp-benchmarkHeaderRow{
@@ -952,6 +960,14 @@
   box-shadow: 0 20px 45px rgba(0,0,0,0.28);
 }
 
+.pp-starterWidgetDesktop{
+  display: block;
+}
+
+.pp-starterWidgetMobile{
+  display: none;
+}
+
 .pp-starterWidgetIcon{
   font-size: 38px;
   line-height: 1;
@@ -1018,6 +1034,14 @@
   .pp-starterWidget{
     padding: 22px 18px;
     border-radius: 22px;
+  }
+
+  .pp-starterWidgetDesktop{
+    display: none;
+  }
+
+  .pp-starterWidgetMobile{
+    display: block;
   }
 
   .pp-starterWidgetTitle{

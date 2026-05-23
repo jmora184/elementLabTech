@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /account
+Disallow: /cart
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://terpenesbyelementlab.com/sitemap.xml

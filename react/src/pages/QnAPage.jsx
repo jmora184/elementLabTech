@@ -35,8 +35,6 @@ export default function QnAPage() {
               <strong>Contact:</strong>
               <br />
               info@elementlab.shop
-              <br />
-              +1 (213) 293-8760
             </div>
           </section>
         </div>

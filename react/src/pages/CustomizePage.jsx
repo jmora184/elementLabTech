@@ -748,7 +748,7 @@ export default function CustomizePage() {
             </div>
 
             <div style={hintStyle}>
-              Questions? Email <a href="mailto:info@elementlab.shop">info@elementlab.shop</a> or call +1 (213) 293-8760.
+              Questions? Email <a href="mailto:info@elementlab.shop">info@elementlab.shop</a>.
             </div>
           </fieldset>
 

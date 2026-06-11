@@ -178,7 +178,6 @@ export default function ContactPage() {
       <p style={{ fontSize: "18px", marginTop: "20px", fontWeight: 700 }}>
         info@elementlab.shop
       </p>
-      <p style={{ fontSize: "18px", marginTop: "10px" }}>+1 (213) 293-8760</p>
       <p style={{ fontSize: "16px", marginTop: "18px" }}>
         FL Office: 515 N Flagler DrWest Palm Beach, 33401
       </p>
